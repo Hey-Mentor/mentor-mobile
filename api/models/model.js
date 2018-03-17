@@ -4,22 +4,22 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 
-var TaskSchema = new Schema({
+var MenteeSchema = new Schema({
   name: {
     type: String,
-    required: 'Kindly enter the name of the task'
+    required: 'This mentee needs a name!'
   },
-  Created_date: {
+  created_date: {
     type: Date,
     default: Date.now
   },
   status: {
     type: [{
       type: String,
-      enum: ['pending', 'ongoing', 'completed']
+      enum: ['pending', 'figuring it out', 'certified baller']
     }],
     default: ['pending']
   }
 });
 
-module.exports = mongoose.model('Tasks', TaskSchema);
+module.exports = mongoose.model('Mentee', MenteeSchema);
