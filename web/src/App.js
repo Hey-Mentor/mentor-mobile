@@ -11,7 +11,7 @@ class App extends Component {
   state = {};
 
   async componentDidMount() {
-    const res = await fetch('https://hey-mentor.herokuapp.com/mentees/5aad679470d1d772de34b425');
+    const res = await fetch('https://hey-mentor-api1.herokuapp.com/mentees/5aad679470d1d772de34b425');
     const something = await res.json();
   
     this.setState({
