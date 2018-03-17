@@ -5,10 +5,10 @@ var mongoose = require('mongoose'),
   Mentee = mongoose.model('Mentee');
 
 exports.list_all_mentees = function(req, res) {
-  Mentee.find({ mentorId: req.params.mentorId }, function(err, task) {
+  Mentee.find({ mentorId: req.params.mentorId }, function(err, mentee) {
     if (err)
       res.send(err);
-    res.json(task);
+    res.json(mentee);
   });
 };
 

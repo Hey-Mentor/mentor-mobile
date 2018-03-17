@@ -20,6 +20,9 @@ var MenteeSchema = new Schema({
     }],
     default: ['pending']
   }
+},
+{
+  collection: "Mentees"
 });
 
 module.exports = mongoose.model('Mentee', MenteeSchema);
