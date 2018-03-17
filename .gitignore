@@ -1,1 +1,4 @@
-node_modules
+
+# Packages
+api/node_modules
+web/node_modules
