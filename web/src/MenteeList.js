@@ -7,7 +7,7 @@ class MenteeList extends Component {
 
     this.props.mentees.forEach((mentee) => {
       menteeCards.push(
-        <MenteeCard mentee={mentee} key={mentee.id}/>
+        <MenteeCard mentee={mentee} key={mentee._id}/>
       );
     });
     return (
