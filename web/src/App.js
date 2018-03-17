@@ -11,11 +11,15 @@ class App extends Component {
   state = {};
 
   async componentDidMount() {
-    const res = await fetch('https://hey-mentor-api1.herokuapp.com/mentees/testMentorId');
-    const something = await res.json();
+    const data = fetch('https://hey-mentor-api1.herokuapp.com/mentees/testMentorId')
+      .then(res => res.json())
+      .then(res => {
+        return res
+      });
+    const something = await data;
   
     this.setState({
-      mentees: [something]
+      mentees: something
     });
   }
   
