@@ -28,9 +28,12 @@ class MenteeDetails extends Component {
         return (
             <div id="details" className="menteeDetails">
                 <div id="detailsHeader">
-                    <img alt="" src="https://www.w3schools.com/howto/img_avatar.png" className="profilePic" />
-                    <div className="menteeName headText">
-                        <h1>{mentee.name}</h1>
+                    <div id="headerPicture">
+                        <img alt="" src="https://www.w3schools.com/howto/img_avatar.png"/>
+                    </div>
+                    <div id="headerInfo">
+                        <div id="messageBtn">Message</div>
+                        <div><span id="messageDelay">0 days</span> since last message</div>
                     </div>
                 </div>
 

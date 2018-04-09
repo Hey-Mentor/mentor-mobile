@@ -8,13 +8,10 @@
 	font-size: 14px;
 }
 
-.profilePic {
+#headerPicture > img {
 	border-radius: 50%;
-	width: 90px;
-	height: 90px;
-	float: left;
-	margin-top: 15px;
-	margin-left: 20px;
+	width: 150px;
+	height: 150px;
 }
 
 .headText {
@@ -35,7 +32,7 @@
 	margin-left: 45px;
 }
 
-.profilePic, 
+#headerPicture,
 .headText {
 	display: inline-block;
 }
@@ -81,6 +78,8 @@
 hr {
 	width: 100%;
 	margin-left: 15px;
+	border: none;
+	border-bottom: 1px solid #BDBDBD;
 }
 
 #detailSectionList {
@@ -88,12 +87,40 @@ hr {
 	margin-right: 20px;
 }
 
+#messageBtn {
+	background-color: #19AFE5;
+	border-radius: 5px;
+	padding: 16px;
+	color: #F2F2F2;
+	font-family: Roboto, Helvetica, Arial;
+	font-size: 18px;
+	margin: 24px auto;
+	width: 120px; /* smaller than the design to fit phones */
+}
+
+#detailsHeader > div {
+	display: inline-block;
+}
+
 #detailsHeader {
-	margin-left: auto;
-	margin-right: auto;
-	width: auto;
-	display: table;
-	padding-right: 45px;
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-bottom: 16px;
+}
+
+#headerPicture,
+#headerInfo {
+	width: 50%;
+	vertical-align: top;
+}
+
+#headerInfo > div {
+	text-align: center;
+}
+
+#messageDelay {
+	font-weight: bold;
+	text-align: center;
 }
 
 .collegeClass {
@@ -121,7 +148,9 @@ hr {
 	width: fit-content;
 }
 
-.supportArea.supported {
+/* blue button */
+.supportArea.supported,
+#messageBtn {
 	color: #F2F2F2;
 	background-color: #19AFE5;
 	border-radius: 5px;
