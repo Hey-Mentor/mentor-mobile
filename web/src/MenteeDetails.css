@@ -1,12 +1,11 @@
 .menteeDetails {
-	background-color: #BDEDFF;
 	height: 200px;
-	width: 92vw;
-	border-radius: 12px;
-	margin: auto;
+	width: 100%;
 	margin-top: 20px;
 	padding-bottom: 20px;
 	display: table;
+	font-family: Roboto, Helvetica, Arial;
+	font-size: 14px;
 }
 
 .profilePic {
@@ -41,24 +40,52 @@
 	display: inline-block;
 }
 
-.detailRow {
-	clear: both;
-	margin-left: 20px;
-	margin-right: 20px;
-	padding-top: 20px;
-	padding-bottom: 20px;
+.sectionHeader {
+	color: #19AFE5;
+	padding-bottom: 5px;
+	width: 100%;
+	display: flex;
+	white-space: nowrap;
+	font-size: 18px;
+}
+
+.detailRow,
+.collegeSection {
+	margin-left: 16px;
+	padding-bottom: 7px;
+	color: #4F4F4F;
 }
 
 .detailRow div {
-	display: inline-block;
+	display: inline-flex;
 }
 
-.detailKey {
-	width: 9em;
+.detailKey,
+.collegeClass {
+	width: 6em;
+	padding-right: 7px;
+	font-weight: bold;
+}
+
+.detailRowWideKey {
+	display: flex;
+}
+.detailRowWideKey .detailKey {
+	min-width: 110px;
 }
 
 .detailValue {
-	padding-left: 10px;
+	display: inline-flex;
+}
+
+hr {
+	width: 100%;
+	margin-left: 15px;
+}
+
+#detailSectionList {
+	margin-left: 21px;
+	margin-right: 20px;
 }
 
 #detailsHeader {
@@ -67,4 +94,35 @@
 	width: auto;
 	display: table;
 	padding-right: 45px;
+}
+
+.collegeClass {
+	padding-bottom: 10px;
+	color: #000000;
+}
+
+.collegeSection {
+	padding-bottom: 8px;
+}
+
+.supportAreaList {
+	flex-flow: wrap-column;
+	max-height: 96px;
+}
+
+.supportAreaContainer {
+	display: inline-flex;
+	width: 150px;
+}
+
+.supportArea {
+	color: #BDBDBD;
+	padding: 7px;
+	width: fit-content;
+}
+
+.supportArea.supported {
+	color: #F2F2F2;
+	background-color: #19AFE5;
+	border-radius: 5px;
 }
