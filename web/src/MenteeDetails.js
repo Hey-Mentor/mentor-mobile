@@ -25,8 +25,20 @@ class MenteeDetails extends Component {
             );
         });
 
+        // TODO(ace-n) replace placeholder font-awesome icons with actual images
         return (
             <div id="details" className="menteeDetails">
+                <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+                <div id="navbar">
+                    <div id="navbarLine">
+                        <i className="fa fa-arrow-left"></i>
+                        <div id="navbarName">{ mentee.name }</div>
+                        <i className="fa fa-cog"></i>
+                    </div>
+                    <hr />
+                </div>
+
                 <div id="detailsHeader">
                     <div id="headerPicture">
                         <img alt="" src="https://www.w3schools.com/howto/img_avatar.png"/>

@@ -1,3 +1,42 @@
+/* navbar */
+#navbar {
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 16px;
+}
+
+#navbarLine {
+	display: flex;
+	padding-bottom: 12px;
+}
+
+#navbarName {
+	color: #000000;
+	font-size: 24px;
+	font-weight: bold;
+
+	margin-left: auto;
+	margin-right: auto;
+	width: fit-content;
+	clear: both;
+}
+
+#navbarLine > .fa {
+	font-size: 24px;
+}
+
+#navbarLine > .fa-arrow-left {
+	margin-left: 30px;
+}
+
+#navbarLine > .fa-cog {
+	margin-right: 19px;
+}
+
+#navbar {
+	overflow-x: hidden;
+}
+
 .menteeDetails {
 	height: 200px;
 	width: 100%;
@@ -77,9 +116,12 @@
 
 hr {
 	width: 100%;
-	margin-left: 15px;
 	border: none;
 	border-bottom: 1px solid #BDBDBD;
+}
+
+.sectionHeader > hr {
+	margin-left: 15px;
 }
 
 #detailSectionList {
