@@ -1,4 +1,29 @@
-/* navbar */
+/**** page-wide style ****/
+.menteeDetails {
+	height: 200px;
+	width: 100%;
+	margin-top: 20px;
+	padding-bottom: 20px;
+	display: table;
+	font-family: Roboto, Helvetica, Arial;
+	font-size: 14px;
+}
+hr {
+	width: 100%;
+	border: none;
+	border-bottom: 1px solid #BDBDBD;
+}
+
+/* generic blue button */
+.supportArea.supported,
+#messageBtn {
+	color: #F2F2F2;
+	background-color: #19AFE5;
+	border-radius: 5px;
+}
+/**** end page-wide style ****/
+
+/**** navbar ****/
 #navbar {
 	padding-left: 5px;
 	padding-right: 5px;
@@ -14,7 +39,6 @@
 	color: #000000;
 	font-size: 24px;
 	font-weight: bold;
-
 	margin-left: auto;
 	margin-right: auto;
 	width: fit-content;
@@ -36,17 +60,9 @@
 #navbar {
 	overflow-x: hidden;
 }
+/**** end navbar ****/
 
-.menteeDetails {
-	height: 200px;
-	width: 100%;
-	margin-top: 20px;
-	padding-bottom: 20px;
-	display: table;
-	font-family: Roboto, Helvetica, Arial;
-	font-size: 14px;
-}
-
+/**** header ****/
 #headerPicture > img {
 	border-radius: 50%;
 	width: 150px;
@@ -62,20 +78,51 @@
 	display: inline-block;
 }
 
-.smallText {
-	color:black;
-	font-family: Helvetica;
-	font-size: 13px;
-	letter-spacing: 0px;
+#headerPicture {
 	display: inline-block;
-	margin-left: 45px;
 }
 
 #headerPicture,
-.headText {
+#headerInfo {
+	width: 50%;
+	vertical-align: top;
+}
+
+#messageBtn {
+	background-color: #19AFE5;
+	border-radius: 5px;
+	padding: 16px;
+	color: #F2F2F2;
+	font-family: Roboto, Helvetica, Arial;
+	font-size: 18px;
+	margin: 24px auto;
+	width: 120px; /* smaller than the design to fit phones */
+}
+
+#messageDelay {
+	font-weight: bold;
+	text-align: center;
+}
+
+#detailsHeader > div {
 	display: inline-block;
 }
 
+#detailsHeader {
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-bottom: 16px;
+}
+
+#headerInfo > div {
+	text-align: center;
+	width: 120px;
+	margin-left: auto;
+	margin-right: auto;
+}
+/**** end header ****/
+
+/**** detail sections ****/
 .sectionHeader {
 	color: #19AFE5;
 	padding-bottom: 5px;
@@ -114,57 +161,17 @@
 	display: inline-flex;
 }
 
-hr {
-	width: 100%;
-	border: none;
-	border-bottom: 1px solid #BDBDBD;
-}
-
-.sectionHeader > hr {
-	margin-left: 15px;
-}
-
 #detailSectionList {
 	margin-left: 21px;
 	margin-right: 20px;
 }
 
-#messageBtn {
-	background-color: #19AFE5;
-	border-radius: 5px;
-	padding: 16px;
-	color: #F2F2F2;
-	font-family: Roboto, Helvetica, Arial;
-	font-size: 18px;
-	margin: 24px auto;
-	width: 120px; /* smaller than the design to fit phones */
+.sectionHeader > hr {
+	margin-left: 15px;
 }
+/**** end detail sections ****/
 
-#detailsHeader > div {
-	display: inline-block;
-}
-
-#detailsHeader {
-	padding-left: 16px;
-	padding-right: 16px;
-	padding-bottom: 16px;
-}
-
-#headerPicture,
-#headerInfo {
-	width: 50%;
-	vertical-align: top;
-}
-
-#headerInfo > div {
-	text-align: center;
-}
-
-#messageDelay {
-	font-weight: bold;
-	text-align: center;
-}
-
+/**** colleges list ****/
 .collegeClass {
 	padding-bottom: 10px;
 	color: #000000;
@@ -173,7 +180,9 @@ hr {
 .collegeSection {
 	padding-bottom: 8px;
 }
+/**** end colleges list ****/
 
+/**** support areas ****/
 .supportAreaList {
 	flex-flow: wrap-column;
 	max-height: 96px;
@@ -189,11 +198,4 @@ hr {
 	padding: 7px;
 	width: fit-content;
 }
-
-/* blue button */
-.supportArea.supported,
-#messageBtn {
-	color: #F2F2F2;
-	background-color: #19AFE5;
-	border-radius: 5px;
-}
+/**** end support areas ****/
