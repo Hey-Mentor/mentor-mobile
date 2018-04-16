@@ -1,0 +1,57 @@
+#headerPicture > img {
+	border-radius: 50%;
+	width: 150px;
+	height: 150px;
+}
+
+.headText {
+	color: black;
+	font-family: Helvetica;
+	font-size: 10px;
+	margin-top: 30px;
+	margin-left: 20px;
+	display: inline-block;
+}
+
+#headerPicture {
+	display: inline-block;
+}
+
+#headerPicture,
+#headerInfo {
+	width: 50%;
+	vertical-align: top;
+}
+
+#messageBtn {
+	background-color: #19AFE5;
+	border-radius: 5px;
+	padding: 16px;
+	color: #F2F2F2;
+	font-family: Roboto, Helvetica, Arial;
+	font-size: 18px;
+	margin: 24px auto;
+	width: 120px; /* smaller than the design to fit phones */
+}
+
+#messageDelay {
+	font-weight: bold;
+	text-align: center;
+}
+
+#detailsHeader > div {
+	display: inline-block;
+}
+
+#detailsHeader {
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-bottom: 16px;
+}
+
+#headerInfo > div {
+	text-align: center;
+	width: 120px;
+	margin-left: auto;
+	margin-right: auto;
+}

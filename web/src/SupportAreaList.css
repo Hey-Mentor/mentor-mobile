@@ -1,0 +1,15 @@
+.supportAreaList {
+	flex-flow: wrap-column;
+	max-height: 96px;
+}
+
+.supportAreaContainer {
+	display: inline-flex;
+	width: 150px;
+}
+
+.supportArea {
+	color: #BDBDBD;
+	padding: 7px;
+	width: fit-content;
+}

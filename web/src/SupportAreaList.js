@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './MenteeDetails.css';
+import './SupportAreaList.css';
 import SupportArea from './SupportArea.js';
 
 // TODO(ace-n): convert this into generic BubbleList?

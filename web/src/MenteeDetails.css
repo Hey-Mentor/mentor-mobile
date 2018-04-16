@@ -15,112 +15,13 @@ hr {
 }
 
 /* generic blue button */
+/* TODO(ace-n) move this to a generic button component */
 .supportArea.supported,
 #messageBtn {
 	color: #F2F2F2;
 	background-color: #19AFE5;
 	border-radius: 5px;
 }
-/**** end page-wide style ****/
-
-/**** navbar ****/
-#navbar {
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-bottom: 16px;
-}
-
-#navbarLine {
-	display: flex;
-	padding-bottom: 12px;
-}
-
-#navbarName {
-	color: #000000;
-	font-size: 24px;
-	font-weight: bold;
-	margin-left: auto;
-	margin-right: auto;
-	width: fit-content;
-	clear: both;
-}
-
-#navbarLine > .fa {
-	font-size: 24px;
-}
-
-#navbarLine > .fa-arrow-left {
-	margin-left: 30px;
-}
-
-#navbarLine > .fa-cog {
-	margin-right: 19px;
-}
-
-#navbar {
-	overflow-x: hidden;
-}
-/**** end navbar ****/
-
-/**** header ****/
-#headerPicture > img {
-	border-radius: 50%;
-	width: 150px;
-	height: 150px;
-}
-
-.headText {
-	color: black;
-	font-family: Helvetica;
-	font-size: 10px;
-	margin-top: 30px;
-	margin-left: 20px;
-	display: inline-block;
-}
-
-#headerPicture {
-	display: inline-block;
-}
-
-#headerPicture,
-#headerInfo {
-	width: 50%;
-	vertical-align: top;
-}
-
-#messageBtn {
-	background-color: #19AFE5;
-	border-radius: 5px;
-	padding: 16px;
-	color: #F2F2F2;
-	font-family: Roboto, Helvetica, Arial;
-	font-size: 18px;
-	margin: 24px auto;
-	width: 120px; /* smaller than the design to fit phones */
-}
-
-#messageDelay {
-	font-weight: bold;
-	text-align: center;
-}
-
-#detailsHeader > div {
-	display: inline-block;
-}
-
-#detailsHeader {
-	padding-left: 16px;
-	padding-right: 16px;
-	padding-bottom: 16px;
-}
-
-#headerInfo > div {
-	text-align: center;
-	width: 120px;
-	margin-left: auto;
-	margin-right: auto;
-}
-/**** end header ****/
 
 /**** detail sections ****/
 .sectionHeader {
@@ -170,32 +71,3 @@ hr {
 	margin-left: 15px;
 }
 /**** end detail sections ****/
-
-/**** colleges list ****/
-.collegeClass {
-	padding-bottom: 10px;
-	color: #000000;
-}
-
-.collegeSection {
-	padding-bottom: 8px;
-}
-/**** end colleges list ****/
-
-/**** support areas ****/
-.supportAreaList {
-	flex-flow: wrap-column;
-	max-height: 96px;
-}
-
-.supportAreaContainer {
-	display: inline-flex;
-	width: 150px;
-}
-
-.supportArea {
-	color: #BDBDBD;
-	padding: 7px;
-	width: fit-content;
-}
-/**** end support areas ****/

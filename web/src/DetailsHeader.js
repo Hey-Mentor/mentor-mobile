@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './MenteeDetails.css';
+import './DetailsHeader.css';
 
 class DetailsHeader extends Component {
 	render() {
