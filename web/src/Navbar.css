@@ -6,7 +6,7 @@
 
 #navbarLine {
 	display: flex;
-	padding-bottom: 12px;
+	padding-bottom: 10px;
 }
 
 #navbarName {
@@ -15,19 +15,29 @@
 	font-weight: bold;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: 5px;
 	width: fit-content;
 	clear: both;
 }
 
-#navbarLine > .fa {
-	font-size: 24px;
+/* TODO(ace-n) remove this class once designers update image */
+/* TODO(designers) scale left arrow to 40x40 as image */
+#navbarLine > img.leftImage {
+	width: 30px;
+	height: 26px;
+	margin-top: 8px;
 }
 
-#navbarLine > .fa-arrow-left {
+#navbarLine > img {
+	width: 40px;
+	height: 40px;
+}
+
+#navbarLine > .leftImage {
 	margin-left: 30px;
 }
 
-#navbarLine > .fa-cog {
+#navbarLine > .rightImage {
 	margin-right: 19px;
 }
 

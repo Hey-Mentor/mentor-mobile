@@ -22,7 +22,7 @@ class MenteeDetails extends Component {
 
         return (
             <div id="details" className="menteeDetails">
-                <Navbar menteeName={mentee.name} />
+                <Navbar menteeName={mentee.name} leftImage="left-arrow.png" rightImage="gear.png" />
 
                 <DetailsHeader image="https://www.w3schools.com/howto/img_avatar.png" delay="0 days" />
 
