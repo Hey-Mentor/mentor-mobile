@@ -23,11 +23,8 @@
 	vertical-align: top;
 }
 
-#messageBtn {
-	background-color: #19AFE5;
-	border-radius: 5px;
+#headerInfo > .bubbleRect {
 	padding: 16px;
-	color: #F2F2F2;
 	font-family: Roboto, Helvetica, Arial;
 	font-size: 18px;
 	margin: 24px auto;

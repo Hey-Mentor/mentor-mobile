@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import BubbleRect from './BubbleRect.js';
 import './DetailsHeader.css';
 
 class DetailsHeader extends Component {
@@ -9,7 +10,7 @@ class DetailsHeader extends Component {
                     <img alt="Profile picture" src={this.props.image}/>
                 </div>
                 <div id="headerInfo">
-                    <div id="messageBtn">Message</div>
+                    <BubbleRect name="Message" highlight={true} />
                     <div><span id="messageDelay">{this.props.delay}</span> since last message</div>
                 </div>
             </div>

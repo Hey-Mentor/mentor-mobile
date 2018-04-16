@@ -3,13 +3,22 @@ import './MenteeDetails.css';
 import DetailsHeader from './DetailsHeader.js'
 import DetailRow from './DetailRow.js'
 import DetailSectionHeader from './DetailSectionHeader.js'
-import SupportAreaList from './SupportAreaList.js'
+import BubbleList from './BubbleList.js'
 import CollegeList from './CollegeList.js'
 import Navbar from './Navbar.js'
 
 class MenteeDetails extends Component {
     render() {
         const mentee = this.props.mentee;
+
+        const supportAreas = [
+            { name: "College applications", highlight: false },
+            { name: "Scholarships", highlight: false },
+            { name: "Financial aid", highlight: false },
+            { name: "College search", highlight: false },
+            { name: "Career advice", highlight: true },
+            { name: "Exam preparation", highlight: false }
+        ];
 
         return (
             <div id="details" className="menteeDetails">
@@ -35,7 +44,7 @@ class MenteeDetails extends Component {
                     <CollegeList collegeClass="Match" colleges={mentee.colleges.match} />
 
                     <DetailSectionHeader title="Areas of support" />
-                    <SupportAreaList />
+                    <BubbleList items={supportAreas} />
 
                     <DetailSectionHeader title="Bio" />
                     <DetailRow className="detailRowWideKey" name="Hobbies" value={mentee.hobbies} />

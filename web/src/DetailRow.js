@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './MenteeDetails.css';
+import './DetailRow.css';
 
 class DetailRow extends Component {
 	render() {

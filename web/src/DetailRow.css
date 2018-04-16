@@ -1,0 +1,10 @@
+.detailRowWideKey {
+	display: flex;
+}
+.detailRowWideKey .detailKey {
+	min-width: 110px;
+}
+
+.detailValue {
+	display: inline-flex;
+}

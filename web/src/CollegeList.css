@@ -1,8 +1,13 @@
 .collegeClass {
 	padding-bottom: 10px;
 	color: #000000;
+	width: 6em;
+	padding-right: 7px;
+	font-weight: bold;
 }
 
 .collegeSection {
 	padding-bottom: 8px;
+	margin-left: 16px;
+	color: #4F4F4F;
 }
