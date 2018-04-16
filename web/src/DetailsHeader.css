@@ -24,11 +24,11 @@
 }
 
 #headerInfo > .bubbleRect {
-	padding: 16px;
+	padding: 15px;
 	font-family: Roboto, Helvetica, Arial;
 	font-size: 18px;
 	margin: 24px auto;
-	width: 120px; /* smaller than the design to fit phones */
+	width: 88px; /* smaller than the design to fit iPhone 5 */
 }
 
 #messageDelay {
