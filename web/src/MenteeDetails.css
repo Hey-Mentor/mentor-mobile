@@ -16,7 +16,6 @@ hr {
 
 /**** page-specific tweaks to existing components ****/
 .bubbleList {
-	min-height: 90px;
 	padding-bottom: 8px;
 }
 
