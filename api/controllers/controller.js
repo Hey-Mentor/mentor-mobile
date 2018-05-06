@@ -12,7 +12,7 @@ exports.list_all_mentees = function(req, res) {
   });
 };
 
-/*exports.create_a_mentee = function(req, res) {
+exports.create_a_mentee = function(req, res) {
   var new_mentee = new Mentee(req.body);
   new_mentee.save(function(err, mentee) {
     if (err)
@@ -45,4 +45,4 @@ exports.delete_a_mentee = function(req, res) {
       res.send(err);
     res.json({ message: 'Mentee successfully deleted' });
   });
-};*/
+};
