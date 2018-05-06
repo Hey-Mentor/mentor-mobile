@@ -16,3 +16,15 @@
 In the `/api` directory, run:
 
     node server.js 
+
+## Testing the backend 
+
+The backend datastore contains mentees with the following matched mentor IDs: 
+
+* bdkenslvl
+
+* enslbbale
+
+* elksvneks
+
+* none
