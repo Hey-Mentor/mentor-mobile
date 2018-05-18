@@ -2,10 +2,10 @@
 
 
 var mongoose = require('mongoose'),
-  Mentee = mongoose.model('Mentee');
+  Mentees = mongoose.model('Mentees');
 
 exports.list_all_mentees = function(req, res) {
-  Mentee.find({ mentorId: req.params.mentorId }, function(err, mentee) {
+  Mentees.find({ mentor_id: req.params.mentorId }, function(err, mentee) {
     if (err)
       res.send(err);
     res.json(mentee);
@@ -22,7 +22,7 @@ exports.create_a_mentee = function(req, res) {
 };
 
 exports.read_a_mentee = function(req, res) {
-  Mentee.findById(req.params.menteeId, function(err, mentee) {
+  Mentees.findById(req.params.menteeId, function(err, mentee) {
     if (err)
       res.send(err);
     res.json(mentee);

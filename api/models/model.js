@@ -25,4 +25,4 @@ var MenteeSchema = new Schema({
   collection: "Mentees"
 });
 
-module.exports = mongoose.model('Mentee', MenteeSchema);
+module.exports = mongoose.model('Mentees', MenteeSchema);
