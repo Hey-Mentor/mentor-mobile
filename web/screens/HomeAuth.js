@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, StyleSheet, Image } from 'react-native';
+import { View, Text, AsyncStorage, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Facebook } from 'expo';
-import { Button, Card, CardSection } from '../components/common/';
 
 class HomeAuth extends Component {
   state = {
@@ -9,6 +8,13 @@ class HomeAuth extends Component {
     facebookLoginSuccess: false,
     fbToken: null
   };
+
+  componentDidMount() {
+    console.log(this.state);
+    if (this.state.fbToken !== null) {
+      this.props.navigation.navigate('notifications');
+    }
+  }
 
   onButtonPress() {
     this.facebookLogin();
@@ -27,12 +33,9 @@ class HomeAuth extends Component {
   };
 
   initFacebookLogin = async () => {
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      '1650628351692070',
-      {
-        permissions: ['public_profile', 'email', 'user_friends']
-      }
-    );
+    const { type, token } = await Facebook.logInWithReadPermissionsAsync('1650628351692070', {
+      permissions: ['public_profile', 'email', 'user_friends']
+    });
 
     if (type === 'cancel') {
       this.setState({ facebookLoginFail: true });
@@ -45,9 +48,7 @@ class HomeAuth extends Component {
         fbToken: token
       });
       //API call to FB Graph API. Will add more code to fetch social media data
-      const response = await fetch(
-        `https://graph.facebook.com/me?access_token=${token}`
-      );
+      const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
       console.log(response.json());
       this.onAuthComplete(this.props);
     }
@@ -55,31 +56,46 @@ class HomeAuth extends Component {
 
   render() {
     return (
-      <View>
-        <Image
-          style={styles.splashStyle}
-          source={require('../assets/heymentorsplash.png')}
-        />
-        <Button
-          style={styles.buttonStyle}
-          onPress={this.onButtonPress.bind(this)}
-        >
-          Login with Facebook
-        </Button>
+      <View style={styles.container}>
+        <Image style={styles.splashStyle} source={require('../assets/heymentorsplash.png')} />
+
+        <TouchableOpacity style={styles.buttonStyle} onPress={this.onButtonPress.bind(this)}>
+          <Text style={styles.textStyle}>Login with Facebook</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  buttonStyle: {
-    marginTop: 150
+  container: {
+    backgroundColor: 'white',
+    flex: 1
   },
   splashStyle: {
-    marginTop: 150,
-    width: 250,
-    height: 250,
-    alignSelf: 'center'
+    marginTop: 100,
+    width: 275,
+    height: 275,
+    alignSelf: 'center',
+    marginBottom: 80
+  },
+  buttonStyle: {
+    backgroundColor: '#007aff',
+    borderRadius: 5,
+    borderWidth: 1,
+    marginLeft: 5,
+    marginRight: 5,
+    alignSelf: 'center',
+    width: 280,
+    height: 50
+  },
+  textStyle: {
+    alignSelf: 'center',
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '600',
+    paddingTop: 10,
+    paddingBottom: 10
   }
 });
 

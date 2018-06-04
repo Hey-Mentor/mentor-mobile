@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native';
 
 class BubbleRect extends Component {
   render() {
     const styles = StyleSheet.create({
       bubbleRect: {
         padding: 7,
-        color: "#bdbdbd",
+        color: '#bdbdbd',
         fontSize: 14,
         alignSelf: 'flex-start'
       },
       highlight: {
-        color: "#f2f2f2",
-        backgroundColor: "#19afe5",
+        color: '#f2f2f2',
+        backgroundColor: '#007aff',
         borderRadius: 5
       }
     });

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "mobile",
-    "description": "This project is really great.",
+    "description": "Hey Mentor Mobile App",
     "slug": "mobile",
     "privacy": "public",
     "sdkVersion": "27.0.0",
@@ -10,16 +10,14 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/heymentorsplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     }
