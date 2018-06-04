@@ -21,3 +21,15 @@ export default async () => {
   await axios.post(PUSH_ENDPOINT, { token: { token } });
   AsyncStorage.setItem('pushToken', token);
 };
+
+// registerForNotifications();
+// Notifications.addListener(notification => {
+//   const {
+//     data: { text },
+//     origin
+//   } = notification;
+//
+//   if (origin === 'recieved' && text) {
+//     Alert.alert('new push notification', text, [{ text: 'Ok' }]);
+//   }
+// });

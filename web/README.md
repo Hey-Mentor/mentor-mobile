@@ -15,3 +15,8 @@ https://expo.io/learn
 * Once EXPO client is running, click on open project and open Hey-Mentor mobile app directory
 
 * Click "Device" to run simulator
+
+### To simulate on phone without running local EXPO client
+
+* Open a web browser and go to
+  https://expo.io/@glenrage/mobile
