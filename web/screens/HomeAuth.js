@@ -6,13 +6,17 @@ class HomeAuth extends Component {
   state = {
     facebookLoginFail: false,
     facebookLoginSuccess: false,
-    fbToken: null
+    fbToken: null,
+    fbUserId: null
   };
+
+  appId = '1650628351692070';
+  //appId = '413723559041218';
 
   componentDidMount() {
     console.log(this.state);
     if (this.state.fbToken !== null) {
-      this.props.navigation.navigate('notifications');
+      this.props.navigation.navigate('menteeListView');
     }
   }
 
@@ -21,9 +25,10 @@ class HomeAuth extends Component {
   }
 
   onAuthComplete = props => {
-    //after user successfully logs in navigate to notifications page
+    //after user successfully logs in navigate to menteeListView page
     if (this.state.fbToken) {
-      this.props.navigation.navigate('notifications');
+      this.props.navigation.state = this.state;
+      this.props.navigation.navigate('menteeListView', {fbId: this.state.fbUserId});
     }
   };
 
@@ -33,7 +38,7 @@ class HomeAuth extends Component {
   };
 
   initFacebookLogin = async () => {
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync('1650628351692070', {
+    const { type, token } = await Facebook.logInWithReadPermissionsAsync(this.appId, {
       permissions: ['public_profile', 'email', 'user_friends']
     });
 
@@ -48,8 +53,19 @@ class HomeAuth extends Component {
         fbToken: token
       });
       //API call to FB Graph API. Will add more code to fetch social media data
-      const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-      console.log(response.json());
+      let response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+      let responseJson = await response.json();
+      console.log("Printing token");
+      console.log(token);
+      console.log("Printing response");
+      console.log(responseJson);
+      console.log("Printed response.json()");
+
+      // Get the Facebook User ID from the response so we can look up the Mentees of this user
+      console.log("Facebook ID: " + responseJson.id);
+      // Matt Bongiovi: 1842505195770400
+      this.setState({ fbUserId: responseJson.id });
+
       this.onAuthComplete(this.props);
     }
   };

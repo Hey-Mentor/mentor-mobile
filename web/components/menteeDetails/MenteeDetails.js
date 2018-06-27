@@ -35,20 +35,15 @@ class MenteeDetails extends Component {
         <DetailsHeader image="https://www.w3schools.com/howto/img_avatar.png" delay="0 days" />
         <View id="detailSectionList" style={styles.detailSectionList}>
           <DetailSectionHeader title="Demographics" />
-          <DetailRow name="Gender" value={mentee.gender} />
-          <DetailRow name="Race" value={mentee.race} />
-          <DetailRow name="Ethnicity" value={mentee.ethnicity} />
+          <DetailRow name="Gender" value={mentee.demo.gender} />
+          <DetailRow name="Race" value={mentee.demo.race} />
+          <DetailRow name="Ethnicity" value={mentee.demo.ethnicity} />
 
           <DetailSectionHeader title="School" />
-          <DetailRow name="High School" value={mentee.highSchool} />
-          <DetailRow name="Year" value={mentee.year} />
-          <DetailRow name="Expected Grad Date" value={mentee.gradDate} />
-          <DetailRow name="GPA" value={mentee.gpa} />
-          <DetailRow name="SAT" value={mentee.satScore} />
-
-          <DetailSectionHeader title="Colleges" />
-          <CollegeList collegeClass="Reach" colleges={mentee.colleges.reach} />
-          <CollegeList collegeClass="Match" colleges={mentee.colleges.match} />
+          <DetailRow name="High School" value={mentee.school.name} />
+          <DetailRow name="Year" value={mentee.school.grade} />
+          <DetailRow name="GPA" value={mentee.school.gpa} />
+          <DetailRow name="SAT" value={mentee.school.satScore} />
 
           <DetailSectionHeader title="Bio" />
           <DetailRow wide name="Hobbies" value={mentee.hobbies} />
@@ -61,5 +56,43 @@ class MenteeDetails extends Component {
     );
   }
 }
+
+/*
+[
+{
+    "status": ["pending"],
+    "created_date": "2018-06-26T20:02:22.038Z",
+    "_id": "5aef5f11f36d2837eae6a7e8",
+    "mentor_id": "bdkenslvl",
+    "mentee_id": "znenjkels",
+    "person":
+    {
+        "fname": "Kevin",
+        "lname": "Truong",
+        "kname": "KevvyKev",
+        "fburl": "kevtruong"
+    },
+    "demo":
+    {
+        "gender": "male",
+        "race": "asian",
+        "eth": "vietnamese"
+    },
+    "school":
+    {
+        "name": "Garfield High School",
+        "grade": "Senior",
+        "gpa": 3.9,
+        "sat": 1600,
+        "act": 28
+    },
+    "hobbies": ["dancing", "swimming"],
+    "extracurric": "debate team",
+    "support": ["Essays", "Scholarships"]
+}]
+
+
+
+*/
 
 export default MenteeDetails;

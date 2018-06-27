@@ -13,15 +13,15 @@ class MenteeListSection extends Component {
           <View style={styles.textHeader}>
             <Text style={styles.textTitle}>{mentee.name} </Text>
             <Text style={styles.textDetail}>{mentee.school}</Text>
-            <Text style={styles.textDetail}>{mentee.grade}</Text>
+            <Text style={styles.textDetail}>{mentee.grade}</Text>  
           </View>
         </View>
 
         <View style={styles.buttonStyle}>
-          <Button onPress={() => this.props.navigation.navigate('menteeDetails')}>
+          <Button onPress={() => this.props.navigation.navigate('menteeDetails', {mentee: this.props.item.fullMentee})}>
             View Profile
           </Button>
-          <Button onPress={() => this.props.navigation.navigate('menteeDetails')}>Message</Button>
+          <Button onPress={() => this.props.navigation.navigate('menteeDetails', {mentee: this.props.item.fullMentee})}>Message</Button>
         </View>
       </ScrollView>
     );
