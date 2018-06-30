@@ -1,23 +1,29 @@
 import React, { Component } from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
 
+const headerTitleStyle = {
+  flex: 1,
+  textAlign: 'center',
+  color: '#000000',
+  fontSize: 24,
+  fontWeight: 'bold'
+};
+
 class NotificationsScreen extends Component {
+
+  static navigationOptions = ({ navigation }) => ({
+    title: 'Notifications',
+    headerTitleStyle  
+  });
+
   render() {
     const { navigate } = this.props.navigation;
     return (
       <View style={{ flex: 1 }}>
-        <Text
-          style={{ margin: 5, marginTop: 20, marginBottom: 20, fontSize: 36, textAlign: 'center' }}
-        >
-          Notifications
-        </Text>
         <Notification text="Kevin's University of Washington application is due tomorrow" />
         <Notification text="Chadwick's FAFSA is due in 3 days" />
         <Notification text="College applications are due tomorrow" />
-        <TouchableOpacity onPress={() => navigate('menteeListView')} style={styles.buttonStyle}>
-          <Text style={styles.textStyle}>Got It</Text>
-        </TouchableOpacity>
-      </View>
+      </View> 
     );
   }
 }
