@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  AsyncStorage,
+  StyleSheet,
+  Image,
+  TouchableOpacity
+} from 'react-native';
 import { Facebook } from 'expo';
 
 class HomeAuth extends Component {
+  static navigationOptions = {
+    header: null
+  };
+
   state = {
     facebookLoginFail: false,
     facebookLoginSuccess: false,
@@ -13,8 +24,15 @@ class HomeAuth extends Component {
   appId = '1650628351692070';
   //appId = '413723559041218';
 
-  componentDidMount() {
-    console.log(this.state);
+  async componentDidMount() {
+    const token = await AsyncStorage.getItem('fb_token');
+    const id = await AsyncStorage.getItem('fb_id');
+
+    this.setState({
+      fbToken: token,
+      fbUserId: id
+    });
+
     if (this.state.fbToken !== null) {
       this.props.navigation.navigate('menteeListView');
     }
@@ -28,7 +46,9 @@ class HomeAuth extends Component {
     //after user successfully logs in navigate to menteeListView page
     if (this.state.fbToken) {
       this.props.navigation.state = this.state;
-      this.props.navigation.navigate('menteeListView', {fbId: this.state.fbUserId});
+      this.props.navigation.navigate('menteeListView', {
+        fbId: this.state.fbUserId
+      });
     }
   };
 
@@ -38,44 +58,59 @@ class HomeAuth extends Component {
   };
 
   initFacebookLogin = async () => {
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync(this.appId, {
-      permissions: ['public_profile', 'email', 'user_friends']
-    });
+    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
+      this.appId,
+      {
+        permissions: ['public_profile', 'email', 'user_friends']
+      }
+    );
 
     if (type === 'cancel') {
       this.setState({ facebookLoginFail: true });
     }
 
     if (type === 'success') {
-      await AsyncStorage.setItem('fb_token', token);
-      this.setState({
-        facebookLoginSuccess: true,
-        fbToken: token
-      });
       //API call to FB Graph API. Will add more code to fetch social media data
-      let response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+      let response = await fetch(
+        `https://graph.facebook.com/me?access_token=${token}`
+      );
       let responseJson = await response.json();
-      console.log("Printing token");
+      console.log('Printing token');
       console.log(token);
-      console.log("Printing response");
+      console.log('Printing response');
       console.log(responseJson);
-      console.log("Printed response.json()");
+      console.log('Printed response.json()');
 
       // Get the Facebook User ID from the response so we can look up the Mentees of this user
-      console.log("Facebook ID: " + responseJson.id);
+      console.log('Facebook ID: ' + responseJson.id);
       // Matt Bongiovi: 1842505195770400
-      this.setState({ fbUserId: responseJson.id });
 
       this.onAuthComplete(this.props);
+      await AsyncStorage.multiSet([
+        ['fb_token', token],
+        ['fb_id', responseJson.id]
+      ]);
+      this.setState({
+        facebookLoginSuccess: true,
+        fbToken: token,
+        fbUserId: responseJson.id
+      });
     }
   };
 
   render() {
+    console.log('render', this.state);
     return (
       <View style={styles.container}>
-        <Image style={styles.splashStyle} source={require('../assets/heymentorsplash.png')} />
+        <Image
+          style={styles.splashStyle}
+          source={require('../assets/heymentorsplash.png')}
+        />
 
-        <TouchableOpacity style={styles.buttonStyle} onPress={this.onButtonPress.bind(this)}>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={this.onButtonPress.bind(this)}
+        >
           <Text style={styles.textStyle}>Login with Facebook</Text>
         </TouchableOpacity>
       </View>
@@ -89,7 +124,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   splashStyle: {
-    marginTop: 100,
+    marginTop: 200,
     width: 275,
     height: 275,
     alignSelf: 'center',
