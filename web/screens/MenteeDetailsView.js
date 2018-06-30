@@ -25,20 +25,8 @@ const styles = StyleSheet.create({
 class MenteeDetailsView extends Component {
 
   static navigationOptions = ({ navigation }) => ({
-    //title: {state.params.mentee.fname},
-    headerTitleStyle,
-    headerLeft: (
-      <TouchableOpacity
-        onPress={() => {
-          //navigation.navigate('menteeListView');
-          navigation.goBack();
-        }}
-      >
-        <Icon name="arrow-left" type="font-awesome" size={25} iconStyle={styles.leftImage} />
-      </TouchableOpacity>
-    ),
-
-    headerRight: <Icon name="gear" type="font-awesome" size={40} iconStyle={styles.rightImage} />
+    //title: {state.params.mentee.fname},  
+    headerTitleStyle
   });
 
   render() {

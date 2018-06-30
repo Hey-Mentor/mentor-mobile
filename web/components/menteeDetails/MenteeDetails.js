@@ -43,12 +43,13 @@ class MenteeDetails extends Component {
           <DetailRow name="High School" value={mentee.school.name} />
           <DetailRow name="Year" value={mentee.school.grade} />
           <DetailRow name="GPA" value={mentee.school.gpa} />
-          <DetailRow name="SAT" value={mentee.school.satScore} />
+          <DetailRow name="SAT" value={mentee.school.satScore} />  
 
           <DetailSectionHeader title="Bio" />
-          <DetailRow wide name="Hobbies" value={mentee.hobbies} />
-          <DetailRow wide name="Extracurricular Activities" value={mentee.extracurriculars} />
-
+          <DetailRow wide name="Interests" value={mentee.gen_interest} />
+          <DetailRow wide name="Activities" value={mentee.spec_interest} />
+          <DetailRow wide name="Sports" value={mentee.sports} />
+  
           <DetailSectionHeader title="Areas of support" />
           <BubbleList items={supportAreas} />
         </View>
@@ -58,6 +59,45 @@ class MenteeDetails extends Component {
 }
 
 /*
+[{
+    "person": {
+      "fburl": "URL",
+      "fname": "Christophe",
+      "kname": "Chri (Pronounced Cree)",
+      "lname": "Smith-Hernandez"
+    },
+    "demo": {
+      "eth": "Filipino",
+      "gender": "Female",
+      "race": "Asian/Asian American"
+    },
+    "school": {
+      "gpa": "3.6",
+      "grade": "11th Grade",
+      "name": "Summit Public Schools: Sierra",
+      "sat": ""
+    },
+    "spec_interests": [],
+    "sports": ["Frisbee", "Hiking", "Volleyball"],
+    "support": ["Admission Essays, Career Prep (Resume, Cover Letter, LinkedIn, Interviews), Choosing Post-Secondary Plans, Financial Aid, Finding Scholarships"],
+    "created_date": "2018-06-30T23:03:47.433Z",
+    "_id": "5b37f7b6fb6fc03328f73456",
+    "gen_interest": "Sciences: Biology, Chemistry, or Physics",
+    "mentee_id": "zleldwwzztm8526icywg",
+    "mentor_id": "",
+    "spec_interest": ["Arts", "Baking", "Camping", "Coffee & tea", "Cooking", "Eating", "Exercise", "Movies", "Music", "Photography", "Shopping", "Travel"]
+  }
+]
+
+
+
+
+
+
+
+
+
+
 [
 {
     "status": ["pending"],
