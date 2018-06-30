@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
 
 const headerTitleStyle = {
-  flex: 1,
-  textAlign: 'center',
+  //flex: 1,  
+  textAlign: 'center',  
   color: '#000000',
   fontSize: 24,
   fontWeight: 'bold'
