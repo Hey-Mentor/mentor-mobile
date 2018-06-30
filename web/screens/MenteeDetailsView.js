@@ -25,12 +25,12 @@ const styles = StyleSheet.create({
 class MenteeDetailsView extends Component {
 
   static navigationOptions = ({ navigation }) => ({
-    //title: {state.params.mentee.fname},  
+    //title: {state.params.mentee.fname},
     headerTitleStyle,
     headerLeft: (
       <TouchableOpacity
         onPress={() => {
-          //navigation.navigate('menteeListView');  
+          //navigation.navigate('menteeListView');
           navigation.goBack();
         }}
       >
