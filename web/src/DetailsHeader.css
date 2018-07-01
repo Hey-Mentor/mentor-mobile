@@ -1,0 +1,54 @@
+#headerPicture > img {
+	border-radius: 50%;
+	width: 150px;
+	height: 150px;
+}
+
+.headText {
+	color: black;
+	font-family: Helvetica;
+	font-size: 10px;
+	margin-top: 30px;
+	margin-left: 20px;
+	display: inline-block;
+}
+
+#headerPicture {
+	display: inline-block;
+}
+
+#headerPicture,
+#headerInfo {
+	width: 50%;
+	vertical-align: top;
+}
+
+#headerInfo > .bubbleRect {
+	padding: 15px;
+	font-family: Roboto, Helvetica, Arial;
+	font-size: 18px;
+	margin: 24px auto;
+	width: 88px; /* smaller than the design to fit iPhone 5 */
+}
+
+#messageDelay {
+	font-weight: bold;
+	text-align: center;
+}
+
+#detailsHeader > div {
+	display: inline-block;
+}
+
+#detailsHeader {
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-bottom: 16px;
+}
+
+#headerInfo > div {
+	text-align: center;
+	width: 120px;
+	margin-left: auto;
+	margin-right: auto;
+}

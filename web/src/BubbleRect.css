@@ -1,0 +1,11 @@
+.bubbleRect {
+	color: #BDBDBD;
+	padding: 7px;
+	width: fit-content;
+}
+
+.bubbleRect.highlight {
+	color: #F2F2F2;
+	background-color: #19AFE5;
+	border-radius: 5px;
+}

@@ -1,0 +1,55 @@
+/**** page-wide style ****/
+.menteeDetails {
+	height: 200px;
+	width: 100%;
+	margin-top: 15px;
+	padding-bottom: 20px;
+	display: table;
+	font-family: Roboto, Helvetica, Arial;
+	font-size: 14px;
+}
+hr {
+	width: 100%;
+	border: none;
+	border-bottom: 1px solid #BDBDBD;
+}
+
+/**** page-specific tweaks to existing components ****/
+.bubbleList {
+	padding-bottom: 8px;
+}
+
+/**** detail sections ****/
+.sectionHeader {
+	color: #19AFE5;
+	padding-bottom: 5px;
+	width: 100%;
+	display: flex;
+	white-space: nowrap;
+	font-size: 18px;
+}
+
+.detailRow {
+	margin-left: 16px;
+	padding-bottom: 7px;
+	color: #4F4F4F;
+}
+
+.detailRow div {
+	display: inline-flex;
+}
+
+.detailKey {
+	width: 6em;
+	padding-right: 7px;
+	font-weight: bold;
+}
+
+#detailSectionList {
+	margin-left: 21px;
+	margin-right: 20px;
+}
+
+.sectionHeader > hr {
+	margin-left: 15px;
+}
