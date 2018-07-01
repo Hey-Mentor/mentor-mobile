@@ -24,6 +24,7 @@ class MenteeListView extends Component {
       fbToken: token,
       fbUserId: id
     });
+    console.log("FBUSERID: " + this.state.fbUserId);  
     this.getUserData(this.state.fbUserId);
   }
 
