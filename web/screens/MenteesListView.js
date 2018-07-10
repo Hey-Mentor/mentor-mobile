@@ -90,12 +90,18 @@ class MenteeListView extends Component {
     ),
 
     headerRight: (
-      <Icon
-        name="gear"
-        type="font-awesome"
-        size={40}
-        iconStyle={styles.rightImage}
-      />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('settings');
+        }}
+      >
+        <Icon
+          name="gear"
+          type="font-awesome"
+          size={40}
+          iconStyle={styles.rightImage}
+        />
+      </TouchableOpacity>
     )
   });
 

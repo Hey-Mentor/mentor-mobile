@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
+import { Button } from 'react-native-elements';
 import { Facebook } from 'expo';
 
 class HomeAuth extends Component {
@@ -15,6 +16,7 @@ class HomeAuth extends Component {
   };
 
   state = {
+    loading: false,
     facebookLoginFail: false,
     facebookLoginSuccess: false,
     fbToken: null,
@@ -38,9 +40,10 @@ class HomeAuth extends Component {
     }
   }
 
-  onButtonPress() {
+  onButtonPress = () => {
+    this.setState({ loading: true });
     this.facebookLogin();
-  }
+  };
 
   onAuthComplete = props => {
     //after user successfully logs in navigate to menteeListView page
@@ -85,7 +88,6 @@ class HomeAuth extends Component {
       console.log('Facebook ID: ' + responseJson.id);
       // Matt Bongiovi: 1842505195770400
 
-      this.onAuthComplete(this.props);
       await AsyncStorage.multiSet([
         ['fb_token', token],
         ['fb_id', responseJson.id]
@@ -93,8 +95,10 @@ class HomeAuth extends Component {
       this.setState({
         facebookLoginSuccess: true,
         fbToken: token,
-        fbUserId: responseJson.id
+        fbUserId: responseJson.id,
+        loading: false
       });
+      this.onAuthComplete(this.props);
     }
   };
 
@@ -107,11 +111,13 @@ class HomeAuth extends Component {
           source={require('../assets/heymentorsplash.png')}
         />
 
-        <TouchableOpacity
-          style={styles.buttonStyle}
-          onPress={this.onButtonPress.bind(this)}
-        >
-          <Text style={styles.textStyle}>Login with Facebook</Text>
+        <TouchableOpacity>
+          <Button
+            onPress={this.onButtonPress}
+            title="Login with Facebook"
+            backgroundColor="#007aff"
+            loading={this.state.loading}
+          />
         </TouchableOpacity>
       </View>
     );
