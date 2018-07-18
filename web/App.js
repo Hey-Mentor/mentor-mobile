@@ -6,6 +6,7 @@ import HomeAuth from './screens/HomeAuth';
 import NotificationsScreen from './screens/NotificationsScreen';
 import MenteeDetailsView from './screens/MenteeDetailsView';
 import MenteesListView from './screens/MenteesListView';
+import Settings from './screens/Settings';
 import registerForNotifications from './services/pushNotifications';
 
 export default class App extends React.Component {
@@ -14,7 +15,8 @@ export default class App extends React.Component {
       home: { screen: HomeAuth },
       notifications: { screen: NotificationsScreen },
       menteeListView: { screen: MenteesListView },
-      menteeDetails: { screen: MenteeDetailsView }
+      menteeDetails: { screen: MenteeDetailsView },
+      settings: { screen: Settings }
     });
     return <MainNavigator />;
   }

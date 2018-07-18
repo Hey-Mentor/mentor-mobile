@@ -7,6 +7,9 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
+
+import { Button } from 'react-native-elements';
+
 import { Facebook } from 'expo';
 
 class HomeAuth extends Component {
@@ -15,6 +18,7 @@ class HomeAuth extends Component {
   };
 
   state = {
+    loading: false,
     facebookLoginFail: false,
     facebookLoginSuccess: false,
     fbToken: null,
@@ -28,9 +32,11 @@ class HomeAuth extends Component {
     const token = await AsyncStorage.getItem('fb_token');
     const id = await AsyncStorage.getItem('fb_id');
 
+
     console.log("Component did mount");
     console.log(token);
     console.log(id);
+
 
     this.setState({
       fbToken: token,
@@ -47,15 +53,20 @@ class HomeAuth extends Component {
     }
   }
 
-  onButtonPress() {
+  onButtonPress = () => {
+    this.setState({ loading: true });
     this.facebookLogin();
-  }
+  };
 
   onAuthComplete = props => {
     //after user successfully logs in navigate to menteeListView page
     if (this.state.fbToken) {
       this.props.navigation.state = this.state;
-      this.props.navigation.navigate('menteeListView');
+
+      this.props.navigation.navigate('menteeListView', {
+        fbId: this.state.fbUserId
+      });
+
     }
   };
 
@@ -94,6 +105,16 @@ class HomeAuth extends Component {
       console.log('Facebook ID: ' + responseJson.id);
       // Matt Bongiovi: 1842505195770400
 
+      await AsyncStorage.multiSet([
+        ['fb_token', token],
+        ['fb_id', responseJson.id]
+      ]);
+      this.setState({
+        facebookLoginSuccess: true,
+        fbToken: token,
+        fbUserId: responseJson.id,
+        loading: false
+      });
       this.onAuthComplete(this.props);
       await AsyncStorage.multiSet([
         ['fb_token', token],
@@ -108,6 +129,7 @@ class HomeAuth extends Component {
   };
 
   render() {
+    console.log('render', this.state);
     return (
       <View style={styles.container}>
         <Image
@@ -115,11 +137,14 @@ class HomeAuth extends Component {
           source={require('../assets/heymentorsplash.png')}
         />
 
-        <TouchableOpacity
-          style={styles.buttonStyle}
-          onPress={this.onButtonPress.bind(this)}
-        >
-          <Text style={styles.textStyle}>Login with Facebook</Text>
+
+        <TouchableOpacity>
+          <Button
+            onPress={this.onButtonPress}
+            title="Login with Facebook"
+            backgroundColor="#007aff"
+            loading={this.state.loading}
+          />
         </TouchableOpacity>
       </View>
     );
