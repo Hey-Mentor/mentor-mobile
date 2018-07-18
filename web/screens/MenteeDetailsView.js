@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
 class MenteeDetailsView extends Component {
 
   static navigationOptions = ({ navigation }) => ({
+
     //title: {state.params.mentee.fname},
     headerTitleStyle,
     headerLeft: (
@@ -39,6 +40,7 @@ class MenteeDetailsView extends Component {
     ),
 
     headerRight: <Icon name="gear" type="font-awesome" size={40} iconStyle={styles.rightImage} />
+
   });
 
   render() {

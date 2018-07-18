@@ -7,7 +7,9 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
+
 import { Button } from 'react-native-elements';
+
 import { Facebook } from 'expo';
 
 class HomeAuth extends Component {
@@ -30,13 +32,24 @@ class HomeAuth extends Component {
     const token = await AsyncStorage.getItem('fb_token');
     const id = await AsyncStorage.getItem('fb_id');
 
+
+    console.log("Component did mount");
+    console.log(token);
+    console.log(id);
+
+
     this.setState({
       fbToken: token,
       fbUserId: id
     });
 
     if (this.state.fbToken !== null) {
-      this.props.navigation.navigate('menteeListView');
+      if (this.state.fbUserId !== null){
+        this.props.navigation.navigate('menteeListView');
+      }else{
+        // We have an access token, but not the fb user ID
+        this.initFacebookLogin();
+      }
     }
   }
 
@@ -49,9 +62,11 @@ class HomeAuth extends Component {
     //after user successfully logs in navigate to menteeListView page
     if (this.state.fbToken) {
       this.props.navigation.state = this.state;
+
       this.props.navigation.navigate('menteeListView', {
         fbId: this.state.fbUserId
       });
+
     }
   };
 
@@ -71,6 +86,8 @@ class HomeAuth extends Component {
     if (type === 'cancel') {
       this.setState({ facebookLoginFail: true });
     }
+
+    console.log("HEREHERE");
 
     if (type === 'success') {
       //API call to FB Graph API. Will add more code to fetch social media data
@@ -99,6 +116,15 @@ class HomeAuth extends Component {
         loading: false
       });
       this.onAuthComplete(this.props);
+      await AsyncStorage.multiSet([
+        ['fb_token', token],
+        ['fb_id', responseJson.id]
+      ]);
+      this.setState({
+        facebookLoginSuccess: true,
+        fbToken: token,
+        fbUserId: responseJson.id
+      });
     }
   };
 
@@ -110,6 +136,7 @@ class HomeAuth extends Component {
           style={styles.splashStyle}
           source={require('../assets/heymentorsplash.png')}
         />
+
 
         <TouchableOpacity>
           <Button

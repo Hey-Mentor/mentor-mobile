@@ -24,6 +24,7 @@ class MenteeListView extends Component {
       fbToken: token,
       fbUserId: id
     });
+
     this.getUserData(this.state.fbUserId);
   }
 
@@ -90,6 +91,7 @@ class MenteeListView extends Component {
     ),
 
     headerRight: (
+
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('settings');
@@ -102,6 +104,7 @@ class MenteeListView extends Component {
           iconStyle={styles.rightImage}
         />
       </TouchableOpacity>
+
     )
   });
 
