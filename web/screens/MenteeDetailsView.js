@@ -26,7 +26,8 @@ class MenteeDetailsView extends Component {
 
   static navigationOptions = ({ navigation }) => ({
     //title: {state.params.mentee.fname},  
-    headerTitleStyle
+    headerTitleStyle,
+    headerRight: <Icon name="gear" type="font-awesome" size={40} iconStyle={styles.rightImage} /> 
 
   });
 
