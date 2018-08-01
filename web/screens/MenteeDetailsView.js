@@ -27,6 +27,7 @@ class MenteeDetailsView extends Component {
   static navigationOptions = ({ navigation }) => ({
     //title: {state.params.mentee.fname},  
     headerTitleStyle
+
   });
 
   render() {
