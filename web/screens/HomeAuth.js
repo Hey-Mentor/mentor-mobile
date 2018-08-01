@@ -32,12 +32,6 @@ class HomeAuth extends Component {
     const token = await AsyncStorage.getItem('fb_token');
     const id = await AsyncStorage.getItem('fb_id');
 
-
-    console.log("Component did mount");
-    console.log(token);
-    console.log(id);
-
-
     this.setState({
       fbToken: token,
       fbUserId: id
@@ -66,7 +60,6 @@ class HomeAuth extends Component {
       this.props.navigation.navigate('menteeListView', {
         fbId: this.state.fbUserId
       });
-
     }
   };
 
@@ -129,7 +122,6 @@ class HomeAuth extends Component {
   };
 
   render() {
-    console.log('render', this.state);
     return (
       <View style={styles.container}>
         <Image
