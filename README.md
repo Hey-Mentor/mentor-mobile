@@ -28,9 +28,18 @@ In the directory you want to clone the repo to, run:
 4. From XDE, choose "Open Project", and locate the directory where you cloned the GitHub project to. Be sure to navigate to the `web` folder 
 
 
-5. Once the project is open, you can select "Share" from the top right corner. This will present a QR code which you can scan with the EXPO app on your device 
+5. If this is the first time executing the project, you will need to navigate to the web folder in a terminal and execute: 
+
+`npm install`
+
+
+6. Once the project is open, you can select "Share" from the top right corner. This will present a QR code which you can scan with the EXPO app on your device 
 
 
 ## Signing In 
 
 By default, only developers can access the signed-in portion of the application (behind the Facebook login). To get registered as a developer, please contact the project owner. 
+
+Additionally, if you wish to skip the login portion of the app, you can checkout the test branch: 
+
+`testSkipAuth`
