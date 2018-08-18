@@ -12,6 +12,8 @@ import { Button } from 'react-native-elements';
 
 import { Facebook } from 'expo';
 
+//import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+
 class HomeAuth extends Component {
   static navigationOptions = {
     header: null
@@ -32,6 +34,9 @@ class HomeAuth extends Component {
     const token = await AsyncStorage.getItem('fb_token');
     const id = await AsyncStorage.getItem('fb_id');
 
+    console.log("Token: -------------------------------------");
+    console.log(token);
+
     this.setState({
       fbToken: token,
       fbUserId: id
@@ -46,7 +51,7 @@ class HomeAuth extends Component {
       }
     }
   }
-
+  
   onButtonPress = () => {
     this.setState({ loading: true });
     this.facebookLogin();
