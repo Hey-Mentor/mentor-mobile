@@ -6,6 +6,8 @@ class Settings extends PureComponent {
   handleLogout = () => {
     AsyncStorage.removeItem('fb_token');
     AsyncStorage.removeItem('fb_id');
+    AsyncStorage.removeItem('g_token');
+    AsyncStorage.removeItem('g_id');
     this.props.navigation.navigate('home');
   };
 

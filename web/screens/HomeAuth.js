@@ -21,20 +21,29 @@ class HomeAuth extends Component {
     loading: false,
     facebookLoginFail: false,
     facebookLoginSuccess: false,
+    googleLoginFail: false,
+    googleLoginSuccess: false,
     fbToken: null,
-    fbUserId: null
+    fbUserId: null,
+    googleToken: null,
+    googleUserId: null
   };
 
   appId = '1650628351692070';
+  androidClientId = '12899066904-jqhmi5uhav530aerctj631gltumqvk8i.apps.googleusercontent.com';
   //appId = '413723559041218';
 
   async componentDidMount() {
-    const token = await AsyncStorage.getItem('fb_token');
-    const id = await AsyncStorage.getItem('fb_id');
+    const fbToken = await AsyncStorage.getItem('fb_token');
+    const fbId = await AsyncStorage.getItem('fb_id');
+    const gToken = await AsyncStorage.getItem('g_token');
+    const gId = await AsyncStorage.getItem('g_id');
 
     this.setState({
-      fbToken: token,
-      fbUserId: id
+      fbToken: fbToken,
+      fbUserId: fbId,
+      googleToken: gToken,
+      googleUserId: gId
     });
 
     if (this.state.fbToken !== null) {
@@ -45,12 +54,24 @@ class HomeAuth extends Component {
         this.initFacebookLogin();
       }
     }
+    if (this.state.googleToken !== null) {
+      if (this.state.googleUserId !== null) {
+        this.props.navigation.navigate('menteeListView');
+      } else {
+        this.initGoogleLogin();
+      }
+    }
   }
 
-  onButtonPress = () => {
+  onButtonPressFB = () => {
     this.setState({ loading: true });
     this.facebookLogin();
   };
+
+  onButtonPressGoogle = () => {
+    this.setState({ loading: true});
+    this.googleLogin();
+  }
 
   onAuthComplete = props => {
     //after user successfully logs in navigate to menteeListView page
@@ -61,12 +82,24 @@ class HomeAuth extends Component {
         fbId: this.state.fbUserId
       });
     }
+    if (this.state.googleToken) {
+      this.props.navigation.state = this.state;
+
+      this.props.navigation.navigate('menteeListView', {
+        gId: this.state.googleUserId
+      });
+    }
   };
 
   facebookLogin = async () => {
     const token = await AsyncStorage.getItem('fb_token');
     this.initFacebookLogin();
   };
+
+  googleLogin = async () => {
+    const token = await AsyncStorage.getItem('g_token');
+    this.initGoogleLogin();
+  }
 
   initFacebookLogin = async () => {
     const { type, token } = await Facebook.logInWithReadPermissionsAsync(
@@ -121,6 +154,51 @@ class HomeAuth extends Component {
     }
   };
 
+  initGoogleLogin = async () => {
+  try {
+      const result = await Expo.Google.logInAsync({
+        androidClientId: this.androidClientId,
+        //iosClientId: YOUR_CLIENT_ID_HERE,  <-- if you use iOS
+        scopes: ["profile", "email"]
+      })
+
+      if (result.type === "success") {
+        console.log('Printing token');
+        console.log(result.accessToken);
+        await AsyncStorage.multiSet([
+          ['g_token', result.accessToken],
+          ['g_id', result.user.id]
+        ]);
+        this.setState({
+          googleLoginSuccess: true,
+          googleToken: result.accessToken,
+          googleUserId: result.user.id,
+          loading: false
+        });
+        this.onAuthComplete(this.props);
+        await AsyncStorage.multiSet([
+          ['g_token', result.accessToken],
+          ['g_id', result.user.id]
+        ]);
+        this.setState({
+          googleLoginSuccess: true,
+          googleToken: result.accessToken,
+          googleUserId: result.user.ids
+        });
+          this.setState({
+            googleLoginSuccess: true,
+            googleUserId: result.user.id,
+            googleToken: result.accessToken
+          })
+      } else {
+        console.log("cancelled")
+      }
+
+    } catch (e) {
+      console.log("error", e)
+    }  
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -132,8 +210,16 @@ class HomeAuth extends Component {
 
         <TouchableOpacity>
           <Button
-            onPress={this.onButtonPress}
+            onPress={this.onButtonPressFB}
             title="Login with Facebook"
+            backgroundColor="#007aff"
+            loading={this.state.loading}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Button
+            onPress={this.onButtonPressGoogle}
+            title="Login with Google"
             backgroundColor="#007aff"
             loading={this.state.loading}
           />
@@ -163,7 +249,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
     alignSelf: 'center',
     width: 280,
-    height: 50
+    height: 50,
+    marginTop: 5
   },
   textStyle: {
     alignSelf: 'center',

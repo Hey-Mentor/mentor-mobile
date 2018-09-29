@@ -13,16 +13,22 @@ class MenteeListView extends Component {
   state = {
     menteeItem: [],
     fbToken: '',
-    fbUserId: ''
+    fbUserId: '',
+    googleToken: '',
+    googleUserId: ''
   };
 
   async componentDidMount() {
-    const token = await AsyncStorage.getItem('fb_token');
-    const id = await AsyncStorage.getItem('fb_id');
+    const fbToken = await AsyncStorage.getItem('fb_token');
+    const fbId = await AsyncStorage.getItem('fb_id');
+    const gToken = await AsyncStorage.getItem('g_token');
+    const gId = await AsyncStorage.getItem('g_id');
 
     this.setState({
-      fbToken: token,
-      fbUserId: id
+      fbToken: fbToken,
+      fbUserId: fbId,
+      googleToken: gToken,
+      googleUserId: gId
     });
 
     this.getUserData(this.state.fbUserId);
