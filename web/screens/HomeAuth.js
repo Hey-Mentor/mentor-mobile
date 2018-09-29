@@ -18,7 +18,8 @@ class HomeAuth extends Component {
   };
 
   state = {
-    loading: false,
+    fbloading: false,
+    gloading: false,
     facebookLoginFail: false,
     facebookLoginSuccess: false,
     googleLoginFail: false,
@@ -64,12 +65,12 @@ class HomeAuth extends Component {
   }
 
   onButtonPressFB = () => {
-    this.setState({ loading: true });
+    this.setState({ fbloading: true });
     this.facebookLogin();
   };
 
   onButtonPressGoogle = () => {
-    this.setState({ loading: true});
+    this.setState({ gloading: true});
     this.googleLogin();
   }
 
@@ -139,7 +140,7 @@ class HomeAuth extends Component {
         facebookLoginSuccess: true,
         fbToken: token,
         fbUserId: responseJson.id,
-        loading: false
+        fbloading: false
       });
       this.onAuthComplete(this.props);
       await AsyncStorage.multiSet([
@@ -173,7 +174,7 @@ class HomeAuth extends Component {
           googleLoginSuccess: true,
           googleToken: result.accessToken,
           googleUserId: result.user.id,
-          loading: false
+          gloading: false
         });
         this.onAuthComplete(this.props);
         await AsyncStorage.multiSet([
@@ -183,7 +184,7 @@ class HomeAuth extends Component {
         this.setState({
           googleLoginSuccess: true,
           googleToken: result.accessToken,
-          googleUserId: result.user.ids
+          googleUserId: result.user.id
         });
           this.setState({
             googleLoginSuccess: true,

@@ -31,7 +31,12 @@ class MenteeListView extends Component {
       googleUserId: gId
     });
 
-    this.getUserData(this.state.fbUserId);
+    if (fbToken !== null) {
+      this.getUserData(this.state.fbUserId);
+    }
+    if (gToken !== null) {
+      this.getUserData(this.state.googleUserId);
+    }
   }
 
   constructMenteeItemsFromResponse = async menteeIds => {
@@ -63,7 +68,7 @@ class MenteeListView extends Component {
   };
 
   getUserData = async userId => {
-    console.log('FacebookID: ' + userId);
+    console.log('AuthID: ' + userId);
 
     let response = await fetch(
       `https://heymentortestdeployment.herokuapp.com/mentors/${userId}`
