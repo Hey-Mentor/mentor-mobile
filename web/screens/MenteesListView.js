@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Icon } from 'react-native-elements';
 import MenteeList from '../components/menteeList/MenteeList';
+import BadgeIcon from '../components/common/BadgeIcon';
 import {
   ScrollView,
   StyleSheet,
@@ -81,17 +82,18 @@ class MenteeListView extends Component {
           navigation.navigate('notifications');
         }}
       >
-        <Icon
-          name="ios-notifications"
-          type="ionicon"
-          size={40}
-          iconStyle={styles.leftImage}
-        />
+        <BadgeIcon count={3}>
+          <Icon
+            name="ios-notifications"
+            type="ionicon"
+            size={35}
+            iconStyle={styles.leftImage}
+          />
+        </BadgeIcon>
       </TouchableOpacity>
     ),
 
     headerRight: (
-
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('settings');
