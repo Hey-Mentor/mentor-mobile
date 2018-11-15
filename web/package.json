@@ -7,7 +7,7 @@
     "expo": "^27.0.1",
     "prettier": "^1.12.1",
     "react": "16.3.1",
-    "react-native": "^0.57.1",
+    "react-native": "^0.57.5",
     "react-native-elements": "^0.19.1",
     "react-navigation": "^1.5.11",
     "sendbird": "^3.0.81"
