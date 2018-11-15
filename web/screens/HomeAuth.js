@@ -43,9 +43,9 @@ class HomeAuth extends Component {
     });
 
     if (this.state.fbToken !== null) {
-      if (this.state.fbUserId !== null){
+      if (this.state.fbUserId !== null) {
         this.props.navigation.navigate('menteeListView');
-      }else{
+      } else {
         // We have an access token, but not the fb user ID
         this.initFacebookLogin();
       }
@@ -133,7 +133,6 @@ class HomeAuth extends Component {
           style={styles.splashStyle}
           source={require('../assets/heymentorsplash.png')}
         />
-
 
         <TouchableOpacity>
           <Button
