@@ -49,18 +49,35 @@ class HomeAuth extends Component {
     if (this.state.hmToken !== null) {
       console.log("Already have HM token");
       // NOTE: We can check here for hmToken.user_type to determine if we want to display the mentor or mentee view 
-      this.props.navigation.navigate('menteeListView');
+      var headerTitle = "Mentors";
+      console.log("HM Token User Type:");
+      var userType = JSON.parse(this.state.hmToken).user_type;
+      if (userType == "mentor"){
+        headerTitle = "Mentees";
+      }
+      this.props.navigation.navigate('menteeListView', {headerTitle: headerTitle});
     }else{
       console.log("Getting HM token");
       if(this.state.fbToken){
         console.log("Already have FB token");
         var hmDone = await this.getHeyMentorToken(this.state.fbToken, "facebook");
-        this.props.navigation.navigate('menteeListView');
+        var userType = JSON.parse(hmDone).user_type;
+        if (userType == "mentor"){
+          headerTitle = "Mentees";
+        }
+
+        this.props.navigation.navigate('menteeListView', {headerTitle: headerTitle});
       }else{
         console.log("Getting FB token");
         var fb_token = await this.initFacebookLogin();
         var hmDone = await this.getHeyMentorToken(this.state.fbToken, "facebook");
-        this.props.navigation.navigate('menteeListView');
+        var headerTitle = "Mentors";
+        var userType = JSON.parse(hmDone).user_type;
+        if (userType == "mentor"){
+          headerTitle = "Mentees";
+        }
+
+        this.props.navigation.navigate('menteeListView', {headerTitle: headerTitle});
       }      
     }
   }
@@ -72,13 +89,13 @@ class HomeAuth extends Component {
 
   onAuthComplete = props => {
     //after user successfully logs in navigate to menteeListView page
-    if (this.state.fbToken) {
+/*    if (this.state.fbToken) {
       this.props.navigation.state = this.state;
 
       this.props.navigation.navigate('menteeListView', {
         fbId: this.state.fbUserId
       });
-    }
+    }*/
   };
 
   getHeyMentorToken = async (token, authType) => {

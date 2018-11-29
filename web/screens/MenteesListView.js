@@ -90,9 +90,10 @@ class MenteeListView extends Component {
   };
 
   static navigationOptions = ({ navigation }) => ({
-    title: 'Mentees',
+    title: `${navigation.state.params.headerTitle}`,
     headerTitleStyle,
-    headerLeft: (
+    headerLeft: null
+    /*headerLeft: (
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('notifications');
@@ -123,7 +124,7 @@ class MenteeListView extends Component {
         />
       </TouchableOpacity>
 
-    )
+    )*/
   });
 
   render() {

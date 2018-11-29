@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, AsyncStorage } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, AsyncStorage, TouchableOpacity, Image } from 'react-native';
 import SendBird from 'sendbird';
 import pify from 'pify';
 import { GiftedChat } from 'react-native-gifted-chat';
@@ -17,6 +17,13 @@ const headerTitleStyle = {
 };
 
 const styles = StyleSheet.create({
+  headerImage: {
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    margin: 10,
+    marginRight: 20
+  }
 });
 
 class ChatScreen extends Component {
@@ -24,7 +31,15 @@ class ChatScreen extends Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: `${navigation.state.params.mentee.person.fname}`,  
-    headerTitleStyle
+    headerTitleStyle,
+    headerRight: (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('menteeDetails', {mentee: navigation.state.params.mentee})}
+      >
+        <Image style={styles.headerImage} source={require('../assets/img_avatar.png')} />
+      </TouchableOpacity>
+
+    )
   });
 
   async componentDidMount () {
