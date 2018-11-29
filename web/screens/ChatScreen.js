@@ -17,21 +17,13 @@ const headerTitleStyle = {
 };
 
 const styles = StyleSheet.create({
-  leftImage: {
-    marginLeft: 20,
-    marginBottom: 5
-  },
-  rightImage: {
-    marginRight: 10,
-    marginBottom: 5
-  }
 });
 
 class ChatScreen extends Component {
   state = { backendBase: "http://10.91.28.70:3002", sendBirdApp: null };
 
   static navigationOptions = ({ navigation }) => ({
-    //title: {state.params.mentee.fname},  
+    title: `${navigation.state.params.mentee.person.fname}`,  
     headerTitleStyle
   });
 

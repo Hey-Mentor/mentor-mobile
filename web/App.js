@@ -12,19 +12,13 @@ import ChatScreen from './screens/ChatScreen'
 
 export default class App extends React.Component {
   render() {
-    const userName = 'Matt';
     const MainNavigator = StackNavigator({
       home: { screen: HomeAuth },
       notifications: { screen: NotificationsScreen },
       menteeListView: { screen: MenteesListView },
       menteeDetails: { screen: MenteeDetailsView },
       settings: { screen: Settings },
-      chat: {
-        screen: ChatScreen,
-        navigationOptions: ({ navigation }) => ({
-          title: `💬 ${userName}` // TODO: Specify recipient name
-        })
-      },
+      chat: { screen: ChatScreen },
     });
     return <MainNavigator />;
   }
