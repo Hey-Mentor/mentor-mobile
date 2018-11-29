@@ -18,10 +18,10 @@ class MenteeListSection extends Component {
         </View>
 
         <View style={styles.buttonStyle}>
-          <Button onPress={() => this.props.navigation.navigate('menteeDetails', {mentee: this.props.item.fullMentee})}>
+          <Button onPress={() => this.props.navigation.navigate('menteeDetails', {mentee: this.props.item.fullContact})}>
             View Profile
           </Button>
-          <Button onPress={() => this.props.navigation.navigate('menteeDetails', {mentee: this.props.item.fullMentee})}>Message</Button>
+          <Button onPress={() => this.props.navigation.navigate('chat', {mentee: this.props.item.fullContact})}>Message</Button>
         </View>
       </ScrollView>
     );

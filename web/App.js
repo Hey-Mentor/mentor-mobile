@@ -22,8 +22,7 @@ export default class App extends React.Component {
       chat: {
         screen: ChatScreen,
         navigationOptions: ({ navigation }) => ({
-          title: `💬 ${userName}`, // TODO: Specify recipient name
-          headerTitleStyle: headerTitleStyle
+          title: `💬 ${userName}` // TODO: Specify recipient name
         })
       },
     });

@@ -1,41 +1,85 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import SendBird from 'sendbird';
 import pify from 'pify';
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat } from 'react-native-gifted-chat';
+import base64 from 'react-native-base64';
 
 // TODO: create channel elsewhere (on user create?)
 // this.channel = await pify(sb.GroupChannel.createChannelWithUserIds)(['ace'], false);
 
+const headerTitleStyle = {
+  flex: 1,
+  textAlign: 'center',
+  color: '#000000',
+  fontSize: 24,
+  fontWeight: 'bold'
+};
+
+const styles = StyleSheet.create({
+  leftImage: {
+    marginLeft: 20,
+    marginBottom: 5
+  },
+  rightImage: {
+    marginRight: 10,
+    marginBottom: 5
+  }
+});
+
 class ChatScreen extends Component {
+  state = { backendBase: "http://10.91.28.70:3002", sendBirdApp: null };
+
+  static navigationOptions = ({ navigation }) => ({
+    //title: {state.params.mentee.fname},  
+    headerTitleStyle
+  });
+
   async componentDidMount () {
+
+    console.log("Chat screen");
+
     this.setState({messages: []});
 
-    const {navigation} = this.props;
+    const { state, navigate } = this.props.navigation;
 
-    const sb = new SendBird({appId: 'YOUR_APP_ID' })
-    sb.setErrorFirstCallback(true);
+    const token = await AsyncStorage.getItem('hm_token');
+    console.log("HM Token:");
+    console.log(token);
 
-    // TODO: specify these params in the "navigate" function
-    this.sb = {
-      userId: navigation.getParam('sbUser') || 'ace',
-      url: navigation.getParam('sbUrl') || 'sendbird_group_channel_68129982_a41c6a73810a7e53dde6285f6e486905c9bd77f5'
+    let encoded = base64.encode(token);
+
+    this.setState({
+      hmToken: token,
+      hmEncoded: encoded
+    });
+
+    var channelData = await this.getSendBirdInfo(encoded, state.params.mentee.user_id);
+
+    this.sendBirdApp = new SendBird({appId: 'F6430EEC-AE60-413E-8A45-28E4837FDDB4' })
+    this.sendBirdApp.setErrorFirstCallback(true);
+
+    console.log("SendBird Channel on main:");
+    console.log(channelData.channel_url);
+
+    console.log("User id");
+    console.log(JSON.parse(token).user_id);
+
+    this.sbData = {
+      userId: JSON.parse(token).user_id,
+      url: channelData.channel_url
     }
 
     // TODO error handling
     await new Promise(resolve => {
-      sb.connect(this.sb.userId, resolve);
+      this.sendBirdApp.connect(this.sbData.userId, resolve);
     });
 
-    // TODO: get channel URL (from DB?)
-    const url = 
-    //const url = 'sendbird_open_channel_39768_d7f170bf85607da04df4add2c574af3557543ab3';
-    //const url = '';
-    this.channel = await pify(sb.GroupChannel.getChannel)(this.sb.url);
+    this.channel = await pify(this.sendBirdApp.GroupChannel.getChannel)(this.sbData.url);
 
-    const channelHandler = new sb.ChannelHandler();
-    channelHandler.onMessageReceived = onReceive;
-    sb.addChannelHandler('ChatScreen');
+    const channelHandler = new this.sendBirdApp.ChannelHandler();
+    channelHandler.onMessageReceived = this.onReceive;
+    this.sendBirdApp.addChannelHandler('ChatScreen');
 
     // Get previous messages
     const query = this.channel.createPreviousMessageListQuery();
@@ -45,6 +89,8 @@ class ChatScreen extends Component {
       })
     })
 
+    console.log("Map state");
+
     // Map them to GiftedChat format
     this.setState({
       messages: messages.map(m => {
@@ -53,16 +99,37 @@ class ChatScreen extends Component {
           text: m.message,
           createdAt: m.createdAt,
           user: {
-            avatar: m.sender.profileUrl,
             _id: m.sender.userId
           }
         }
       })
     });
+
+    this.setState({ sendBirdApp: sendBirdApp });
+
+    console.log("Done mapping state");
   };
 
+  getSendBirdInfo = async(token, userId) => {
+    console.log("Getting sendbird channel details");
+    console.log(token);
+    console.log(userId);
+
+    let response = await fetch(
+      `${this.state.backendBase}/messages/${userId}/${token}`
+    );
+    
+    let responseJson = await response.json();
+
+    console.log("Printing getSendbird results");
+    console.log(responseJson);
+
+    return responseJson;
+  };
+
+
   async componentWillUnmount() {
-    sb.RemoveChannelHandler('ChatScreen');
+    this.state.sendBirdApp.RemoveChannelHandler('ChatScreen');
   }
 
   async onSend(messages = []) {
@@ -78,9 +145,11 @@ class ChatScreen extends Component {
   }
 
   async onReceive(channel, messages) {
+    console.log("onReceive");
     this.setState(previousState => ({
       messages: previousState.messages.concat(messages),
     }))
+    console.log("onReceive done");
   }
 
   render() {
@@ -93,11 +162,11 @@ class ChatScreen extends Component {
 
     return <View style={[styles.gcView]}>
       <GiftedChat
-          inverted={true}
+          inverted={false}
           messages={this.state && this.state.messages}
           onSend={messages => this.onSend(messages)}
           onReceive={messages => this.onReceive(messages)}
-          user={{_id: this.sb && this.sb.userId}} />
+          user={{_id: this.sbData && this.sbData.userId}} />
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
     </View>;
   }
