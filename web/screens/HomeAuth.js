@@ -98,6 +98,7 @@ class HomeAuth extends Component {
     if(responseJson && !responseJson.error){
       console.log("Setting state");
       this.setState({ hmToken: responseJson });
+      await AsyncStorage.setItem('hm_token', JSON.stringify(responseJson));
       console.log("Done setting state");
     }else{
       console.log("Error authenticating with fed token");

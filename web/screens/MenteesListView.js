@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Icon } from 'react-native-elements';
 import MenteeList from '../components/menteeList/MenteeList';
 import BadgeIcon from '../components/common/BadgeIcon';
+import base64 from 'react-native-base64';
 import {
   ScrollView,
   StyleSheet,
@@ -12,92 +13,80 @@ import {
 
 class MenteeListView extends Component {
   state = {
-    menteeItem: [],
-    fbToken: '',
-    fbUserId: '',
-    hmToken: {},
+    contactItem: [],
+    hmToken: '',
     backendBase: "http://10.91.28.70:3002"
   };
 
   //this.backendBase = "https://heymentortestdeployment.herokuapp.com";
 
   async componentDidMount() {
-    const token = await AsyncStorage.getItem('fb_token');
-    const id = await AsyncStorage.getItem('fb_id');
+    const token = await AsyncStorage.getItem('hm_token');
+    console.log("HM Token:");
+    console.log(token);
+
+    let encoded = base64.encode(token);
 
     this.setState({
-      fbToken: token,
-      fbUserId: id
+      hmToken: token,
+      hmEncoded: encoded
     });
 
     //this.getUserData(this.state.fbUserId, this.state.fbToken);
-    this.getHeyMentorToken(this.state.fbToken, "facebook");
+    if(this.state.hmToken){
+      var profile = await this.getMyProfile(this.state.hmEncoded);
+      this.constructContactItemsFromResponse(profile[0].contacts, encoded);
+    }else{
+      console.log("Error, we don't have a HeyMentor token");
+    }
   }
 
-  constructMenteeItemsFromResponse = async (menteeIds, token) => {
-    menteeItems = [];
+  getMyProfile = async (token) => {
+    console.log("Getting profile info");
 
-    for (let mentee of menteeIds) {
+    let response = await fetch(
+      `${this.state.backendBase}/me/${token}`
+    );
+    
+    let responseJson = await response.json();
+
+    console.log("Printing getMyProfile results");
+    console.log(responseJson);
+
+    return responseJson;
+  };
+
+  constructContactItemsFromResponse = async (contactIds, token) => {
+    console.log("Getting contacts");
+
+    contactItems = [];
+
+    for (let contact of contactIds) {
+
+      console.log("Contact ID");
+      console.log(contact);
+
       let response = await fetch(
-        `${this.state.backendBase}/mentees/${mentee}/${token}`
+        `${this.state.backendBase}/profile/${contact}/${token}`
       );
       let responseJson = await response.json();
 
       console.log(responseJson);
 
-      fullName =
-        responseJson[0].person.fname + ' ' + responseJson[0].person.lname;
-      menteeItems.push({
+      fullName = responseJson[0].person.fname + ' ' + responseJson[0].person.lname;
+      contactItems.push({
         name: fullName,
         school: responseJson[0].school.name,
         grade: responseJson[0].school.grade,
         id: responseJson[0].mentee_id,
-        fullMentee: responseJson[0]
+        fullContact: responseJson[0]
       });
     }
 
-    this.setState({ menteeItem: menteeItems });
+    this.setState({ contactItem: contactItems });
 
-    console.log('mentee items');
-    console.log(menteeItems);
-  };
-
-  getHeyMentorToken = async (token, authType) => {
-
-    console.log("Making GetToken request");
-    console.log(`${this.state.backendBase}/token/${token}/${authType}`);
-
-    let response = await fetch(
-      `${this.state.backendBase}/token/${token}/${authType}`
-    );
-    let responseJson = await response.json();
-
-    console.log('Printing responsejson from GetToken');
-    console.log(responseJson);
-    console.log("done printing");
-
-    if(responseJson && !responseJson.error){
-      this.setState({ hmToken: responseJson });  
-    }else{
-      console.log("Error authenticating with fed token");
-    }   
-  };
-
-
-  getUserData = async (userId, token) => {
-    console.log('FacebookID: ' + userId);
-
-    let response = await fetch(
-      `${this.state.backendBase}/mentors/${userId}/${token}`
-    );
-    let responseJson = await response.json();
-
-    console.log('Printing responsejson');
-    console.log(responseJson);
-
-    console.log('Mentees:');
-    console.log(responseJson[0].mentee_ids);
-    this.constructMenteeItemsFromResponse(responseJson[0].mentee_ids, token);
+    console.log('contact items');
+    console.log(contactItems);
   };
 
   static navigationOptions = ({ navigation }) => ({
@@ -141,7 +130,7 @@ class MenteeListView extends Component {
     return (
       <ScrollView>
         <MenteeList
-          menteeItem={this.state.menteeItem}
+          menteeItem={this.state.contactItem}
           navigation={this.props.navigation}
         />
       </ScrollView>
