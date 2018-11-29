@@ -14,8 +14,12 @@ class MenteeListView extends Component {
   state = {
     menteeItem: [],
     fbToken: '',
-    fbUserId: ''
+    fbUserId: '',
+    hmToken: {},
+    backendBase: "http://10.91.28.70:3002"
   };
+
+  //this.backendBase = "https://heymentortestdeployment.herokuapp.com";
 
   async componentDidMount() {
     const token = await AsyncStorage.getItem('fb_token');
@@ -26,7 +30,8 @@ class MenteeListView extends Component {
       fbUserId: id
     });
 
-    this.getUserData(this.state.fbUserId, this.state.fbToken);
+    //this.getUserData(this.state.fbUserId, this.state.fbToken);
+    this.getHeyMentorToken(this.state.fbToken, "facebook");
   }
 
   constructMenteeItemsFromResponse = async (menteeIds, token) => {
@@ -34,7 +39,7 @@ class MenteeListView extends Component {
 
     for (let mentee of menteeIds) {
       let response = await fetch(
-        `https://heymentortestdeployment.herokuapp.com/mentees/${mentee}/${token}`
+        `${this.state.backendBase}/mentees/${mentee}/${token}`
       );
       let responseJson = await response.json();
 
@@ -57,11 +62,33 @@ class MenteeListView extends Component {
     console.log(menteeItems);
   };
 
+  getHeyMentorToken = async (token, authType) => {
+
+    console.log("Making GetToken request");
+    console.log(`${this.state.backendBase}/token/${token}/${authType}`);
+
+    let response = await fetch(
+      `${this.state.backendBase}/token/${token}/${authType}`
+    );
+    let responseJson = await response.json();
+
+    console.log('Printing responsejson from GetToken');
+    console.log(responseJson);
+    console.log("done printing");
+
+    if(responseJson && !responseJson.error){
+      this.setState({ hmToken: responseJson });  
+    }else{
+      console.log("Error authenticating with fed token");
+    }   
+  };
+
+
   getUserData = async (userId, token) => {
     console.log('FacebookID: ' + userId);
 
     let response = await fetch(
-      `https://heymentortestdeployment.herokuapp.com/mentors/${userId}/${token}`
+      `${this.state.backendBase}/mentors/${userId}/${token}`
     );
     let responseJson = await response.json();
 

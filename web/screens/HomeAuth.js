@@ -24,7 +24,9 @@ class HomeAuth extends Component {
     facebookLoginFail: false,
     facebookLoginSuccess: false,
     fbToken: null,
-    fbUserId: null
+    fbUserId: null,
+    hmToken: {},
+    backendBase: "http://10.91.28.70:3002"
   };
 
   appId = '1650628351692070';
@@ -33,22 +35,33 @@ class HomeAuth extends Component {
   async componentDidMount() {
     const token = await AsyncStorage.getItem('fb_token');
     const id = await AsyncStorage.getItem('fb_id');
+    const hmToken = await AsyncStorage.getItem('hm_token');
 
     console.log("Token: -------------------------------------");
     console.log(token);
 
     this.setState({
       fbToken: token,
-      fbUserId: id
+      fbUserId: id,
+      hmToken: hmToken
     });
 
-    if (this.state.fbToken !== null) {
-      if (this.state.fbUserId !== null) {
+    if (this.state.hmToken !== null) {
+      console.log("Already have HM token");
+      // NOTE: We can check here for hmToken.user_type to determine if we want to display the mentor or mentee view 
+      this.props.navigation.navigate('menteeListView');
+    }else{
+      console.log("Getting HM token");
+      if(this.state.fbToken){
+        console.log("Already have FB token");
+        var hmDone = await this.getHeyMentorToken(this.state.fbToken, "facebook");
         this.props.navigation.navigate('menteeListView');
-      } else {
-        // We have an access token, but not the fb user ID
-        this.initFacebookLogin();
-      }
+      }else{
+        console.log("Getting FB token");
+        var fb_token = await this.initFacebookLogin();
+        var hmDone = await this.getHeyMentorToken(this.state.fbToken, "facebook");
+        this.props.navigation.navigate('menteeListView');
+      }      
     }
   }
   
@@ -68,6 +81,29 @@ class HomeAuth extends Component {
     }
   };
 
+  getHeyMentorToken = async (token, authType) => {
+
+    console.log("Making GetToken request");
+    console.log(`${this.state.backendBase}/token/${token}/${authType}`);
+
+    let response = await fetch(
+      `${this.state.backendBase}/token/${token}/${authType}`
+    );
+    let responseJson = await response.json();
+
+    console.log('Printing responsejson from GetToken');
+    console.log(responseJson);
+    console.log("done printing");
+
+    if(responseJson && !responseJson.error){
+      console.log("Setting state");
+      this.setState({ hmToken: responseJson });
+      console.log("Done setting state");
+    }else{
+      console.log("Error authenticating with fed token");
+    }   
+  };
+
   facebookLogin = async () => {
     const token = await AsyncStorage.getItem('fb_token');
     this.initFacebookLogin();
@@ -84,8 +120,6 @@ class HomeAuth extends Component {
     if (type === 'cancel') {
       this.setState({ facebookLoginFail: true });
     }
-
-    console.log("HEREHERE");
 
     if (type === 'success') {
       //API call to FB Graph API. Will add more code to fetch social media data
@@ -124,6 +158,8 @@ class HomeAuth extends Component {
         fbUserId: responseJson.id
       });
     }
+
+    return token;
   };
 
   render() {
