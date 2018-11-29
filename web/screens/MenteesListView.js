@@ -26,15 +26,15 @@ class MenteeListView extends Component {
       fbUserId: id
     });
 
-    this.getUserData(this.state.fbUserId);
+    this.getUserData(this.state.fbUserId, this.state.fbToken);
   }
 
-  constructMenteeItemsFromResponse = async menteeIds => {
+  constructMenteeItemsFromResponse = async (menteeIds, token) => {
     menteeItems = [];
 
     for (let mentee of menteeIds) {
       let response = await fetch(
-        `https://heymentortestdeployment.herokuapp.com/mentees/${mentee}`
+        `https://heymentortestdeployment.herokuapp.com/mentees/${mentee}/${token}`
       );
       let responseJson = await response.json();
 
@@ -57,11 +57,11 @@ class MenteeListView extends Component {
     console.log(menteeItems);
   };
 
-  getUserData = async userId => {
+  getUserData = async (userId, token) => {
     console.log('FacebookID: ' + userId);
 
     let response = await fetch(
-      `https://heymentortestdeployment.herokuapp.com/mentors/${userId}`
+      `https://heymentortestdeployment.herokuapp.com/mentors/${userId}/${token}`
     );
     let responseJson = await response.json();
 
@@ -70,7 +70,7 @@ class MenteeListView extends Component {
 
     console.log('Mentees:');
     console.log(responseJson[0].mentee_ids);
-    this.constructMenteeItemsFromResponse(responseJson[0].mentee_ids);
+    this.constructMenteeItemsFromResponse(responseJson[0].mentee_ids, token);
   };
 
   static navigationOptions = ({ navigation }) => ({

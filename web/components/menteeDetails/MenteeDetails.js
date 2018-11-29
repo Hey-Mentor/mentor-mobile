@@ -32,7 +32,7 @@ class MenteeDetails extends Component {
 
     return (
       <ScrollView style={styles.scrollView}>
-        <DetailsHeader image="https://www.w3schools.com/howto/img_avatar.png" delay="0 days" />
+        <DetailsHeader image="https://www.w3schools.com/howto/img_avatar.png" delay="0 days" mentee={mentee} />
         <View id="detailSectionList" style={styles.detailSectionList}>
           <DetailSectionHeader title="Demographics" />
           <DetailRow name="Gender" value={mentee.demo.gender} />
@@ -47,8 +47,8 @@ class MenteeDetails extends Component {
 
           <DetailSectionHeader title="Bio" />
           <DetailRow wide name="Interests" value={mentee.gen_interest} />
-          <DetailRow wide name="Activities" value={mentee.spec_interest} />
-          <DetailRow wide name="Sports" value={mentee.sports} />
+          <DetailRow wide name="Activities" value={mentee.spec_interest.join(", ")} />
+          <DetailRow wide name="Sports" value={mentee.sports.join(", ")} />
   
           <DetailSectionHeader title="Areas of support" />
           <BubbleList items={supportAreas} />

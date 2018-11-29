@@ -4,6 +4,8 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 
 class DetailsHeader extends Component {
   render() {
+    const mentee = this.props.mentee;
+
     const styles = StyleSheet.create({
       detailsHeader: {
         flexDirection: 'row',
@@ -11,6 +13,12 @@ class DetailsHeader extends Component {
       },
       headerSection: {
         flex: 1
+      },
+      headerText:{
+        textAlign: 'center',
+        flex: 2,
+        flexWrap: 'wrap',
+        fontSize: 30 
       },
       messageText: {
         textAlign: 'center',
@@ -44,7 +52,7 @@ class DetailsHeader extends Component {
           <Image style={styles.headerImage} source={{ uri: this.props.image }} />
         </View>
         <View id="headerInfo" style={[styles.headerSection]}>
-          <BubbleRect name="Message" highlight style={[styles.messageBtn, styles.messageColumn]} />
+          <Text style={[styles.headerText]}>{mentee.person.fname}</Text>
           <Text style={[styles.messageText, styles.messageColumn]}>
             <Text style={styles.messageDelay}>{this.props.delay}</Text> since last message
           </Text>
