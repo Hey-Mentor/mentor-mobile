@@ -102,7 +102,7 @@ class ChatScreen extends Component {
     this.setState({
       messages: messages.map(m => {
         return {
-          _id: m.messageId,
+          _id: m.messageId.toString(),
           text: m.message,
           createdAt: m.createdAt,
           user: {
