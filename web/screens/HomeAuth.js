@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
-import Config from 'react-native-config';
+//import Config from 'react-native-config';
 import { Button } from 'react-native-elements';
 
 import { Facebook } from 'expo';
@@ -18,7 +18,7 @@ class HomeAuth extends Component {
   static navigationOptions = {
     header: null
   };
-
+  
   state = {
     loading: false,
     facebookLoginFail: false,
@@ -35,6 +35,9 @@ class HomeAuth extends Component {
     const token = await AsyncStorage.getItem('fb_token');
     const id = await AsyncStorage.getItem('fb_id');
     const hmToken = await AsyncStorage.getItem('hm_token');
+
+    const API_URL = "http://10.91.28.70:8081";
+    const FACEBOOK_APP_ID = "1650628351692070";
 
     console.log("Token: -------------------------------------");
     console.log(token);
@@ -99,11 +102,14 @@ class HomeAuth extends Component {
 
   getHeyMentorToken = async (token, authType) => {
 
+    const API_URL = "http://10.91.28.70:8081";
+    const FACEBOOK_APP_ID = "1650628351692070";
+
     console.log("Making GetToken request");
-    console.log(`${Config.API_URL}/register/${authType}?access_token=${token}`);
+    console.log(`${API_URL}/register/${authType}?access_token=${token}`);
 
     let response = await fetch(
-      `${Config.API_URL}/register/${authType}?access_token=${token}`,
+      `${API_URL}/register/${authType}?access_token=${token}`,
       {method: 'post'}
     );
     let responseJson = await response.json();
@@ -128,8 +134,11 @@ class HomeAuth extends Component {
   };
 
   initFacebookLogin = async () => {
+    const API_URL = "http://10.91.28.70:8081";
+    const FACEBOOK_APP_ID = "1650628351692070";
+
     const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      Config.FACEBOOK_APP_ID,
+      FACEBOOK_APP_ID,
       {
         permissions: ['public_profile', 'email', 'user_friends']
       }

@@ -32,7 +32,7 @@ class MenteeListView extends Component {
 
     //this.getUserData(this.state.fbUserId, this.state.fbToken);
     if(this.state.hmToken){
-      var profile = await this.getMyProfile(this.state.hmEncoded);
+      var profile = await this.getMyProfile(JSON.parse(this.state.hmToken));
       this.constructContactItemsFromResponse(profile[0].contacts, encoded);
     }else{
       console.log("Error, we don't have a HeyMentor token");
@@ -40,10 +40,18 @@ class MenteeListView extends Component {
   }
 
   getMyProfile = async (token) => {
+    const API_URL = "http://10.91.28.70:8081";
+    const FACEBOOK_APP_ID = "1650628351692070";
+
     console.log("Getting profile info");
+    console.log(token);
+    console.log(token.user_id); 
+    console.log(token.api_key);
+
+    console.log(`${API_URL}/profile/${token.user_id}/${token.api_key}`);
 
     let response = await fetch(
-      `${Config.API_URL}/me/${token}`
+      `${API_URL}/profile/${token.user_id}/${token.api_key}`
     );
     
     let responseJson = await response.json();
@@ -57,6 +65,9 @@ class MenteeListView extends Component {
   constructContactItemsFromResponse = async (contactIds, token) => {
     console.log("Getting contacts");
 
+    const API_URL = "http://10.91.28.70:8081";
+    const FACEBOOK_APP_ID = "1650628351692070";
+
     contactItems = [];
 
     for (let contact of contactIds) {
@@ -65,7 +76,7 @@ class MenteeListView extends Component {
       console.log(contact);
 
       let response = await fetch(
-        `${Config.API_URL}/profile/${contact}/${token}`
+        `${API_URL}/profile/${contact}/${token}`
       );
       let responseJson = await response.json();
 
