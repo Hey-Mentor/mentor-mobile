@@ -4,6 +4,7 @@ import SendBird from 'sendbird';
 import pify from 'pify';
 import { GiftedChat } from 'react-native-gifted-chat';
 import base64 from 'react-native-base64';
+import Config from 'react-native-config';
 
 // TODO: create channel elsewhere (on user create?)
 // this.channel = await pify(sb.GroupChannel.createChannelWithUserIds)(['ace'], false);
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
 });
 
 class ChatScreen extends Component {
-  state = { backendBase: "http://10.91.28.70:3002", sendBirdApp: null };
+  state = { sendBirdApp: null };
 
   static navigationOptions = ({ navigation }) => ({
     title: `${navigation.state.params.mentee.person.fname}`,  
@@ -63,7 +64,7 @@ class ChatScreen extends Component {
 
     var channelData = await this.getSendBirdInfo(encoded, state.params.mentee.user_id);
 
-    this.sendBirdApp = new SendBird({appId: 'F6430EEC-AE60-413E-8A45-28E4837FDDB4' })
+    this.sendBirdApp = new SendBird({appId: Config.SENDBIRD_APP_ID })
     this.sendBirdApp.setErrorFirstCallback(true);
 
     console.log("SendBird Channel on main:");
@@ -123,7 +124,7 @@ class ChatScreen extends Component {
     console.log(userId);
 
     let response = await fetch(
-      `${this.state.backendBase}/messages/${userId}/${token}`
+      `${Config.API_URL}/messages/${userId}/${token}`
     );
     
     let responseJson = await response.json();

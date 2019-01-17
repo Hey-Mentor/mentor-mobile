@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
-
+import Config from 'react-native-config';
 import { Button } from 'react-native-elements';
 
 import { Facebook } from 'expo';
@@ -25,14 +25,13 @@ class HomeAuth extends Component {
     facebookLoginSuccess: false,
     fbToken: null,
     fbUserId: null,
-    hmToken: {},
-    backendBase: "http://10.91.28.70:3002"
+    hmToken: {}
   };
 
-  appId = '1650628351692070';
-  //appId = '413723559041218';
-
   async componentDidMount() {
+    
+    //AsyncStorage.clear();
+
     const token = await AsyncStorage.getItem('fb_token');
     const id = await AsyncStorage.getItem('fb_id');
     const hmToken = await AsyncStorage.getItem('hm_token');
@@ -101,10 +100,11 @@ class HomeAuth extends Component {
   getHeyMentorToken = async (token, authType) => {
 
     console.log("Making GetToken request");
-    console.log(`${this.state.backendBase}/token/${token}/${authType}`);
+    console.log(`${Config.API_URL}/register/${authType}?access_token=${token}`);
 
     let response = await fetch(
-      `${this.state.backendBase}/token/${token}/${authType}`
+      `${Config.API_URL}/register/${authType}?access_token=${token}`,
+      {method: 'post'}
     );
     let responseJson = await response.json();
 
@@ -129,7 +129,7 @@ class HomeAuth extends Component {
 
   initFacebookLogin = async () => {
     const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      this.appId,
+      Config.FACEBOOK_APP_ID,
       {
         permissions: ['public_profile', 'email', 'user_friends']
       }

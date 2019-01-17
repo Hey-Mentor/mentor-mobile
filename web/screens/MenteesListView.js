@@ -3,6 +3,7 @@ import { Icon } from 'react-native-elements';
 import MenteeList from '../components/menteeList/MenteeList';
 import BadgeIcon from '../components/common/BadgeIcon';
 import base64 from 'react-native-base64';
+import Config from 'react-native-config';
 import {
   ScrollView,
   StyleSheet,
@@ -14,11 +15,8 @@ import {
 class MenteeListView extends Component {
   state = {
     contactItem: [],
-    hmToken: '',
-    backendBase: "http://10.91.28.70:3002"
+    hmToken: ''
   };
-
-  //this.backendBase = "https://heymentortestdeployment.herokuapp.com";
 
   async componentDidMount() {
     const token = await AsyncStorage.getItem('hm_token');
@@ -45,7 +43,7 @@ class MenteeListView extends Component {
     console.log("Getting profile info");
 
     let response = await fetch(
-      `${this.state.backendBase}/me/${token}`
+      `${Config.API_URL}/me/${token}`
     );
     
     let responseJson = await response.json();
@@ -67,7 +65,7 @@ class MenteeListView extends Component {
       console.log(contact);
 
       let response = await fetch(
-        `${this.state.backendBase}/profile/${contact}/${token}`
+        `${Config.API_URL}/profile/${contact}/${token}`
       );
       let responseJson = await response.json();
 
