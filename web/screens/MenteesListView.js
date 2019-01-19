@@ -33,7 +33,7 @@ class MenteeListView extends Component {
     //this.getUserData(this.state.fbUserId, this.state.fbToken);
     if(this.state.hmToken){
       var profile = await this.getMyProfile(JSON.parse(this.state.hmToken));
-      this.constructContactItemsFromResponse(profile[0].contacts, encoded);
+      this.constructContactItemsFromResponse(profile.contacts, JSON.parse(this.state.hmToken));
     }else{
       console.log("Error, we don't have a HeyMentor token");
     }
@@ -45,13 +45,13 @@ class MenteeListView extends Component {
 
     console.log("Getting profile info");
     console.log(token);
-    console.log(token.user_id); 
+    console.log(token._id); 
     console.log(token.api_key);
 
-    console.log(`${API_URL}/profile/${token.user_id}/${token.api_key}`);
+    console.log(`${API_URL}/profile/${token._id}?token=${token.api_key}`);
 
     let response = await fetch(
-      `${API_URL}/profile/${token.user_id}/${token.api_key}`
+      `${API_URL}/profile/${token._id}?token=${token.api_key}`
     );
     
     let responseJson = await response.json();
@@ -64,24 +64,32 @@ class MenteeListView extends Component {
 
   constructContactItemsFromResponse = async (contactIds, token) => {
     console.log("Getting contacts");
+    console.log(contactIds);
 
     const API_URL = "http://10.91.28.70:8081";
     const FACEBOOK_APP_ID = "1650628351692070";
 
     contactItems = [];
 
-    for (let contact of contactIds) {
-
+    contactIds.map((contact) => {
       console.log("Contact ID");
       console.log(contact);
 
-      let response = await fetch(
-        `${API_URL}/profile/${contact}/${token}`
-      );
-      let responseJson = await response.json();
+      var requestString = `${API_URL}/contacts/${contact}?token=${token.api_key}`;
+      console.log(requestString);
+      fetch(requestString)
+        .then((response) => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+          //return responseJson.movies;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      //let responseJson = await response.json();
 
-      console.log(responseJson);
-
+      
+/*
       fullName = responseJson[0].person.fname + ' ' + responseJson[0].person.lname;
       contactItems.push({
         name: fullName,
@@ -89,11 +97,11 @@ class MenteeListView extends Component {
         grade: responseJson[0].school.grade,
         id: responseJson[0].mentee_id,
         fullContact: responseJson[0]
-      });
-    }
+      });*/
+    });
 
     this.setState({ contactItem: contactItems });
-
+ 
     console.log('contact items');
     console.log(contactItems);
   };

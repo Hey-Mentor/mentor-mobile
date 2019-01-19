@@ -35,7 +35,7 @@ class HomeAuth extends Component {
     const token = await AsyncStorage.getItem('fb_token');
     const id = await AsyncStorage.getItem('fb_id');
     const hmToken = await AsyncStorage.getItem('hm_token');
-
+    
     const API_URL = "http://10.91.28.70:8081";
     const FACEBOOK_APP_ID = "1650628351692070";
 
