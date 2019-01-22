@@ -37,13 +37,13 @@ class MenteeDetails extends Component {
           <DetailSectionHeader title="Demographics" />
           <DetailRow name="Gender" value={mentee.demo.gender} />
           <DetailRow name="Race" value={mentee.demo.race} />
-          <DetailRow name="Ethnicity" value={mentee.demo.ethnicity} />
+          <DetailRow name="Ethnicity" value={mentee.demo.eth} />
 
           <DetailSectionHeader title="School" />
           <DetailRow name="High School" value={mentee.school.name} />
           <DetailRow name="Year" value={mentee.school.grade} />
           <DetailRow name="GPA" value={mentee.school.gpa} />
-          <DetailRow name="SAT" value={mentee.school.satScore} />  
+          <DetailRow name="SAT" value={mentee.school.sat} />  
 
           <DetailSectionHeader title="Bio" />
           <DetailRow wide name="Interests" value={mentee.gen_interest} />

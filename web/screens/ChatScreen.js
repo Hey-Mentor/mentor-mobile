@@ -6,9 +6,6 @@ import { GiftedChat } from 'react-native-gifted-chat';
 import base64 from 'react-native-base64';
 import Config from 'react-native-config';
 
-// TODO: create channel elsewhere (on user create?)
-// this.channel = await pify(sb.GroupChannel.createChannelWithUserIds)(['ace'], false);
-
 const headerTitleStyle = {
   flex: 1,
   textAlign: 'center',
@@ -31,11 +28,11 @@ class ChatScreen extends Component {
   state = { sendBirdApp: null };
 
   static navigationOptions = ({ navigation }) => ({
-    title: `${navigation.state.params.mentee.person.fname}`,  
+    title: `${navigation.state.params.mentee.person.fname}`,
     headerTitleStyle,
     headerRight: (
       <TouchableOpacity
-        onPress={() => navigation.navigate('menteeDetails', {mentee: navigation.state.params.mentee})}
+        onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
       >
         <Image style={styles.headerImage} source={require('../assets/img_avatar.png')} />
       </TouchableOpacity>
@@ -43,49 +40,49 @@ class ChatScreen extends Component {
     )
   });
 
-  async componentDidMount () {
+  async componentDidMount() {
 
     console.log("Chat screen");
 
     /*this.setState({messages: []});
-
+    
     const { state, navigate } = this.props.navigation;
-
+    
     const token = await AsyncStorage.getItem('hm_token');
     console.log("HM Token:");
     console.log(token);
-
+    
     this.setState({
       hmToken: token
     });
-
+    
     //var channelData = await this.getSendBirdInfo(token, state.params.mentee._id);
-
+    
     this.sendBirdApp = new SendBird({appId: Config.SENDBIRD_APP_ID })
     this.sendBirdApp.setErrorFirstCallback(true);
-
+    
     console.log("SendBird Channel on main:");
     console.log(channelData.channel_url);
-
+    
     console.log("User id");
     console.log(JSON.parse(token).user_id);
-
+    
     this.sbData = {
       userId: JSON.parse(token).user_id,
       url: channelData.channel_url
     }
-
+    
     // TODO error handling
     await new Promise(resolve => {
       this.sendBirdApp.connect(this.sbData.userId, resolve);
     });
-
+    
     this.channel = await pify(this.sendBirdApp.GroupChannel.getChannel)(this.sbData.url);
-
+    
     const channelHandler = new this.sendBirdApp.ChannelHandler();
     channelHandler.onMessageReceived = this.onReceive;
     this.sendBirdApp.addChannelHandler('ChatScreen');
-
+    
     // Get previous messages
     const query = this.channel.createPreviousMessageListQuery();
     const messages = await new Promise(resolve => {
@@ -93,9 +90,9 @@ class ChatScreen extends Component {
         resolve(msgs);
       })
     })
-
+    
     console.log("Map state");
-
+    
     // Map them to GiftedChat format
     this.setState({
       messages: messages.map(m => {
@@ -109,13 +106,13 @@ class ChatScreen extends Component {
         }
       })
     });
-
+    
     this.setState({ sendBirdApp: sendBirdApp });
-
+    
     console.log("Done mapping state");*/
   };
 
-  getSendBirdInfo = async(token, userId) => {
+  getSendBirdInfo = async (token, userId) => {
     console.log("Getting sendbird channel details");
     console.log(token);
     console.log(userId);
@@ -127,7 +124,7 @@ class ChatScreen extends Component {
     let response = await fetch(
       `${API_URL}/messages/${userId}?token=${token.api_key}`
     );
-    
+
     let responseJson = await response.json();
 
     console.log("Printing getSendbird results");
@@ -171,11 +168,11 @@ class ChatScreen extends Component {
 
     return <View style={[styles.gcView]}>
       <GiftedChat
-          inverted={false}
-          messages={this.state && this.state.messages}
-          onSend={messages => this.onSend(messages)}
-          onReceive={messages => this.onReceive(messages)}
-          user={{_id: this.sbData && this.sbData.userId}} />
+        inverted={false}
+        messages={this.state && this.state.messages}
+        onSend={messages => this.onSend(messages)}
+        onReceive={messages => this.onReceive(messages)}
+        user={{ _id: this.sbData && this.sbData.userId }} />
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
     </View>;
   }

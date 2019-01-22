@@ -3,3 +3,4 @@
 api/node_modules
 web/node_modules
 node_modules
+*.code-workspace

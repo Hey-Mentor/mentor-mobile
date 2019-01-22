@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "airbnb-base"
+  ],
+  "rules": {
+    "indent": [ "error", 4, { "SwitchCase": 1 } ],
+    "linebreak-style": [ 0 ],
+    "camelcase": 0,
+    "prefer-destructuring": 0,
+    "no-underscore-dangle": 0,
+    "func-names": 0,
+    "no-param-reassign": 0
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  }
+}
