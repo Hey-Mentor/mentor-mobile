@@ -70,40 +70,32 @@ class MenteeListView extends Component {
     const FACEBOOK_APP_ID = "1650628351692070";
 
     contactItems = [];
+    var requestString = `${API_URL}/contacts/${token._id}?token=${token.api_key}`;
+    console.log(requestString);
+    let contactData = fetch(requestString)
+      .then((response) => response.json())
+      .catch((error) => console.log("Error parsing JSON: " + error)) 
+      // TODO: Show "No mentees" error message on screen 
+      .then((responseJson) => { 
+         return responseJson.contacts.map((contact) => {
+          console.log("Working with a contact: ");
+          console.log(contact);
 
-    contactIds.map((contact) => {
-      console.log("Contact ID");
-      console.log(contact);
-
-      var requestString = `${API_URL}/contacts/${contact}?token=${token.api_key}`;
-      console.log(requestString);
-      fetch(requestString)
-        .then((response) => response.json())
-        .then((responseJson) => {
-          console.log(responseJson);
-          //return responseJson.movies;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-      //let responseJson = await response.json();
-
-      
-/*
-      fullName = responseJson[0].person.fname + ' ' + responseJson[0].person.lname;
-      contactItems.push({
-        name: fullName,
-        school: responseJson[0].school.name,
-        grade: responseJson[0].school.grade,
-        id: responseJson[0].mentee_id,
-        fullContact: responseJson[0]
-      });*/
+          fullName = contact.person.fname + ' ' + contact.person.lname;
+          contactItems.push({
+            name: fullName,
+            school: contact.school.name,
+            grade: contact.school.grade,
+            id: contact._id,
+            fullContact: contact
+          });
+        });
+    })
+    .catch((error) => {
+      console.error(error);
     });
 
-    this.setState({ contactItem: contactItems });
- 
-    console.log('contact items');
-    console.log(contactItems);
+    contactData.then(data => this.setState({ contactItem: contactItems }));
   };
 
   static navigationOptions = ({ navigation }) => ({
