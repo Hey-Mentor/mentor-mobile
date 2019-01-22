@@ -47,7 +47,7 @@ class ChatScreen extends Component {
 
     console.log("Chat screen");
 
-    this.setState({messages: []});
+    /*this.setState({messages: []});
 
     const { state, navigate } = this.props.navigation;
 
@@ -55,14 +55,11 @@ class ChatScreen extends Component {
     console.log("HM Token:");
     console.log(token);
 
-    let encoded = base64.encode(token);
-
     this.setState({
-      hmToken: token,
-      hmEncoded: encoded
+      hmToken: token
     });
 
-    var channelData = await this.getSendBirdInfo(encoded, state.params.mentee.user_id);
+    //var channelData = await this.getSendBirdInfo(token, state.params.mentee._id);
 
     this.sendBirdApp = new SendBird({appId: Config.SENDBIRD_APP_ID })
     this.sendBirdApp.setErrorFirstCallback(true);
@@ -115,7 +112,7 @@ class ChatScreen extends Component {
 
     this.setState({ sendBirdApp: sendBirdApp });
 
-    console.log("Done mapping state");
+    console.log("Done mapping state");*/
   };
 
   getSendBirdInfo = async(token, userId) => {
@@ -123,8 +120,12 @@ class ChatScreen extends Component {
     console.log(token);
     console.log(userId);
 
+    const API_URL = "http://10.91.28.70:8081";
+
+    console.log(`${API_URL}/messages/${userId}?token=${token.api_key}`);
+
     let response = await fetch(
-      `${Config.API_URL}/messages/${userId}/${token}`
+      `${API_URL}/messages/${userId}?token=${token.api_key}`
     );
     
     let responseJson = await response.json();
@@ -137,7 +138,7 @@ class ChatScreen extends Component {
 
 
   async componentWillUnmount() {
-    this.state.sendBirdApp.RemoveChannelHandler('ChatScreen');
+    //this.state.sendBirdApp.RemoveChannelHandler('ChatScreen');
   }
 
   async onSend(messages = []) {

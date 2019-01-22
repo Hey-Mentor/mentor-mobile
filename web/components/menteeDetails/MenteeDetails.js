@@ -47,7 +47,7 @@ class MenteeDetails extends Component {
 
           <DetailSectionHeader title="Bio" />
           <DetailRow wide name="Interests" value={mentee.gen_interest} />
-          <DetailRow wide name="Activities" value={mentee.spec_interest.join(", ")} />
+          <DetailRow wide name="Activities" value={mentee.spec_interests.join(", ")} />
           <DetailRow wide name="Sports" value={mentee.sports.join(", ")} />
   
           <DetailSectionHeader title="Areas of support" />
