@@ -40,7 +40,7 @@ class MenteeListView extends Component {
   }
 
   getMyProfile = async (token) => {
-    const API_URL = "http://10.91.28.70:8081";
+    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
     const FACEBOOK_APP_ID = "1650628351692070";
 
     console.log("Getting profile info");
@@ -66,7 +66,7 @@ class MenteeListView extends Component {
     console.log("Getting contacts");
     console.log(contactIds);
 
-    const API_URL = "http://10.91.28.70:8081";
+    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
     const FACEBOOK_APP_ID = "1650628351692070";
 
     contactItems = [];

@@ -31,12 +31,11 @@ class HomeAuth extends Component {
   async componentDidMount() {
     
     //AsyncStorage.clear();
-
     const token = await AsyncStorage.getItem('fb_token');
     const id = await AsyncStorage.getItem('fb_id');
     const hmToken = await AsyncStorage.getItem('hm_token');
     
-    const API_URL = "http://10.91.28.70:8081";
+    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
     const FACEBOOK_APP_ID = "1650628351692070";
 
     console.log("Token: -------------------------------------");
@@ -102,7 +101,7 @@ class HomeAuth extends Component {
 
   getHeyMentorToken = async (token, authType) => {
 
-    const API_URL = "http://10.91.28.70:8081";
+    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
     const FACEBOOK_APP_ID = "1650628351692070";
 
     console.log("Making GetToken request");
@@ -134,7 +133,7 @@ class HomeAuth extends Component {
   };
 
   initFacebookLogin = async () => {
-    const API_URL = "http://10.91.28.70:8081";
+    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
     const FACEBOOK_APP_ID = "1650628351692070";
 
     const { type, token } = await Facebook.logInWithReadPermissionsAsync(
