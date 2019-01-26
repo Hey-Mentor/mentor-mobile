@@ -3,6 +3,7 @@ import {
   ScrollView,
   AsyncStorage
 } from 'react-native';
+import Config from 'react-native-config';
 import MenteeList from '../components/menteeList/MenteeList';
 
 class MenteeListView extends Component {
@@ -68,23 +69,25 @@ class MenteeListView extends Component {
   }
 
   getMyProfile = async (token) => {
-    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
+    // const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
 
     console.log('Getting profile info');
     console.log(token);
     console.log(token._id);
     console.log(token.api_key);
 
-    console.log(`${API_URL}/profile/${token._id}?token=${token.api_key}`);
+    console.log(`${Config.API_URL}/profile/${token._id}?token=${token.api_key}`);
 
     const response = await fetch(
-      `${API_URL}/profile/${token._id}?token=${token.api_key}`
+      `${Config.API_URL}/profile/${token._id}?token=${token.api_key}`
     );
 
     const responseJson = await response.json();
 
     console.log('Printing getMyProfile results');
     console.log(responseJson);
+
+    // bugsnag.notify(new Error('Test'));
 
     return responseJson;
   };
@@ -93,10 +96,10 @@ class MenteeListView extends Component {
     console.log('Getting contacts');
     console.log(contactIds);
 
-    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
+    // const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
 
     const contactItems = [];
-    const requestString = `${API_URL}/contacts/${token._id}?token=${token.api_key}`;
+    const requestString = `${Config.API_URL}/contacts/${token._id}?token=${token.api_key}`;
     console.log(requestString);
     const contactData = fetch(requestString)
       .then(response => response.json())

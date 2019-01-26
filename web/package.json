@@ -1,13 +1,14 @@
 {
+  "name": "HeyMentor",
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
     "eslint-config-rallycoding": "^3.2.0",
-    "expo": "^31.0.0",
+    "expo": "^31.0.6",
     "prettier": "^1.15.2",
-    "react": "16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
+    "react": "^16.7.0",
+    "react-native": "^0.57.0",
     "react-native-base64": "0.0.2",
     "react-native-config": "^0.11.7",
     "react-native-elements": "^0.19.1",
