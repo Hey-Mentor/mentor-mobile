@@ -1,12 +1,16 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const Button = ({ onPress, children, style }) => {
+const Button = ({ onPress, children }) => {
   const { buttonStyle, textStyle } = styles;
 
   return (
     <TouchableOpacity style={buttonStyle} onPress={onPress}>
-      <Text style={textStyle}> {children} </Text>
+      <Text style={textStyle}>
+        {' '}
+        {children}
+        {' '}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -22,7 +26,7 @@ const styles = StyleSheet.create({
     width: 150
   },
   textStyle: {
-    alignSelf: 'center', //centers itself
+    alignSelf: 'center', // centers itself
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
@@ -31,4 +35,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export { Button };
+export default Button;

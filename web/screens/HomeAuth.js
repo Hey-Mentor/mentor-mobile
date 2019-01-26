@@ -1,140 +1,128 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   AsyncStorage,
   StyleSheet,
   Image,
   TouchableOpacity
 } from 'react-native';
-//import Config from 'react-native-config';
+// import Config from 'react-native-config';
 import { Button } from 'react-native-elements';
-
 import { Facebook } from 'expo';
 
-//import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+const splashScreenImage = require('../assets/heymentorsplash.png');
+// import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 
 class HomeAuth extends Component {
   static navigationOptions = {
     header: null
   };
-  
+
   state = {
     loading: false,
-    facebookLoginFail: false,
-    facebookLoginSuccess: false,
     fbToken: null,
-    fbUserId: null,
     hmToken: {}
   };
 
   async componentDidMount() {
-    
-    //AsyncStorage.clear();
+    // AsyncStorage.clear();
     const token = await AsyncStorage.getItem('fb_token');
-    const id = await AsyncStorage.getItem('fb_id');
     const hmToken = await AsyncStorage.getItem('hm_token');
-    
-    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
-    const FACEBOOK_APP_ID = "1650628351692070";
 
-    console.log("Token: -------------------------------------");
+    console.log('Token: ');
     console.log(token);
 
     this.setState({
       fbToken: token,
-      fbUserId: id,
-      hmToken: hmToken
+      hmToken
     });
 
+    let headerTitle = 'Mentors';
+
     if (this.state.hmToken !== null) {
-      console.log("Already have HM token");
-      // NOTE: We can check here for hmToken.user_type to determine if we want to display the mentor or mentee view 
-      var headerTitle = "Mentors";
-      console.log("HM Token User Type:");
-      var userType = JSON.parse(this.state.hmToken).user_type;
-      if (userType == "mentor"){
-        headerTitle = "Mentees";
+      console.log('Already have HM token');
+      // NOTE: We can check here for hmToken.user_type to determine if
+      //  we want to display the mentor or mentee view
+      console.log('HM Token User Type:');
+      const userType = JSON.parse(this.state.hmToken).user_type;
+      if (userType === 'mentor') {
+        headerTitle = 'Mentees';
       }
-      this.props.navigation.navigate('menteeListView', {headerTitle: headerTitle});
-    }else{
-      console.log("Getting HM token");
-      if(this.state.fbToken){
-        console.log("Already have FB token");
-        var hmDone = await this.getHeyMentorToken(this.state.fbToken, "facebook");
-        var userType = JSON.parse(hmDone).user_type;
-        if (userType == "mentor"){
-          headerTitle = "Mentees";
+
+      this.props.navigation.navigate('menteeListView', { headerTitle });
+    } else {
+      console.log('Getting HM token');
+      if (this.state.fbToken) {
+        console.log('Already have FB token');
+        const hmDone = await this.getHeyMentorToken(this.state.fbToken, 'facebook');
+        const userType = JSON.parse(hmDone).user_type;
+        if (userType === 'mentor') {
+          headerTitle = 'Mentees';
         }
 
-        this.props.navigation.navigate('menteeListView', {headerTitle: headerTitle});
-      }else{
-        console.log("Getting FB token");
-        var fb_token = await this.initFacebookLogin();
-        var hmDone = await this.getHeyMentorToken(this.state.fbToken, "facebook");
-        var headerTitle = "Mentors";
-        var userType = JSON.parse(hmDone).user_type;
-        if (userType == "mentor"){
-          headerTitle = "Mentees";
+        this.props.navigation.navigate('menteeListView', { headerTitle });
+      } else {
+        console.log('Getting FB token');
+        const hmDone = await this.getHeyMentorToken(this.state.fbToken, 'facebook');
+
+        const userType = JSON.parse(hmDone).user_type;
+        if (userType === 'mentor') {
+          headerTitle = 'Mentees';
         }
 
-        this.props.navigation.navigate('menteeListView', {headerTitle: headerTitle});
-      }      
+        this.props.navigation.navigate('menteeListView', { headerTitle });
+      }
     }
   }
-  
+
   onButtonPress = () => {
     this.setState({ loading: true });
     this.facebookLogin();
   };
 
-  onAuthComplete = props => {
-    //after user successfully logs in navigate to menteeListView page
-/*    if (this.state.fbToken) {
+  onAuthComplete = () => {
+    // after user successfully logs in navigate to menteeListView page
+    /*    if (this.state.fbToken) {
       this.props.navigation.state = this.state;
 
       this.props.navigation.navigate('menteeListView', {
         fbId: this.state.fbUserId
       });
-    }*/
+    } */
   };
 
   getHeyMentorToken = async (token, authType) => {
+    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
 
-    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
-    const FACEBOOK_APP_ID = "1650628351692070";
-
-    console.log("Making GetToken request");
+    console.log('Making GetToken request');
     console.log(`${API_URL}/register/${authType}?access_token=${token}`);
 
-    let response = await fetch(
+    const response = await fetch(
       `${API_URL}/register/${authType}?access_token=${token}`,
-      {method: 'post'}
+      { method: 'post' }
     );
-    let responseJson = await response.json();
+    const responseJson = await response.json();
 
     console.log('Printing responsejson from GetToken');
     console.log(responseJson);
-    console.log("done printing");
+    console.log('done printing');
 
-    if(responseJson && !responseJson.error){
-      console.log("Setting state");
+    if (responseJson && !responseJson.error) {
+      console.log('Setting state');
       this.setState({ hmToken: responseJson });
       await AsyncStorage.setItem('hm_token', JSON.stringify(responseJson));
-      console.log("Done setting state");
-    }else{
-      console.log("Error authenticating with fed token");
-    }   
+      console.log('Done setting state');
+    } else {
+      console.log('Error authenticating with fed token');
+    }
   };
 
   facebookLogin = async () => {
-    const token = await AsyncStorage.getItem('fb_token');
     this.initFacebookLogin();
   };
 
   initFacebookLogin = async () => {
-    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
-    const FACEBOOK_APP_ID = "1650628351692070";
+    const FACEBOOK_APP_ID = '1650628351692070';
 
     const { type, token } = await Facebook.logInWithReadPermissionsAsync(
       FACEBOOK_APP_ID,
@@ -144,33 +132,29 @@ class HomeAuth extends Component {
     );
 
     if (type === 'cancel') {
-      this.setState({ facebookLoginFail: true });
+      // this.setState({ facebookLoginFail: true });
     }
 
     if (type === 'success') {
-      //API call to FB Graph API. Will add more code to fetch social media data
-      let response = await fetch(
+      // API call to FB Graph API. Will add more code to fetch social media data
+      const response = await fetch(
         `https://graph.facebook.com/me?access_token=${token}`
       );
-      let responseJson = await response.json();
+      const responseJson = await response.json();
       console.log('Printing token');
       console.log(token);
       console.log('Printing response');
       console.log(responseJson);
       console.log('Printed response.json()');
-
-      // Get the Facebook User ID from the response so we can look up the Mentees of this user
-      console.log('Facebook ID: ' + responseJson.id);
-      // Matt Bongiovi: 1842505195770400
+      console.log(`Facebook ID: ${responseJson.id}`);
 
       await AsyncStorage.multiSet([
         ['fb_token', token],
         ['fb_id', responseJson.id]
       ]);
       this.setState({
-        facebookLoginSuccess: true,
+        // facebookLoginSuccess: true,
         fbToken: token,
-        fbUserId: responseJson.id,
         loading: false
       });
       this.onAuthComplete(this.props);
@@ -179,9 +163,7 @@ class HomeAuth extends Component {
         ['fb_id', responseJson.id]
       ]);
       this.setState({
-        facebookLoginSuccess: true,
-        fbToken: token,
-        fbUserId: responseJson.id
+        fbToken: token
       });
     }
 
@@ -193,7 +175,7 @@ class HomeAuth extends Component {
       <View style={styles.container}>
         <Image
           style={styles.splashStyle}
-          source={require('../assets/heymentorsplash.png')}
+          source={splashScreenImage}
         />
 
         <TouchableOpacity>

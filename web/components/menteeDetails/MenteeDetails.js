@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import {
+  ScrollView, View, Text, StyleSheet
+} from 'react-native';
 import DetailsHeader from './DetailsHeader.js';
 import DetailRow from './DetailRow.js';
 import DetailSectionHeader from './DetailSectionHeader.js';
 import BubbleList from './BubbleList.js';
 import CollegeList from './CollegeList.js';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
 
 class MenteeDetails extends Component {
   render() {
@@ -43,13 +45,13 @@ class MenteeDetails extends Component {
           <DetailRow name="High School" value={mentee.school.name} />
           <DetailRow name="Year" value={mentee.school.grade} />
           <DetailRow name="GPA" value={mentee.school.gpa} />
-          <DetailRow name="SAT" value={mentee.school.sat} />  
+          <DetailRow name="SAT" value={mentee.school.sat} />
 
           <DetailSectionHeader title="Bio" />
           <DetailRow wide name="Interests" value={mentee.gen_interest} />
-          <DetailRow wide name="Activities" value={mentee.spec_interests.join(", ")} />
-          <DetailRow wide name="Sports" value={mentee.sports.join(", ")} />
-  
+          <DetailRow wide name="Activities" value={mentee.spec_interests.join(', ')} />
+          <DetailRow wide name="Sports" value={mentee.sports.join(', ')} />
+
           <DetailSectionHeader title="Areas of support" />
           <BubbleList items={supportAreas} />
         </View>
@@ -90,14 +92,6 @@ class MenteeDetails extends Component {
 ]
 
 
-
-
-
-
-
-
-
-
 [
 {
     "status": ["pending"],
@@ -130,7 +124,6 @@ class MenteeDetails extends Component {
     "extracurric": "debate team",
     "support": ["Essays", "Scholarships"]
 }]
-
 
 
 */

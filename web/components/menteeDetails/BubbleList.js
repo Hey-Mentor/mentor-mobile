@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import { View, StyleSheet } from 'react-native';
 import BubbleRect from './BubbleRect.js';
-import { View, Text, StyleSheet } from 'react-native'
 
 class BubbleList extends Component {
   render() {
@@ -20,14 +20,14 @@ class BubbleList extends Component {
         <View key={idx} style={styles.bubbleContainer}>
           <BubbleRect name={item.name} highlight={item.highlight} />
         </View>
-      )
-    })
+      );
+    });
 
     return (
       <View style={styles.bubbleList}>
         { items }
       </View>
-    )
+    );
   }
 }
 

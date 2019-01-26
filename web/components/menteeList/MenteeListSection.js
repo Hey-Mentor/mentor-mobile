@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, StyleSheet, Image } from 'react-native';
+import {
+  ScrollView, View, Text, StyleSheet, Image
+} from 'react-native';
 import { Button } from '../common/Button';
 
 class MenteeListSection extends Component {
@@ -11,17 +13,20 @@ class MenteeListSection extends Component {
         <View style={styles.header}>
           <Image style={styles.headerImage} source={require('../../assets/img_avatar.png')} />
           <View style={styles.textHeader}>
-            <Text style={styles.textTitle}>{mentee.name} </Text>
+            <Text style={styles.textTitle}>
+              {mentee.name}
+              {' '}
+            </Text>
             <Text style={styles.textDetail}>{mentee.school}</Text>
-            <Text style={styles.textDetail}>{mentee.grade}</Text>  
+            <Text style={styles.textDetail}>{mentee.grade}</Text>
           </View>
         </View>
 
         <View style={styles.buttonStyle}>
-          <Button onPress={() => this.props.navigation.navigate('menteeDetails', {mentee: this.props.item.fullContact})}>
+          <Button onPress={() => this.props.navigation.navigate('menteeDetails', { mentee: this.props.item.fullContact })}>
             View Profile
           </Button>
-          <Button onPress={() => this.props.navigation.navigate('chat', {mentee: this.props.item.fullContact})}>Message</Button>
+          <Button onPress={() => this.props.navigation.navigate('chat', { mentee: this.props.item.fullContact })}>Message</Button>
         </View>
       </ScrollView>
     );

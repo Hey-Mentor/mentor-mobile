@@ -17,21 +17,22 @@
     "react-native-vector-icons": "^6.1.0",
     "react-navigation": "^1.6.1",
     "react-test-renderer": "16.5.0",
-    "sendbird": "^3.0.92",
     "utf8": "^3.0.0"
   },
   "scripts": {
     "start": "react-native-scripts start",
     "eject": "react-native-scripts eject",
     "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios"
+    "ios": "react-native-scripts ios",
+    "lint": "eslint *.js **/*.js"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
     "babel-plugin-transform-react-jsx-source": "^6.22.0",
     "eslint": "^5.12.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.15.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-jsx-a11y": "^6.2.0",
     "eslint-plugin-react": "^7.12.4",
     "react-native-scripts": "^1.14.1",
     "schedule": "^0.4.0"

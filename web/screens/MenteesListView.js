@@ -1,108 +1,16 @@
 import React, { Component } from 'react';
-import { Icon } from 'react-native-elements';
-import MenteeList from '../components/menteeList/MenteeList';
-import BadgeIcon from '../components/common/BadgeIcon';
-import base64 from 'react-native-base64';
-import Config from 'react-native-config';
 import {
   ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
   AsyncStorage
 } from 'react-native';
+import MenteeList from '../components/menteeList/MenteeList';
 
 class MenteeListView extends Component {
-  state = {
-    contactItem: [],
-    hmToken: ''
-  };
-
-  async componentDidMount() {
-    const token = await AsyncStorage.getItem('hm_token');
-    console.log("HM Token:");
-    console.log(token);
-
-    let encoded = base64.encode(token);
-
-    this.setState({
-      hmToken: token,
-      hmEncoded: encoded
-    });
-
-    //this.getUserData(this.state.fbUserId, this.state.fbToken);
-    if(this.state.hmToken){
-      var profile = await this.getMyProfile(JSON.parse(this.state.hmToken));
-      this.constructContactItemsFromResponse(profile.contacts, JSON.parse(this.state.hmToken));
-    }else{
-      console.log("Error, we don't have a HeyMentor token");
-    }
-  }
-
-  getMyProfile = async (token) => {
-    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
-    const FACEBOOK_APP_ID = "1650628351692070";
-
-    console.log("Getting profile info");
-    console.log(token);
-    console.log(token._id); 
-    console.log(token.api_key);
-
-    console.log(`${API_URL}/profile/${token._id}?token=${token.api_key}`);
-
-    let response = await fetch(
-      `${API_URL}/profile/${token._id}?token=${token.api_key}`
-    );
-    
-    let responseJson = await response.json();
-
-    console.log("Printing getMyProfile results");
-    console.log(responseJson);
-
-    return responseJson;
-  };
-
-  constructContactItemsFromResponse = async (contactIds, token) => {
-    console.log("Getting contacts");
-    console.log(contactIds);
-
-    const API_URL = "http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com";
-    const FACEBOOK_APP_ID = "1650628351692070";
-
-    contactItems = [];
-    var requestString = `${API_URL}/contacts/${token._id}?token=${token.api_key}`;
-    console.log(requestString);
-    let contactData = fetch(requestString)
-      .then((response) => response.json())
-      .catch((error) => console.log("Error parsing JSON: " + error)) 
-      // TODO: Show "No mentees" error message on screen 
-      .then((responseJson) => { 
-         return responseJson.contacts.map((contact) => {
-          console.log("Working with a contact: ");
-          console.log(contact);
-
-          fullName = contact.person.fname + ' ' + contact.person.lname;
-          contactItems.push({
-            name: fullName,
-            school: contact.school.name,
-            grade: contact.school.grade,
-            id: contact._id,
-            fullContact: contact
-          });
-        });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-
-    contactData.then(data => this.setState({ contactItem: contactItems }));
-  };
-
   static navigationOptions = ({ navigation }) => ({
     title: `${navigation.state.params.headerTitle}`,
     headerTitleStyle,
     headerLeft: null
-    /*headerLeft: (
+    /* headerLeft: (
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('notifications');
@@ -133,8 +41,86 @@ class MenteeListView extends Component {
         />
       </TouchableOpacity>
 
-    )*/
+    ) */
   });
+
+  state = {
+    contactItem: [],
+    hmToken: ''
+  };
+
+  async componentDidMount() {
+    const token = await AsyncStorage.getItem('hm_token');
+    console.log('HM Token:');
+    console.log(token);
+
+    this.setState({
+      hmToken: token
+    });
+
+    // this.getUserData(this.state.fbUserId, this.state.fbToken);
+    if (this.state.hmToken) {
+      const profile = await this.getMyProfile(JSON.parse(this.state.hmToken));
+      this.constructContactItemsFromResponse(profile.contacts, JSON.parse(this.state.hmToken));
+    } else {
+      console.log("Error, we don't have a HeyMentor token");
+    }
+  }
+
+  getMyProfile = async (token) => {
+    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
+
+    console.log('Getting profile info');
+    console.log(token);
+    console.log(token._id);
+    console.log(token.api_key);
+
+    console.log(`${API_URL}/profile/${token._id}?token=${token.api_key}`);
+
+    const response = await fetch(
+      `${API_URL}/profile/${token._id}?token=${token.api_key}`
+    );
+
+    const responseJson = await response.json();
+
+    console.log('Printing getMyProfile results');
+    console.log(responseJson);
+
+    return responseJson;
+  };
+
+  constructContactItemsFromResponse = async (contactIds, token) => {
+    console.log('Getting contacts');
+    console.log(contactIds);
+
+    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
+
+    const contactItems = [];
+    const requestString = `${API_URL}/contacts/${token._id}?token=${token.api_key}`;
+    console.log(requestString);
+    const contactData = fetch(requestString)
+      .then(response => response.json())
+      .catch(error => console.log(`Error parsing JSON: ${error}`))
+      // TODO: Show "No mentees" error message on screen
+      .then(responseJson => responseJson.contacts.map((contact) => {
+        console.log('Working with a contact: ');
+        console.log(contact);
+
+        const fullName = `${contact.person.fname} ${contact.person.lname}`;
+        return contactItems.push({
+          name: fullName,
+          school: contact.school.name,
+          grade: contact.school.grade,
+          id: contact._id,
+          fullContact: contact
+        });
+      }))
+      .catch((error) => {
+        console.error(error);
+      });
+
+    contactData.then(() => this.setState({ contactItem: contactItems }));
+  };
 
   render() {
     return (
@@ -155,16 +141,5 @@ const headerTitleStyle = {
   fontSize: 24,
   fontWeight: 'bold'
 };
-
-const styles = StyleSheet.create({
-  leftImage: {
-    marginLeft: 20,
-    marginBottom: 5
-  },
-  rightImage: {
-    marginRight: 10,
-    marginBottom: 5
-  }
-});
 
 export default MenteeListView;

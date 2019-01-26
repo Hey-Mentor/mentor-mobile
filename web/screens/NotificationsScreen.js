@@ -1,29 +1,27 @@
 import React, { Component } from 'react';
-import { View, Text, Button, TouchableOpacity } from 'react-native';
+import { View, Text, Button } from 'react-native';
 
 const headerTitleStyle = {
-  //flex: 1,  
-  textAlign: 'center',  
+  // flex: 1,
+  textAlign: 'center',
   color: '#000000',
   fontSize: 24,
   fontWeight: 'bold'
 };
 
 class NotificationsScreen extends Component {
-
-  static navigationOptions = ({ navigation }) => ({
+  static navigationOptions = () => ({
     title: 'Notifications',
-    headerTitleStyle  
+    headerTitleStyle
   });
 
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View style={{ flex: 1 }}>
         <Notification text="Kevin's University of Washington application is due tomorrow" />
         <Notification text="Chadwick's FAFSA is due in 3 days" />
         <Notification text="College applications are due tomorrow" />
-      </View> 
+      </View>
     );
   }
 }
@@ -43,7 +41,7 @@ class Notification extends Component {
   }
 
   delete() {
-    this.setState(prevState => ({
+    this.setState(() => ({
       isDeleted: true
     }));
   }

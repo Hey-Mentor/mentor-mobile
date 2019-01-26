@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import {
+  View, Text, Image, StyleSheet
+} from 'react-native';
 import BubbleRect from './BubbleRect.js';
-import { View, Text, Image, StyleSheet } from 'react-native';
 
 class DetailsHeader extends Component {
   render() {
@@ -14,11 +16,11 @@ class DetailsHeader extends Component {
       headerSection: {
         flex: 1
       },
-      headerText:{
+      headerText: {
         textAlign: 'center',
         flex: 2,
         flexWrap: 'wrap',
-        fontSize: 30 
+        fontSize: 30
       },
       messageText: {
         textAlign: 'center',
@@ -54,7 +56,9 @@ class DetailsHeader extends Component {
         <View id="headerInfo" style={[styles.headerSection]}>
           <Text style={[styles.headerText]}>{mentee.person.fname}</Text>
           <Text style={[styles.messageText, styles.messageColumn]}>
-            <Text style={styles.messageDelay}>{this.props.delay}</Text> since last message
+            <Text style={styles.messageDelay}>{this.props.delay}</Text>
+            {' '}
+since last message
           </Text>
         </View>
       </View>

@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {
+  View, Text, StyleSheet, Image, TouchableOpacity
+} from 'react-native';
+
+const avatarImage = require('../../assets/img_avatar.png');
 
 class MenteeListItem extends Component {
   render() {
     const mentee = this.props.item;
 
     return (
-      <TouchableOpacity onPress={() => this.props.navigation.navigate('chat', {mentee: this.props.item.fullContact})}>
-        <View style={styles.containerStyle} >
-          <Image style={styles.headerImage} source={require('../../assets/img_avatar.png')} />
-          <View style={styles.textHeader} >
-            <Text style={styles.textTitle}>{mentee.name} </Text>
+      <TouchableOpacity onPress={() => this.props.navigation.navigate('chat', { mentee: this.props.item.fullContact })}>
+        <View style={styles.containerStyle}>
+          <Image style={styles.headerImage} source={avatarImage} />
+          <View style={styles.textHeader}>
+            <Text style={styles.textTitle}>
+              {mentee.name}
+              {' '}
+            </Text>
             <Text style={styles.textDetail}>{mentee.school}</Text>
           </View>
         </View>

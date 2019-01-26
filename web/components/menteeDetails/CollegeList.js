@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native';
 
 class CollegeList extends Component {
   render() {
-
     const styles = StyleSheet.create({
       collegeClass: {
-        color: "#000000",
+        color: '#000000',
         paddingRight: 7,
         paddingBottom: 10,
-        fontWeight: "bold",
+        fontWeight: 'bold',
         width: 84
       },
       collegeSection: {
@@ -17,7 +16,7 @@ class CollegeList extends Component {
         marginLeft: 16
       },
       collegeDetails: {
-        color: "#4f4f4f"
+        color: '#4f4f4f'
       }
     });
 
@@ -25,7 +24,7 @@ class CollegeList extends Component {
     const colleges = [];
     this.props.colleges.forEach((college, idx) => {
       colleges.push(
-        <View key={ idx }>
+        <View key={idx}>
           <Text style={styles.collegeDetails}>{ college.name }</Text>
           <Text style={styles.collegeDetails}>{ college.location }</Text>
         </View>
@@ -40,9 +39,8 @@ class CollegeList extends Component {
           { colleges }
         </View>
       );
-    } else {
-      return null;
     }
+    return null;
   }
 }
 

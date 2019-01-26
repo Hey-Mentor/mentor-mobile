@@ -17,6 +17,7 @@ class BadgeIcon extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   IconBadge: {
     position: 'absolute',

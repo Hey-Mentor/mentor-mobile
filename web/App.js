@@ -1,14 +1,11 @@
 import React from 'react';
-import Expo, { Notifications } from 'expo';
-import { StyleSheet, Text, View, Alert, Image } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import HomeAuth from './screens/HomeAuth';
 import NotificationsScreen from './screens/NotificationsScreen';
 import MenteeDetailsView from './screens/MenteeDetailsView';
 import MenteesListView from './screens/MenteesListView';
 import Settings from './screens/Settings';
-import registerForNotifications from './services/pushNotifications';
-import ChatScreen from './screens/ChatScreen'
+import ChatScreen from './screens/ChatScreen';
 
 export default class App extends React.Component {
   render() {

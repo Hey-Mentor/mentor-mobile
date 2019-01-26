@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import MenteeListSection from './MenteeListSection';
+import { View } from 'react-native';
 import MenteeListItem from './MenteeListItem';
 
 class MenteeList extends Component {
@@ -9,6 +8,7 @@ class MenteeList extends Component {
       <MenteeListItem navigation={this.props.navigation} key={item.name} item={item} />
     ));
   }
+
   render() {
     return <View>{this.renderSections()}</View>;
   }

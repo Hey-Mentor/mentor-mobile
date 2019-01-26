@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native';
 
 class DetailRow extends Component {
   render() {
@@ -11,21 +11,23 @@ class DetailRow extends Component {
       },
       detailKey: {
         paddingRight: 7,
-        fontWeight: "bold",
+        fontWeight: 'bold',
         width: this.props.wide ? 110 : 84
       },
       detailText: {
-        color: "#4f4f4f",
+        color: '#4f4f4f',
         fontSize: 14,
         flex: 1,
         flexWrap: 'wrap'
       }
     });
 
-    return (<View style={styles.detailRow}>
-                <Text style={[styles.detailKey, styles.detailText]}>{this.props.name}</Text>
-                <Text style={[styles.detailText]}>{this.props.value}</Text>
-            </View>);
+    return (
+      <View style={styles.detailRow}>
+        <Text style={[styles.detailKey, styles.detailText]}>{this.props.name}</Text>
+        <Text style={[styles.detailText]}>{this.props.value}</Text>
+      </View>
+    );
   }
 }
 
