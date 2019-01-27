@@ -27,8 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new ReactNativeConfigPackage(),
-            new VectorIconsPackage(),
-            BugsnagReactNative.getPackage()
+            new VectorIconsPackage()
       );
     }
 
