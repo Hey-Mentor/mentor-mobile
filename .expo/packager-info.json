@@ -1,9 +1,9 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 18232,
+  "expoServerNgrokUrl": "https://4p-rv3.anonymous.mentor-mobile.exp.direct",
+  "packagerNgrokUrl": "https://packager.4p-rv3.anonymous.mentor-mobile.exp.direct",
+  "ngrokPid": 7772
 }

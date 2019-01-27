@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
-import Config from 'react-native-config';
 import { Button } from 'react-native-elements';
 import { Facebook } from 'expo';
 
@@ -93,13 +92,13 @@ class HomeAuth extends Component {
   };
 
   getHeyMentorToken = async (token, authType) => {
-    // const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
+    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
 
     console.log('Making GetToken request');
-    console.log(`${Config.API_URL}/register/${authType}?access_token=${token}`);
+    console.log(`${API_URL}/register/${authType}?access_token=${token}`);
 
     const response = await fetch(
-      `${Config.API_URL}/register/${authType}?access_token=${token}`,
+      `${API_URL}/register/${authType}?access_token=${token}`,
       { method: 'post' }
     );
     const responseJson = await response.json();
@@ -123,10 +122,10 @@ class HomeAuth extends Component {
   };
 
   initFacebookLogin = async () => {
-    // const FACEBOOK_APP_ID = '1650628351692070';
+    const FACEBOOK_APP_ID = '1650628351692070';
 
     const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      Config.FACEBOOK_APP_ID,
+      FACEBOOK_APP_ID,
       {
         permissions: ['public_profile', 'email', 'user_friends']
       }
