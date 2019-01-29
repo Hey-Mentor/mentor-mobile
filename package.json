@@ -1,0 +1,42 @@
+{
+  "name": "HeyMentor",
+  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "eslint-config-rallycoding": "^3.2.0",
+    "expo": "^31.0.6",
+    "prettier": "^1.15.2",
+    "react": "^16.7.0",
+    "react-native": "^0.57.0",
+    "react-native-base64": "0.0.2",
+    "react-native-config": "^0.11.7",
+    "react-native-elements": "^0.19.1",
+    "react-native-gifted-chat": "^0.5.0",
+    "react-native-parsed-text": "0.0.21",
+    "react-native-renderer": "^15.5.3",
+    "react-native-vector-icons": "^6.1.0",
+    "react-navigation": "^1.6.1",
+    "react-test-renderer": "16.5.0",
+    "utf8": "^3.0.0"
+  },
+  "scripts": {
+    "start": "react-native-scripts start",
+    "eject": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios",
+    "lint": "eslint *.js **/*.js"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "babel-plugin-transform-react-jsx-source": "^6.22.0",
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-jsx-a11y": "^6.2.0",
+    "eslint-plugin-react": "^7.12.4",
+    "react-native-scripts": "^1.14.1",
+    "schedule": "^0.4.0"
+  }
+}
