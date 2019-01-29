@@ -113,38 +113,6 @@ class ChatScreen extends Component {
     console.log("Done mapping state"); */
   }
 
-  /* getTwilioToken = async (localToken, userId) => {
-    console.log('Getting sendbird channel details');
-    console.log(localToken);
-    console.log(userId);
-    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
-
-    console.log(`${API_URL}/chat/${userId}?token=${localToken.api_key}`);
-
-    const response = await fetch(
-      `${API_URL}/chat/${localToken._id}?token=${localToken.api_key}&contactId=${userId}`
-    );
-    const responseJson = await response.json();
-
-    console.log('Printing server results');
-    console.log(responseJson);
-
-    // Response should have .token and .channel
-    const chatClient = new Twilio.Chat.Client(responseJson.token);
-
-    currentChannel = '';
-    chatClient.getSubscribedChannels().then((paginator) => {
-      for (i = 0; i < paginator.items.length; i++) {
-        const channel = paginator.items[i];
-        console.log(`Channel: ${channel.friendlyName}`);
-        console.log(`Channel: ${channel.uniqueName}`);
-        if (channel.uniqueName == responseJson.channel) {
-          currentChannel = channel;
-        }
-      }
-    });
-  }; */
-
   async onSend(messages = []) {
     const promises = messages.map(msg => new Promise((resolve) => {
       this.channel.sendUserMessage(msg.text, resolve);
@@ -162,6 +130,38 @@ class ChatScreen extends Component {
     }));
     console.log('onReceive done');
   }
+
+  getTwilioToken = async (localToken, userId) => {
+    console.log('Getting Twilio data');
+    console.log(localToken);
+    console.log(userId);
+    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
+
+    console.log(`${API_URL}/chat/${userId}?token=${localToken.api_key}`);
+
+    const response = await fetch(
+      `${API_URL}/chat/${localToken._id}?token=${localToken.api_key}&contactId=${userId}`
+    );
+    const responseJson = await response.json();
+
+    console.log('Printing server results');
+    console.log(responseJson);
+
+    // Response should have .token and .channel
+    const chatClient = new Twilio.Chat.Client(responseJson.token);
+
+    let currentChannel = '';
+    chatClient.getSubscribedChannels().then((paginator) => {
+      for (i = 0; i < paginator.items.length; i++) {
+        const channel = paginator.items[i];
+        console.log(`Channel: ${channel.friendlyName}`);
+        console.log(`Channel: ${channel.uniqueName}`);
+        if (channel.uniqueName === responseJson.channel) {
+          currentChannel = channel;
+        }
+      }
+    });
+  };
 
   render() {
     return (
