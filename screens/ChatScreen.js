@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image
+  View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image, AsyncStorage
 } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 
@@ -45,123 +45,70 @@ class ChatScreen extends Component {
   async componentDidMount() {
     console.log('Chat screen');
 
-    /* this.setState({messages: []});
-
-    const { state, navigate } = this.props.navigation;
-
     const token = await AsyncStorage.getItem('hm_token');
-    console.log("HM Token:");
+    console.log('HM Token:');
     console.log(token);
 
     this.setState({
       hmToken: token
     });
 
-    //var channelData = await this.getSendBirdInfo(token, state.params.mentee._id);
+    const twilioToken = this.getTwilioToken()
+      .catch((error) => {
+        console.log(error);
+        this.setState({
+          // messages: [...this.state.messages, { body: `Error: ${error.message}` }],
+        });
+      });
 
-    this.sendBirdApp = new SendBird({appId: Config.SENDBIRD_APP_ID })
-    this.sendBirdApp.setErrorFirstCallback(true);
+    // this.setState({ twilioToken });
 
-    console.log("SendBird Channel on main:");
-    console.log(channelData.channel_url);
-
-    console.log("User id");
-    console.log(JSON.parse(token).user_id);
-
-    this.sbData = {
-      userId: JSON.parse(token).user_id,
-      url: channelData.channel_url
-    }
-
-    // TODO error handling
-    await new Promise(resolve => {
-      this.sendBirdApp.connect(this.sbData.userId, resolve);
-    });
-
-    this.channel = await pify(this.sendBirdApp.GroupChannel.getChannel)(this.sbData.url);
-
-    const channelHandler = new this.sendBirdApp.ChannelHandler();
-    channelHandler.onMessageReceived = this.onReceive;
-    this.sendBirdApp.addChannelHandler('ChatScreen');
-
-    // Get previous messages
-    const query = this.channel.createPreviousMessageListQuery();
-    const messages = await new Promise(resolve => {
-      query.load(30, false, (err, msgs) => {
-        resolve(msgs);
-      })
-    })
-
-    console.log("Map state");
-
-    // Map them to GiftedChat format
-    this.setState({
-      messages: messages.map(m => {
-        return {
-          _id: m.messageId.toString(),
-          text: m.message,
-          createdAt: m.createdAt,
-          user: {
-            _id: m.sender.userId
-          }
-        }
-      })
-    });
-
-    this.setState({ sendBirdApp: sendBirdApp });
-
-    console.log("Done mapping state"); */
+    this.initChatClient(twilioToken);
   }
 
-  async onSend(messages = []) {
-    const promises = messages.map(msg => new Promise((resolve) => {
-      this.channel.sendUserMessage(msg.text, resolve);
-    }));
-    await Promise.all(promises);
-    this.setState(previousState => ({
-      messages: previousState.messages.concat(messages),
-    }));
-  }
+  async getTwilioToken() {
+    console.log('Getting token data for Twilio');
 
-  async onReceive(messages) {
-    console.log('onReceive');
-    this.setState(previousState => ({
-      messages: previousState.messages.concat(messages),
-    }));
-    console.log('onReceive done');
-  }
+    const API_URL = 'http://10.91.28.70:8081';
 
-  getTwilioToken = async (localToken, userId) => {
-    console.log('Getting Twilio data');
-    console.log(localToken);
-    console.log(userId);
-    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
+    console.log('HM Token from getTwilioToken: ');
+    console.log(this.state.hmToken);
+    const localToken = JSON.parse(this.state.hmToken);
 
-    console.log(`${API_URL}/chat/${userId}?token=${localToken.api_key}`);
+    const requestUri = `${API_URL}/chat/token/${localToken._id}?token=${localToken.api_key}`;
+    console.log(requestUri);
 
-    const response = await fetch(
-      `${API_URL}/chat/${localToken._id}?token=${localToken.api_key}&contactId=${userId}`
-    );
+    const bodyData = { device: 'test' };
+
+    const response = await fetch(requestUri, { method: 'post', body: JSON.stringify(bodyData), headers: { 'Content-Type': 'application/json' } });
+    console.log(response);
+
     const responseJson = await response.json();
 
     console.log('Printing server results');
     console.log(responseJson);
 
-    // Response should have .token and .channel
-    const chatClient = new Twilio.Chat.Client(responseJson.token);
+    const twilioToken = responseJson.chat_token;
+    return twilioToken;
+  }
 
-    let currentChannel = '';
-    chatClient.getSubscribedChannels().then((paginator) => {
-      for (i = 0; i < paginator.items.length; i++) {
-        const channel = paginator.items[i];
-        console.log(`Channel: ${channel.friendlyName}`);
-        console.log(`Channel: ${channel.uniqueName}`);
-        if (channel.uniqueName === responseJson.channel) {
-          currentChannel = channel;
-        }
-      }
-    });
-  };
+  /*async initChatClient(token) {
+    const accessManager = new AccessManager(token);
+    const client = new Client(token);
+
+    // specify any handlers for events
+    accessManager.onTokenWillExpire = () => {
+      this.getTwilioToken().then(accessManager.updateToken);
+    };
+
+    client.onError = ({ error }) => console.log(error);
+    client.initialize();
+
+    // wait for sync to finish
+    client.onClientSynchronized = () => {
+      client.getUserChannels().then((channelPaginator) => console.log(channelPaginator.items));
+    };
+  }*/
 
   render() {
     return (
