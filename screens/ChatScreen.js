@@ -3,6 +3,11 @@ import {
   View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image, AsyncStorage
 } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
+import {
+  AccessManager,
+  Client,
+  Constants
+} from 'react-native-twilio-chat';
 
 const avatarImage = require('../assets/img_avatar.png');
 
@@ -92,7 +97,7 @@ class ChatScreen extends Component {
     return twilioToken;
   }
 
-  /*async initChatClient(token) {
+  async initChatClient(token) {
     const accessManager = new AccessManager(token);
     const client = new Client(token);
 
@@ -108,7 +113,7 @@ class ChatScreen extends Component {
     client.onClientSynchronized = () => {
       client.getUserChannels().then((channelPaginator) => console.log(channelPaginator.items));
     };
-  }*/
+  }
 
   render() {
     return (

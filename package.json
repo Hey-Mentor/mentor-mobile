@@ -15,6 +15,7 @@
     "react-native-gifted-chat": "^0.5.0",
     "react-native-parsed-text": "0.0.21",
     "react-native-renderer": "^15.5.3",
+    "react-native-twilio-chat": "^0.3.1",
     "react-native-vector-icons": "^6.1.0",
     "react-navigation": "^1.6.1",
     "react-test-renderer": "16.5.0",
