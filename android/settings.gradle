@@ -1,4 +1,6 @@
 rootProject.name = 'HeyMentor'
+include ':react-native-twilio-chat'
+project(':react-native-twilio-chat').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-twilio-chat/android')
 include ':react-native-config'
 project(':react-native-config').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-config/android')
 include ':react-native-vector-icons'

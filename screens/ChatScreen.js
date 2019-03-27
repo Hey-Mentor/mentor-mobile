@@ -3,11 +3,7 @@ import {
   View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image, AsyncStorage
 } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
-import {
-  AccessManager,
-  Client,
-  Constants
-} from 'react-native-twilio-chat';
+import { Client as TwilioChatClient } from 'twilio-chat';
 
 const avatarImage = require('../assets/img_avatar.png');
 
@@ -58,17 +54,16 @@ class ChatScreen extends Component {
       hmToken: token
     });
 
-    const twilioToken = this.getTwilioToken()
-      .catch((error) => {
+    const twilioToken = this.getTwilioToken().then((twilioToken) => {
+      this.initChatClient(twilioToken);
+    }).catch((error) => {
         console.log(error);
         this.setState({
           // messages: [...this.state.messages, { body: `Error: ${error.message}` }],
         });
       });
 
-    // this.setState({ twilioToken });
-
-    this.initChatClient(twilioToken);
+    // this.setState({ twilioToken });    
   }
 
   async getTwilioToken() {
@@ -98,21 +93,49 @@ class ChatScreen extends Component {
   }
 
   async initChatClient(token) {
-    const accessManager = new AccessManager(token);
-    const client = new Client(token);
+    console.log('initChatClient');
+    TwilioChatClient.create(token, {}).then((chatClient) => {
+      this.client = chatClient;
+      this.client.on('tokenAboutToExpire', () => {
+        this.getTwilioToken()
+          .then(newData => this.client.updateToken(newData))
+          .catch((err) => {
+            this.log.error('login', 'can\'t get token', err);
+          });
+      });
+      this.subscribeToAllChatClientEvents();
+    });
+  }
 
-    // specify any handlers for events
-    accessManager.onTokenWillExpire = () => {
-      this.getTwilioToken().then(accessManager.updateToken);
-    };
+  async subscribeToAllChatClientEvents() {
+    this.client.on('tokenAboutToExpire', obj => this.log.event('ChatClientHelper.client', 'tokenAboutToExpire', obj));
+    this.client.on('tokenExpired', obj => this.log.event('ChatClientHelper.client', 'tokenExpired', obj));
 
-    client.onError = ({ error }) => console.log(error);
-    client.initialize();
+    this.client.on('userSubscribed', obj => this.log.event('ChatClientHelper.client', 'userSubscribed', obj));
+    this.client.on('userUpdated', obj => this.log.event('ChatClientHelper.client', 'userUpdated', obj));
+    this.client.on('userUnsubscribed', obj => this.log.event('ChatClientHelper.client', 'userUnsubscribed', obj));
 
-    // wait for sync to finish
-    client.onClientSynchronized = () => {
-      client.getUserChannels().then((channelPaginator) => console.log(channelPaginator.items));
-    };
+    this.client.on('channelAdded', obj => this.log.event('ChatClientHelper.client', 'channelAdded', obj));
+    this.client.on('channelRemoved', obj => this.log.event('ChatClientHelper.client', 'channelRemoved', obj));
+    this.client.on('channelInvited', obj => this.log.event('ChatClientHelper.client', 'channelInvited', obj));
+    this.client.on('channelJoined', obj => this.log.event('ChatClientHelper.client', 'channelJoined', obj));
+    this.client.on('channelLeft', obj => this.log.event('ChatClientHelper.client', 'channelLeft', obj));
+    this.client.on('channelUpdated', obj => this.log.event('ChatClientHelper.client', 'channelUpdated', obj));
+
+    this.client.on('memberJoined', obj => this.log.event('ChatClientHelper.client', 'memberJoined', obj));
+    this.client.on('memberLeft', obj => this.log.event('ChatClientHelper.client', 'memberLeft', obj));
+    this.client.on('memberUpdated', obj => this.log.event('ChatClientHelper.client', 'memberUpdated', obj));
+
+    this.client.on('messageAdded', obj => this.log.event('ChatClientHelper.client', 'messageAdded', obj));
+    this.client.on('messageUpdated', obj => this.log.event('ChatClientHelper.client', 'messageUpdated', obj));
+    this.client.on('messageRemoved', obj => this.log.event('ChatClientHelper.client', 'messageRemoved', obj));
+
+    this.client.on('typingStarted', obj => this.log.event('ChatClientHelper.client', 'typingStarted', obj));
+    this.client.on('typingEnded', obj => this.log.event('ChatClientHelper.client', 'typingEnded', obj));
+
+    this.client.on('connectionStateChanged', obj => this.log.event('ChatClientHelper.client', 'connectionStateChanged', obj));
+    this.client.on('pushNotification', obj => this.log.event('ChatClientHelper.client', 'onPushNotification', obj));
+    console.log('Finished subscribing to all Twilio events');
   }
 
   render() {
