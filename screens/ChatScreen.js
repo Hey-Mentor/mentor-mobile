@@ -55,13 +55,12 @@ class ChatScreen extends Component {
     });
 
     const twilioToken = this.getTwilioToken().then((twilioToken) => {
-      this.initChatClient(twilioToken);
+      this.initChatClient(twilioToken).catch((error) => {
+        console.log(error);
+      });
     }).catch((error) => {
         console.log(error);
-        this.setState({
-          // messages: [...this.state.messages, { body: `Error: ${error.message}` }],
-        });
-      });
+    });
 
     // this.setState({ twilioToken });    
   }
@@ -94,8 +93,12 @@ class ChatScreen extends Component {
 
   async initChatClient(token) {
     console.log('initChatClient');
+    console.log('Token:');
+    console.log(token);
+
     TwilioChatClient.create(token, {}).then((chatClient) => {
       this.client = chatClient;
+      console.log('Created client...');
       this.client.on('tokenAboutToExpire', () => {
         this.getTwilioToken()
           .then(newData => this.client.updateToken(newData))
@@ -104,6 +107,9 @@ class ChatScreen extends Component {
           });
       });
       this.subscribeToAllChatClientEvents();
+    }).catch((error) =>{
+      console.log('Error while trying to create Twilio client');
+      console.log(error);
     });
   }
 
