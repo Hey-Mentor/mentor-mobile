@@ -44,13 +44,12 @@ class ChatScreen extends Component {
   });
 
   state = {
-    chatChannel: {},
-    hmToken: {}
+    hmToken: {},
+    messages: [],
   };
 
   async componentDidMount() {
     console.log('Chat screen');
-    console.log('Other user: ');
     console.log(this.props.navigation.state.params.mentee._id);
 
     const token = await AsyncStorage.getItem('hm_token');
@@ -58,19 +57,30 @@ class ChatScreen extends Component {
       hmToken: token
     });
 
-    this.getTwilioToken().then((twilioToken) => {
-      this.initChatClient(twilioToken);
+    const twilioToken = this.getTwilioToken().then((twilioToken) => {
+      this.initChatClient(twilioToken).catch((error) => {
+        console.log(error);
+      });
     }).catch((error) => {
       console.log(error);
     });
   }
 
+  async componentWillUnmount() {
+    this.client.shutdown();
+  }
+
   async onSend(message) {
-    console.log(message);
-    console.log('channel: ');
-    console.log(this.state.chatChannel);
-    console.log('end channel');
-    this.state.chatChannel.sendMessage(message[0].text);
+    // const token = this.state.twilioToken;
+    const localToken = JSON.parse(this.state.hmToken);
+    const channelName = `${localToken._id}.${this.props.navigation.state.params.mentee._id}`;
+
+    this.client
+      .getChannelByUniqueName(channelName)
+      .then((channel) => {
+        console.log(`Message: ${message[0].text}`);
+        channel.sendMessage(message[0].text);
+      });
   }
 
   async getChannelForChat(chatClient) {
@@ -78,31 +88,19 @@ class ChatScreen extends Component {
     const localToken = JSON.parse(this.state.hmToken);
     const channelName = `${localToken._id}.${this.props.navigation.state.params.mentee._id}`;
 
-    chatClient.getUserChannelDescriptors().then((paginator) => {
-      if (paginator.items.length === 0) {
-        console.log('No channels for this user');
-        this.createChannelWithUser(this.props.navigation.state.params.mentee._id);
-      }
-
+    return chatClient.getUserChannelDescriptors().then((paginator) => {
       // If this user has channels already, check if there is a channel
       // between current user and the user being messaged
-      let found = false;
       for (let i = 0; i < paginator.items.length; i += 1) {
         const channel = paginator.items[i];
         console.log(`Channel: ${channel.friendlyName}`);
         if (channel.uniqueName === channelName) {
           console.log(`Found correct channel: ${channel.uniqueName}`);
-          this.setState({ chatChannel: channel });
-          console.log('state:');
-          console.log(this.state);
-          found = true;
-          break;
+          return channel.getChannel();
         }
       }
 
-      if (!found) {
-        this.createChannelWithUser(this.props.navigation.state.params.mentee._id);
-      }
+      return this.createChannelWithUser(chatClient, this.props.navigation.state.params.mentee._id);
     });
   }
 
@@ -110,19 +108,13 @@ class ChatScreen extends Component {
     console.log('Getting token data for Twilio');
 
     const API_URL = 'http://10.91.28.70:8081';
-
-    console.log('HM Token from getTwilioToken: ');
-    console.log(this.state.hmToken);
     const localToken = JSON.parse(this.state.hmToken);
-
     const requestUri = `${API_URL}/chat/token/${localToken._id}?token=${localToken.api_key}`;
     console.log(requestUri);
 
+    // TODO: add device ID
     const bodyData = { device: 'test' };
-
     const response = await fetch(requestUri, { method: 'post', body: JSON.stringify(bodyData), headers: { 'Content-Type': 'application/json' } });
-    console.log(response);
-
     const responseJson = await response.json();
 
     console.log('Printing server results');
@@ -132,13 +124,13 @@ class ChatScreen extends Component {
     return twilioToken;
   }
 
-  async createChannelWithUser(user) {
+  async createChannelWithUser(chatClient, user) {
     console.log('Creating channel...');
     const localToken = JSON.parse(this.state.hmToken);
     console.log(`Chat between ${user} and ${localToken._id}`);
 
     const channelName = `${localToken._id}.${user}`;
-    this.state.chatClient.createChannel({
+    return chatClient.createChannel({
       uniqueName: channelName,
       friendlyName: channelName,
     }).then((channel) => {
@@ -162,18 +154,15 @@ class ChatScreen extends Component {
 
   async initChatClient(token) {
     console.log('initChatClient');
-    console.log('Token:');
-    console.log(token);
 
     TwilioChatClient.create(token, { logLevel: 'info' }).then((chatClient) => {
-      this.setState({ chatClient });
       this.client = chatClient;
-      console.log('Created client...');
+
       this.client.on('tokenAboutToExpire', () => {
         this.getTwilioToken()
           .then(newData => this.client.updateToken(newData))
           .catch((err) => {
-            console.log('login', 'can\'t get token', err);
+            console.log(`Error getting token on refresh: ${err}`);
           });
       });
 
@@ -189,13 +178,76 @@ class ChatScreen extends Component {
         console.log(`Joined channel ${channel.friendlyName}`);
       });
 
-      this.getChannelForChat(this.client);
+      // this.setupChatClient(this.client);
+      const localToken = JSON.parse(this.state.hmToken);
+      const channelName = `${localToken._id}.${this.props.navigation.state.params.mentee._id}`;
+
+      const channelPromise = this.client.getChannelByUniqueName(channelName);
+      channelPromise.then((channel) => {
+        channel.on('messageAdded', (message) => {
+          this.state.messages.push({
+            _id: 500,
+            text: `${message.body}`,
+            createdAt: new Date(),
+            user: {
+              _id: `${message.author}`,
+            }
+          });
+        });
+
+        channel.getMessages().then((messages) => {
+          const totalMessages = messages.items.length;
+          const localMessages = [];
+
+          for (let i = 0; i < totalMessages; i += 1) {
+            const message = messages.items[i];
+            console.log(`Author:${message.author}`);
+            console.log(`Body:${message.body}`);
+            console.log(`Date:${message.date}`);
+
+            const currMessage = {
+              _id: `${i}`,
+              text: `${message.body}`,
+              createdAt: new Date(),
+              user: {
+                _id: `${message.author}`,
+              },
+            };
+
+            localMessages.push(currMessage);
+          }
+
+          this.setState(previousState => ({
+            messages: previousState.messages.concat(localMessages),
+          }));
+        });
+      });
+
+      // const chatChannel = this.getChannelForChat(this.client);
+      // chatChannel.then((channelObj) => {
+      //   console.log(`Channel obj: ${JSON.stringify(channelObj)}`);
+      //   this.setState({ chatChannel: channelObj });
+      // });
 
       // this.subscribeToAllChatClientEvents(); TODO: getting logging failures here
     }).catch((error) => {
       console.log('Error while trying to create Twilio client');
       console.log(error);
     });
+  }
+
+  setupChatClient(client) {
+    const localToken = JSON.parse(this.state.hmToken);
+    const channelName = `${localToken._id}.${this.props.navigation.state.params.mentee._id}`;
+    this.client = client;
+    this.client
+      .getChannelByUniqueName(channelName)
+      .then(channel => channel)
+      .catch((error) => {
+        if (error.body.code === 50300) {
+          return this.client.createChannel({ uniqueName: channelName });
+        }
+      });
   }
 
   async subscribeToAllChatClientEvents() {
@@ -236,7 +288,7 @@ class ChatScreen extends Component {
           inverted={false}
           messages={this.state && this.state.messages}
           onSend={messages => this.onSend(messages)}
-          user={{ _id: this.sbData && this.sbData.userId }}
+          user={{ _id: 'user' }}
         />
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
       </View>
