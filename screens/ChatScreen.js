@@ -47,22 +47,33 @@ class ChatScreen extends Component {
     console.log('Chat screen');
 
     const token = await AsyncStorage.getItem('hm_token');
-    console.log('HM Token:');
-    console.log(token);
-
     this.setState({
       hmToken: token
     });
 
     this.getTwilioToken().then((twilioToken) => {
-      this.initChatClient(twilioToken).catch((error) => {
-        console.log(error);
-      });
+      this.initChatClient(twilioToken);
     }).catch((error) => {
       console.log(error);
     });
 
-    // this.setState({ twilioToken });    
+    // this.setState({ twilioToken });
+  }
+
+  async onSend(message) {
+    console.log(message);
+    console.log('Getting user channel descriptors...');
+    this.state.chatClient.getUserChannelDescriptors().then((paginator) => {
+      if (paginator.items.length === 0) {
+        console.log('No channels for this user');
+        this.createChannelWithUser('otherUser');
+      }
+
+      for (let i = 0; i < paginator.items.length; i += 1) {
+        const channel = paginator.items[i];
+        console.log(`Channel: ${channel.friendlyName}`);
+      }
+    });
   }
 
   async getTwilioToken() {
@@ -91,12 +102,40 @@ class ChatScreen extends Component {
     return twilioToken;
   }
 
+  async createChannelWithUser(user) {
+    console.log('Creating channel...');
+
+    // Join a previously created channel
+    this.state.chatClient.on('channelJoined', (channel) => {
+      console.log(`Joined channel ${channel.friendlyName}`);
+    });
+
+    this.state.chatClient.createChannel({
+      uniqueName: 'general3',
+      friendlyName: `Chat With ${user}`,
+    })
+      .then((channel) => {
+        console.log('Created channel');
+        channel.join().catch((err) => {
+          console.error(
+            `Couldn't join channel ${channel.friendlyName} because ${err}`
+          );
+        });
+
+        // Invite other user to your channel
+        channel.invite(user).then(() => {
+          console.log('Your friend has been invited!');
+        });
+      });
+  }
+
   async initChatClient(token) {
     console.log('initChatClient');
     console.log('Token:');
     console.log(token);
 
     TwilioChatClient.create(token, { logLevel: 'info' }).then((chatClient) => {
+      this.setState({ chatClient });
       this.client = chatClient;
       console.log('Created client...');
       this.client.on('tokenAboutToExpire', () => {
@@ -106,6 +145,15 @@ class ChatScreen extends Component {
             console.log('login', 'can\'t get token', err);
           });
       });
+
+      // Listen for new invitations to your Client
+      this.client.on('channelInvited', (channel) => {
+        console.log(`Invited to channel ${channel.friendlyName}`);
+        // Join the channel that you were invited to
+        // TODO: add a call to the backend to check if we should be joining this channel
+        channel.join();
+      });
+
       // this.subscribeToAllChatClientEvents(); TODO: getting logging failures here
     }).catch((error) => {
       console.log('Error while trying to create Twilio client');
