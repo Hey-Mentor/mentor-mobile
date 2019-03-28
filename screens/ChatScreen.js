@@ -43,8 +43,15 @@ class ChatScreen extends Component {
     )
   });
 
+  state = {
+    chatChannel: {},
+    hmToken: {}
+  };
+
   async componentDidMount() {
     console.log('Chat screen');
+    console.log('Other user: ');
+    console.log(this.props.navigation.state.params.mentee._id);
 
     const token = await AsyncStorage.getItem('hm_token');
     this.setState({
@@ -56,22 +63,45 @@ class ChatScreen extends Component {
     }).catch((error) => {
       console.log(error);
     });
-
-    // this.setState({ twilioToken });
   }
 
   async onSend(message) {
     console.log(message);
+    console.log('channel: ');
+    console.log(this.state.chatChannel);
+    console.log('end channel');
+    this.state.chatChannel.sendMessage(message[0].text);
+  }
+
+  async getChannelForChat(chatClient) {
     console.log('Getting user channel descriptors...');
-    this.state.chatClient.getUserChannelDescriptors().then((paginator) => {
+    const localToken = JSON.parse(this.state.hmToken);
+    const channelName = `${localToken._id}.${this.props.navigation.state.params.mentee._id}`;
+
+    chatClient.getUserChannelDescriptors().then((paginator) => {
       if (paginator.items.length === 0) {
         console.log('No channels for this user');
-        this.createChannelWithUser('otherUser');
+        this.createChannelWithUser(this.props.navigation.state.params.mentee._id);
       }
 
+      // If this user has channels already, check if there is a channel
+      // between current user and the user being messaged
+      let found = false;
       for (let i = 0; i < paginator.items.length; i += 1) {
         const channel = paginator.items[i];
         console.log(`Channel: ${channel.friendlyName}`);
+        if (channel.uniqueName === channelName) {
+          console.log(`Found correct channel: ${channel.uniqueName}`);
+          this.setState({ chatChannel: channel });
+          console.log('state:');
+          console.log(this.state);
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        this.createChannelWithUser(this.props.navigation.state.params.mentee._id);
       }
     });
   }
@@ -104,29 +134,30 @@ class ChatScreen extends Component {
 
   async createChannelWithUser(user) {
     console.log('Creating channel...');
+    const localToken = JSON.parse(this.state.hmToken);
+    console.log(`Chat between ${user} and ${localToken._id}`);
 
-    // Join a previously created channel
-    this.state.chatClient.on('channelJoined', (channel) => {
-      console.log(`Joined channel ${channel.friendlyName}`);
-    });
-
+    const channelName = `${localToken._id}.${user}`;
     this.state.chatClient.createChannel({
-      uniqueName: 'general3',
-      friendlyName: `Chat With ${user}`,
-    })
-      .then((channel) => {
-        console.log('Created channel');
-        channel.join().catch((err) => {
-          console.error(
-            `Couldn't join channel ${channel.friendlyName} because ${err}`
-          );
-        });
-
-        // Invite other user to your channel
-        channel.invite(user).then(() => {
-          console.log('Your friend has been invited!');
-        });
+      uniqueName: channelName,
+      friendlyName: channelName,
+    }).then((channel) => {
+      console.log('Created channel');
+      channel.join().catch((err) => {
+        console.error(
+          `Couldn't join channel ${channel.friendlyName} because ${err}`
+        );
       });
+
+      // Invite other user to your channel
+      channel.invite(user).then(() => {
+        console.log('Your friend has been invited!');
+      }).catch((error) => {
+        console.log(`Couldn't invite user: ${error}`);
+      });
+    }).catch((error) => {
+      console.log(`Error in creating channel: ${error}`);
+    });
   }
 
   async initChatClient(token) {
@@ -153,6 +184,12 @@ class ChatScreen extends Component {
         // TODO: add a call to the backend to check if we should be joining this channel
         channel.join();
       });
+
+      this.client.on('channelJoined', (channel) => {
+        console.log(`Joined channel ${channel.friendlyName}`);
+      });
+
+      this.getChannelForChat(this.client);
 
       // this.subscribeToAllChatClientEvents(); TODO: getting logging failures here
     }).catch((error) => {
