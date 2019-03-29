@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image, AsyncStorage
 } from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { Client as TwilioChatClient } from 'twilio-chat';
 
 const avatarImage = require('../assets/img_avatar.png');
@@ -50,7 +50,6 @@ class ChatScreen extends Component {
 
   async componentDidMount() {
     console.log('Chat screen');
-    console.log(this.props.navigation.state.params.mentee._id);
 
     const token = await AsyncStorage.getItem('hm_token');
     this.setState({
@@ -281,6 +280,20 @@ class ChatScreen extends Component {
     console.log('Finished subscribing to all Twilio events');
   }
 
+  renderBubble = props => (
+    <Bubble
+      {...props}
+      wrapperStyle={{
+        left: {
+          backgroundColor: '#c3c1f9',
+        },
+        right: {
+          backgroundColor: '#98f0ab',
+        },
+      }}
+    />
+  );
+
   render() {
     return (
       <View style={[styles.gcView]}>
@@ -289,6 +302,7 @@ class ChatScreen extends Component {
           messages={this.state && this.state.messages}
           onSend={messages => this.onSend(messages)}
           user={{ _id: 'user' }}
+          renderBubble={this.renderBubble}
         />
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
       </View>
