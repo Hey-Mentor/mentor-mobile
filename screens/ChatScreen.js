@@ -107,7 +107,6 @@ class ChatScreen extends Component {
   async getTwilioToken() {
     console.log('Getting token data for Twilio');
 
-    const API_URL = 'http://10.104.148.19:8081';
     const localToken = JSON.parse(this.state.hmToken);
     const requestUri = `${API_URL}/chat/token/${localToken._id}?token=${localToken.api_key}`;
     console.log(requestUri);
