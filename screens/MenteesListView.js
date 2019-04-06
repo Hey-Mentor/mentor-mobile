@@ -4,6 +4,7 @@ import {
   AsyncStorage
 } from 'react-native';
 import MenteeList from '../components/menteeList/MenteeList';
+import { API_URL } from '../config.js';
 
 class MenteeListView extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -68,7 +69,6 @@ class MenteeListView extends Component {
   }
 
   getMyProfile = async (token) => {
-    const API_URL = 'http://10.91.28.70:8081';
 
     console.log('Getting profile info');
     console.log(token);
@@ -94,8 +94,6 @@ class MenteeListView extends Component {
   constructContactItemsFromResponse = async (contactIds, token) => {
     console.log('Getting contacts');
     console.log(contactIds);
-
-    const API_URL = 'http://10.91.28.70:8081';
 
     const contactItems = [];
     const requestString = `${API_URL}/contacts/${token._id}?token=${token.api_key}`;
