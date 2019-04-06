@@ -24,18 +24,13 @@ class HomeAuth extends Component {
   };
 
   async componentDidMount() {
-    // AsyncStorage.clear();
+    AsyncStorage.clear();
     this.attemptLogin();
   }
 
   onButtonPress = () => {
     this.setState({ loading: true });
     this.facebookLogin();
-  };
-
-  onAuthComplete = () => {
-    // after user successfully logs in navigate to menteeListView page
-    this.attemptLogin();
   };
 
   getHeyMentorToken = async (token, authType) => {
@@ -67,7 +62,9 @@ class HomeAuth extends Component {
     const token = this.initFacebookLogin();
 
     if (token) {
-      this.onAuthComplete(this.props);
+      this.attemptLogin();
+    } else {
+      console.log('Did not get a login token');
     }
   };
 
@@ -97,6 +94,7 @@ class HomeAuth extends Component {
         ['fb_token', token],
         ['fb_id', responseJson.id]
       ]);
+
       this.setState({
         fbToken: token,
         loading: false
