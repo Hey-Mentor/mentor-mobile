@@ -9,6 +9,7 @@ import {
 import { Button } from 'react-native-elements';
 import { Facebook } from 'expo';
 import { API_URL } from '../config.js';
+import { Sentry } from 'react-native-sentry';
 
 const splashScreenImage = require('../assets/heymentorsplash.png');
 
