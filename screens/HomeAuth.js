@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { Facebook } from 'expo';
+import { API_URL } from '../config.js';
 
 const splashScreenImage = require('../assets/heymentorsplash.png');
 
@@ -28,7 +29,7 @@ class HomeAuth extends Component {
     // AsyncStorage.clear();
     const token = await AsyncStorage.getItem('fb_token');
     const hmToken = await AsyncStorage.getItem('hm_token');
-
+    
     console.log('Token: ');
     console.log(token);
 
@@ -92,7 +93,6 @@ class HomeAuth extends Component {
   };
 
   getHeyMentorToken = async (token, authType) => {
-    const API_URL = 'http://10.91.28.70:8081'; // 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
 
     console.log('Making GetToken request');
     console.log(`${API_URL}/register/${authType}?access_token=${token}`);
@@ -147,7 +147,7 @@ class HomeAuth extends Component {
       console.log(responseJson);
       console.log('Printed response.json()');
       console.log(`Facebook ID: ${responseJson.id}`);
-
+      
       await AsyncStorage.multiSet([
         ['fb_token', token],
         ['fb_id', responseJson.id]
