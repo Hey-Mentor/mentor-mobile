@@ -97,15 +97,21 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+<<<<<<< HEAD
     dexOptions {
         javaMaxHeapSize "2048M"
     }
 
+=======
+>>>>>>> master
     defaultConfig {
         applicationId "com.heymentor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+<<<<<<< HEAD
         multiDexEnabled true
+=======
+>>>>>>> master
         versionCode 1
         versionName "1.0"
         ndk {
@@ -142,9 +148,15 @@ android {
 }
 
 dependencies {
+<<<<<<< HEAD
     compile project(':react-native-twilio-chat')
     compile project(':react-native-vector-icons')
     compile project(':RCTTwilioChat')
+=======
+    compile project(':react-native-config')
+    compile project(':react-native-vector-icons')
+    compile project(':bugsnag-react-native')
+>>>>>>> master
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
