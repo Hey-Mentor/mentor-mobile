@@ -118,9 +118,9 @@ class ChatScreen extends Component {
   }
 
   async getMessage() {
-    // const channelName = this.getChannelName();
-    // const channelPromise = this.client.getChannelByUniqueName(channelName);
     this.channel.then((c) => {
+      c.on('messageAdded', message => this.updateLocalMessageStateSingle(message));
+
       /* c.on('messageAdded', (message) => {
         const localMessages = [];
         const currMessage = {
@@ -138,7 +138,7 @@ class ChatScreen extends Component {
         }));
       }).catch((error) => {
         console.log(`Could not find channel. ${error}`);
-      });*/
+      }); */
 
       console.log('Get some messages');
 
@@ -165,6 +165,14 @@ class ChatScreen extends Component {
         }));
       });
     });
+  }
+
+  async updateLocalMessageStateSingle(message) {
+    const messages = {
+      items: [message]
+    };
+
+    this.updateLocalMessageState(messages);
   }
 
   async updateLocalMessageState(messages) {
