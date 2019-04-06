@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { Client as TwilioChatClient } from 'twilio-chat';
+import { API_URL } from '../config.js';
 
 const avatarImage = require('../assets/img_avatar.png');
 
@@ -106,7 +107,7 @@ class ChatScreen extends Component {
   async getTwilioToken() {
     console.log('Getting token data for Twilio');
 
-    const API_URL = 'http://10.91.28.70:8081';
+    const API_URL = 'http://10.104.148.19:8081';
     const localToken = JSON.parse(this.state.hmToken);
     const requestUri = `${API_URL}/chat/token/${localToken._id}?token=${localToken.api_key}`;
     console.log(requestUri);
