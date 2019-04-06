@@ -5,6 +5,7 @@ import {
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { Client as TwilioChatClient } from 'twilio-chat';
 import { API_URL } from '../config.js';
+import { Sentry } from 'react-native-sentry';
 
 const avatarImage = require('../assets/img_avatar.png');
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MenteeDetails from '../components/menteeDetails/MenteeDetails';
+import { Sentry } from 'react-native-sentry';
 
 const headerTitleStyle = {
   flex: 1,
