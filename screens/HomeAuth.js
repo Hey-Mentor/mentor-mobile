@@ -25,7 +25,7 @@ class HomeAuth extends Component {
   };
 
   async componentDidMount() {
-    //AsyncStorage.clear();
+    // AsyncStorage.clear();
     const token = await AsyncStorage.getItem('fb_token');
     const hmToken = await AsyncStorage.getItem('hm_token');
 
@@ -92,7 +92,7 @@ class HomeAuth extends Component {
   };
 
   getHeyMentorToken = async (token, authType) => {
-    const API_URL = 'http://10.91.28.70:8081'; //'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
+    const API_URL = 'http://10.91.28.70:8081'; // 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
 
     console.log('Making GetToken request');
     console.log(`${API_URL}/register/${authType}?access_token=${token}`);
