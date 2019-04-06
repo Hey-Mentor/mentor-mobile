@@ -66,6 +66,7 @@ class ChatScreen extends Component {
       });
     }).catch((error) => {
       console.log(error);
+      Sentry.captureException(error);  
     });
   }
 
@@ -195,6 +196,7 @@ class ChatScreen extends Component {
         console.error(
           `Couldn't join channel ${channel.friendlyName} because ${err}`
         );
+        Sentry.captureException(err);  
       });
 
       // Invite other user to your channel
@@ -202,9 +204,11 @@ class ChatScreen extends Component {
         console.log('Your friend has been invited!');
       }).catch((error) => {
         console.log(`Couldn't invite user: ${error}`);
+        Sentry.captureException(error);  
       });
     }).catch((error) => {
       console.log(`Error in creating channel: ${error}`);
+      Sentry.captureException(error);  
     });
   }
 
@@ -219,6 +223,7 @@ class ChatScreen extends Component {
           .then(newData => this.client.updateToken(newData))
           .catch((err) => {
             console.log(`Error getting token on refresh: ${err}`);
+            Sentry.captureException(error);  
           });
       });
 
@@ -241,6 +246,7 @@ class ChatScreen extends Component {
     }).catch((error) => {
       console.log('Error while trying to create Twilio client');
       console.log(error);
+      Sentry.captureException(error);  
     });
   }
 
