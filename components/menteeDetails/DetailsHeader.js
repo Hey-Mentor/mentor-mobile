@@ -13,17 +13,20 @@ class DetailsHeader extends Component {
         flexDirection: 'row',
         padding: 16
       },
+      imageSection: {
+        flex: 1,
+        textAlign: 'left'
+      },
       headerSection: {
-        flex: 1
+        flex: 2,
+        textAlign: 'left'
       },
       headerText: {
-        textAlign: 'center',
         flex: 2,
         flexWrap: 'wrap',
-        fontSize: 30
+        fontSize: 24
       },
       messageText: {
-        textAlign: 'center',
         flex: 1,
         flexWrap: 'wrap'
       },
@@ -31,16 +34,9 @@ class DetailsHeader extends Component {
         fontWeight: 'bold'
       },
       headerImage: {
-        borderRadius: 75,
-        width: 150,
-        height: 150
-      },
-      messageBtn: {
-        fontSize: 18,
-        marginTop: 24,
-        marginBottom: 24,
-        padding: 15,
-        textAlign: 'center'
+        borderRadius: 50,
+        width: 100,
+        height: 100
       },
       messageColumn: {
         width: 118,
@@ -50,16 +46,20 @@ class DetailsHeader extends Component {
 
     return (
       <View id="detailsHeader" style={styles.detailsHeader}>
-        <View id="headerPicture" style={[styles.headerSection]}>
+        <View id="headerPicture" style={[styles.imageSection]}>
           <Image style={styles.headerImage} source={{ uri: this.props.image }} />
         </View>
         <View id="headerInfo" style={[styles.headerSection]}>
-          <Text style={[styles.headerText]}>{mentee.person.fname}</Text>
-          <Text style={[styles.messageText, styles.messageColumn]}>
-            <Text style={styles.messageDelay}>{this.props.delay}</Text>
-            {' '}
-since last message
-          </Text>
+          <Text style={[styles.headerText]}>{mentee.person.fname} {mentee.person.lname}</Text>
+
+          <Text>{mentee.school.name}</Text>
+          <Text>{mentee.school.grade} year</Text>
+
+          <Text style={[styles.messageText]}>
+                      <Text style={styles.messageDelay}>{this.props.delay}</Text>
+                      {' '}
+          since last message
+                    </Text>
         </View>
       </View>
     );

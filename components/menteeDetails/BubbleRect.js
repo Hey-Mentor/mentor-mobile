@@ -7,8 +7,7 @@ class BubbleRect extends Component {
       bubbleRect: {
         padding: 7,
         color: '#bdbdbd',
-        fontSize: 14,
-        alignSelf: 'flex-start'
+        fontSize: 16
       },
       highlight: {
         color: '#f2f2f2',

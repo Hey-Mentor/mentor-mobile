@@ -9,8 +9,7 @@ class BubbleList extends Component {
         width: 150
       },
       bubbleList: {
-        flexDirection: 'row',
-        flexWrap: 'wrap'
+
       }
     });
 

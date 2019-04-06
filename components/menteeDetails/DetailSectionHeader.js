@@ -8,24 +8,16 @@ class DetailSectionHeader extends Component {
         flexDirection: 'row'
       },
       sectionHeader: {
-        color: '#19AFE5',
-        // fontFamily: 'Roboto',
-        fontSize: 18,
-        paddingBottom: 5
-      },
-      hr: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#bdbdbd',
-        marginLeft: 15,
-        height: 14,
-        flex: 1
+        color: '#8A8A8F',
+        fontSize: 16,
+        paddingBottom: 8,
+        paddingLeft: 16
       }
     });
 
     return (
       <View style={styles.container}>
         <Text style={styles.sectionHeader}>{this.props.title}</Text>
-        <View style={styles.hr} />
       </View>
     );
   }

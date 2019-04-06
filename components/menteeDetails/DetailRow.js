@@ -5,26 +5,29 @@ class DetailRow extends Component {
   render() {
     const styles = StyleSheet.create({
       detailRow: {
-        flexDirection: 'row',
-        paddingBottom: 7,
-        marginLeft: 16
+        paddingBottom: 24,
+        paddingTop: 24,
+        paddingRight: 16,
+        borderBottomWidth: this.props.last ? 0 : 1,
+        borderBottomColor: '#E5E5E5',
+        borderStyle: 'solid'
       },
       detailKey: {
-        paddingRight: 7,
-        fontWeight: 'bold',
+        color: '#8A8A8F',
+        fontSize: 16,
+        paddingBottom: 8,
         width: this.props.wide ? 110 : 84
       },
       detailText: {
-        color: '#4f4f4f',
-        fontSize: 14,
-        flex: 1,
-        flexWrap: 'wrap'
+        color: '#222222',
+        fontSize: 16,
+        lineHeight: 24
       }
     });
 
     return (
       <View style={styles.detailRow}>
-        <Text style={[styles.detailKey, styles.detailText]}>{this.props.name}</Text>
+        <Text style={[styles.detailKey]}>{this.props.name}</Text>
         <Text style={[styles.detailText]}>{this.props.value}</Text>
       </View>
     );

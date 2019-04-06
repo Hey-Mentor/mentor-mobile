@@ -23,37 +23,50 @@ class MenteeDetails extends Component {
 
     const styles = StyleSheet.create({
       scrollView: {
-        backgroundColor: '#ffffff'
+        backgroundColor: '#F2F2F2'
       },
       detailSectionList: {
-        marginLeft: 21,
-        marginRight: 20,
         paddingBottom: 20
-      }
+      },
+      detailSectionInfo: {
+        backgroundColor: '#ffffff',
+        paddingBottom: 15,
+        paddingTop: 15,
+        paddingLeft: 16,
+        paddingRight: 0,
+        marginBottom: 24
+       }
     });
 
     return (
       <ScrollView style={styles.scrollView}>
         <DetailsHeader image="https://www.w3schools.com/howto/img_avatar.png" delay="0 days" mentee={mentee} />
         <View id="detailSectionList" style={styles.detailSectionList}>
-          <DetailSectionHeader title="Demographics" />
-          <DetailRow name="Gender" value={mentee.demo.gender} />
-          <DetailRow name="Race" value={mentee.demo.race} />
-          <DetailRow name="Ethnicity" value={mentee.demo.eth} />
 
-          <DetailSectionHeader title="School" />
-          <DetailRow name="High School" value={mentee.school.name} />
-          <DetailRow name="Year" value={mentee.school.grade} />
-          <DetailRow name="GPA" value={mentee.school.gpa} />
-          <DetailRow name="SAT" value={mentee.school.sat} />
+          <DetailSectionHeader title="Score" />
+          <View style={styles.detailSectionInfo}>
+              <DetailRow name="GPA" value={mentee.school.gpa} />
+              <DetailRow name="SAT" value={mentee.school.sat} last="true" />
+          </View>
 
           <DetailSectionHeader title="Bio" />
-          <DetailRow wide name="Interests" value={mentee.gen_interest} />
-          <DetailRow wide name="Activities" value={mentee.spec_interests.join(', ')} />
-          <DetailRow wide name="Sports" value={mentee.sports.join(', ')} />
+          <View style={styles.detailSectionInfo}>
+            <DetailRow wide name="Interests" value={mentee.gen_interest} />
+            <DetailRow wide name="Activities" value={mentee.spec_interests.join(', ')} />
+            <DetailRow wide name="Sports" value={mentee.sports.join(', ')} last="true" />
+          </View>
 
           <DetailSectionHeader title="Areas of support" />
-          <BubbleList items={supportAreas} />
+          <View style={styles.detailSectionInfo}>
+            <BubbleList items={supportAreas} />
+          </View>
+
+          <DetailSectionHeader title="Demographics" />
+          <View style={styles.detailSectionInfo}>
+              <DetailRow name="Gender" value={mentee.demo.gender} />
+              <DetailRow name="Race" value={mentee.demo.race} />
+              <DetailRow name="Ethnicity" value={mentee.demo.eth} last="true" />
+          </View>
         </View>
       </ScrollView>
     );
