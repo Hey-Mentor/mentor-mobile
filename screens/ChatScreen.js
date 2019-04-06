@@ -57,7 +57,7 @@ class ChatScreen extends Component {
       hmToken: token
     });
 
-    const twilioToken = this.getTwilioToken().then((twilioToken) => {
+    this.getTwilioToken().then((twilioToken) => {
       this.initChatClient(twilioToken).catch((error) => {
         console.log(error);
       });
@@ -120,27 +120,6 @@ class ChatScreen extends Component {
   async getMessage() {
     this.channel.then((c) => {
       c.on('messageAdded', message => this.updateLocalMessageStateSingle(message));
-
-      /* c.on('messageAdded', (message) => {
-        const localMessages = [];
-        const currMessage = {
-          _id: `${message.index}`,
-          text: `${message.body}`,
-          createdAt: `${message.timestamp}`,
-          user: {
-            _id: `${message.author}`,
-          },
-        };
-
-        localMessages.push(currMessage);
-        this.setState(previousState => ({
-          messages: previousState.messages.concat(localMessages),
-        }));
-      }).catch((error) => {
-        console.log(`Could not find channel. ${error}`);
-      }); */
-
-      console.log('Get some messages');
 
       c.getMessages().then((messages) => {
         const totalMessages = messages.items.length;
