@@ -57,6 +57,8 @@ class ChatScreen extends Component {
       hmToken: token
     });
 
+    this.state.id = `${JSON.parse(token)._id}`;
+
     this.getTwilioToken().then((twilioToken) => {
       this.initChatClient(twilioToken).catch((error) => {
         console.log(error);
@@ -293,7 +295,7 @@ class ChatScreen extends Component {
           inverted={false}
           messages={this.state && this.state.messages}
           onSend={messages => this.onSend(messages)}
-          user={{ _id: 'user' }}
+          user={{ _id: this.state.id }}
           renderBubble={this.renderBubble}
         />
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
