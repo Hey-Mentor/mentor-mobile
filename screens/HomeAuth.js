@@ -26,7 +26,7 @@ class HomeAuth extends Component {
   };
 
   async componentDidMount() {
-    //AsyncStorage.clear();
+    // AsyncStorage.clear();
     const token = await AsyncStorage.getItem('fb_token');
     const hmToken = await AsyncStorage.getItem('hm_token');
     
