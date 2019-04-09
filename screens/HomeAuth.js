@@ -18,9 +18,7 @@ class HomeAuth extends Component {
   };
 
   state = {
-    loading: false,
-    fbToken: null,
-    hmToken: {}
+    loading: false
   };
 
   async componentDidMount() {
@@ -40,98 +38,119 @@ class HomeAuth extends Component {
       `${API_URL}/register/${authType}?access_token=${token}`,
       { method: 'post' }
     );
-    let responseJson = {};
+
+    console.log(`Response: ${response}`);
+
     try {
-      responseJson = await response.json();
+      const responseJson = await response.json();
+      if (responseJson && !responseJson.error) {
+        console.log('Saving HM token to AsyncStorage');
+        await AsyncStorage.setItem('hm_token', JSON.stringify(responseJson));
+      }
+      console.log('Got response from API: ');
       console.log(responseJson);
+      return true;
     } catch (e) {
       console.log('Error authenticating with fed token');
       console.log(e);
     }
-
-    if (responseJson && !responseJson.error) {
-      await AsyncStorage.setItem('hm_token', JSON.stringify(responseJson));
-      return responseJson;
-    }
-
-    console.log('Error authenticating with fed token');
-    return null;
+    return false;
   };
+
+  async getFacebookData(token) {
+    // API call to FB Graph API. Will add more code to fetch social media data
+    const response = await fetch(
+      `https://graph.facebook.com/me?access_token=${token}`
+    );
+    const responseJson = await response.json();
+    console.log(`Facebook ID: ${responseJson.id}`);
+    this.fbId = `${responseJson.id}`;
+
+    return responseJson;
+  }
 
   facebookLogin = async () => {
-    const token = this.initFacebookLogin();
+    const tokenPromise = this.initFacebookLogin();
 
-    if (token) {
-      this.attemptLogin();
-    } else {
-      console.log('Did not get a login token');
-    }
+    tokenPromise.then((token) => {
+      if (token) {
+        this.attemptLogin();
+      } else {
+        console.log('Did not get a login token');
+      }
+    }).catch((error) => {
+      console.log('Error while getting facebook token');
+      console.log(error);
+    });
   };
 
-  initFacebookLogin = async () => {
+  async initFacebookLogin() {
     const FACEBOOK_APP_ID = '1650628351692070';
 
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
+    return Facebook.logInWithReadPermissionsAsync(
       FACEBOOK_APP_ID,
       {
         permissions: ['public_profile', 'email', 'user_friends']
       }
-    );
+    ).then((response) => {
+      console.log('Received response from Facebook');
+      console.log(response.type);
+      console.log(response.token);
+      console.log('Done');
 
-    if (type === 'cancel') {
-      this.setState({ loading: false });
-    }
+      if (response.type === 'cancel') {
+        this.setState({ loading: false });
+      }
 
-    if (type === 'success') {
-      // API call to FB Graph API. Will add more code to fetch social media data
-      const response = await fetch(
-        `https://graph.facebook.com/me?access_token=${token}`
-      );
-      const responseJson = await response.json();
-      console.log(`Facebook ID: ${responseJson.id}`);
+      if (response.type === 'success') {
+        AsyncStorage.setItem('fb_token', response.token);
+        this.getFacebookData(response.token).then((responseJson) => {
+          this.setState({
+            // fbId: responseJson.Id,
+            loading: false
+          });
+        }).catch();
 
-      await AsyncStorage.multiSet([
-        ['fb_token', token],
-        ['fb_id', responseJson.id]
-      ]);
+        return response.token;
+      }
 
-      this.setState({
-        fbToken: token,
-        loading: false
-      });
-    }
-
-    return token;
-  };
+      return null;
+    }).catch();
+  }
 
   async attemptLogin() {
-    const token = await AsyncStorage.getItem('fb_token');
-    const hmToken = await AsyncStorage.getItem('hm_token');
-
-    this.setState({
-      fbToken: token,
-      hmToken
-    });
-
     let headerTitle = 'Mentors';
-
-    if (this.state.hmToken !== null) {
+    const localHmToken = await AsyncStorage.getItem('hm_token');
+    if (localHmToken !== null) {
       console.log('Already have HM token');
-      const userType = JSON.parse(this.state.hmToken).user_type;
+
+      const userType = JSON.parse(localHmToken).user_type;
       if (userType === 'mentor') {
         headerTitle = 'Mentees';
       }
       this.props.navigation.navigate('menteeListView', { headerTitle });
     } else {
       console.log('Getting HM token');
-      if (this.state.fbToken !== null) {
-        const hmDone = await this.getHeyMentorToken(this.state.fbToken, 'facebook');
-        const userType = JSON.parse(hmDone).user_type;
-        if (userType === 'mentor') {
-          headerTitle = 'Mentees';
-        }
-
-        this.props.navigation.navigate('menteeListView', { headerTitle });
+      const token = await AsyncStorage.getItem('fb_token');
+      if (token !== null) {
+        const hmPromise = this.getHeyMentorToken(token, 'facebook');
+        hmPromise.then((success) => {
+          if (success) {
+            AsyncStorage.getItem('hm_token').then((hmToken) => {
+              const userType = JSON.parse(hmToken).user_type;
+              if (userType === 'mentor') {
+                headerTitle = 'Mentees';
+              }
+              this.props.navigation.navigate('menteeListView', { headerTitle });
+            }).catch((error) => {
+              console.log(`Error in getting HM token from local storage: ${error}`);
+            });
+          } else {
+            console.log('Failed to get HM token from existing FB token');
+          }
+        }).catch((error) => {
+          console.log(`Error in getting HM token: ${error}`);
+        });
       }
     }
   }
