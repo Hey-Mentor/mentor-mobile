@@ -10,6 +10,10 @@ For more on the Hey Mentor organization, including how you can get involved, ple
 
 This mobile application is used by the Hey Mentor organization to facilitate communication between mentors and mentees. 
 
+## UI Mock Up 
+
+The latest UI design can be found [here](https://www.figma.com/file/2TOYmQtfx3HTq11em2wZ81/Hey-Mentor---vNext?node-id=0%3A1)
+
 ## Running the Prototype 
 
 1. Download or clone GitHub repository 
