@@ -7,6 +7,7 @@ import MenteesListView from './screens/MenteesListView';
 import Settings from './screens/Settings';
 import ChatScreen from './screens/ChatScreen';
 
+import { Sentry } from 'react-native-sentry';
 export default class App extends React.Component {
   render() {
     const MainNavigator = StackNavigator({

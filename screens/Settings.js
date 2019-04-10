@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { ScrollView, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
+import { Sentry } from 'react-native-sentry';
 
 class Settings extends PureComponent {
   handleLogout = () => {

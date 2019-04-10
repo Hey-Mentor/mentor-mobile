@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import MenteeList from '../components/menteeList/MenteeList';
 import { API_URL } from '../config.js';
+import { Sentry } from 'react-native-sentry';
 
 class MenteeListView extends Component {
   static navigationOptions = ({ navigation }) => ({
