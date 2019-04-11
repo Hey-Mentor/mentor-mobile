@@ -32,27 +32,19 @@ class HomeAuth extends Component {
   };
 
   getHeyMentorToken = async (token, authType) => {
-    console.log(`${API_URL}/register/${authType}?access_token=${token}`);
-
     const response = await fetch(
       `${API_URL}/register/${authType}?access_token=${token}`,
       { method: 'post' }
     );
 
-    console.log(`Response: ${response}`);
-
     try {
       const responseJson = await response.json();
       if (responseJson && !responseJson.error) {
-        console.log('Saving HM token to AsyncStorage');
         await AsyncStorage.setItem('hm_token', JSON.stringify(responseJson));
       }
-      console.log('Got response from API: ');
-      console.log(responseJson);
       return true;
     } catch (e) {
-      console.log('Error authenticating with fed token');
-      console.log(e);
+      // TODO: Add Sentry logs
     }
     return false;
   };
@@ -63,7 +55,6 @@ class HomeAuth extends Component {
       `https://graph.facebook.com/me?access_token=${token}`
     );
     const responseJson = await response.json();
-    console.log(`Facebook ID: ${responseJson.id}`);
     this.fbId = `${responseJson.id}`;
 
     return responseJson;
@@ -75,12 +66,9 @@ class HomeAuth extends Component {
     tokenPromise.then((token) => {
       if (token) {
         this.attemptLogin();
-      } else {
-        console.log('Did not get a login token');
       }
     }).catch((error) => {
-      console.log('Error while getting facebook token');
-      console.log(error);
+      // TODO: Add Sentry logs
     });
   };
 
@@ -93,11 +81,6 @@ class HomeAuth extends Component {
         permissions: ['public_profile', 'email', 'user_friends']
       }
     ).then((response) => {
-      console.log('Received response from Facebook');
-      console.log(response.type);
-      console.log(response.token);
-      console.log('Done');
-
       if (response.type === 'cancel') {
         this.setState({ loading: false });
       }
@@ -115,22 +98,21 @@ class HomeAuth extends Component {
       }
 
       return null;
-    }).catch();
+    }).catch(
+      // TODO: Add Sentry logs
+    );
   }
 
   async attemptLogin() {
     let headerTitle = 'Mentors';
     const localHmToken = await AsyncStorage.getItem('hm_token');
     if (localHmToken !== null) {
-      console.log('Already have HM token');
-
       const userType = JSON.parse(localHmToken).user_type;
       if (userType === 'mentor') {
         headerTitle = 'Mentees';
       }
       this.props.navigation.navigate('menteeListView', { headerTitle });
     } else {
-      console.log('Getting HM token');
       const token = await AsyncStorage.getItem('fb_token');
       if (token !== null) {
         const hmPromise = this.getHeyMentorToken(token, 'facebook');
@@ -143,13 +125,13 @@ class HomeAuth extends Component {
               }
               this.props.navigation.navigate('menteeListView', { headerTitle });
             }).catch((error) => {
-              console.log(`Error in getting HM token from local storage: ${error}`);
+              // TODO: Add sentry logs
             });
           } else {
-            console.log('Failed to get HM token from existing FB token');
+            // TODO: Add sentry logs
           }
         }).catch((error) => {
-          console.log(`Error in getting HM token: ${error}`);
+          // TODO: Add sentry logs
         });
       }
     }

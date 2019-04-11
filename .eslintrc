@@ -11,7 +11,7 @@
     "comma-dangle": "off",
     "react/prefer-es6-class": ["on", "always"],
     "react/destructuring-assignment": ["on", "never"],
-    "no-console": "off",
+    "no-console": 2,
     "no-underscore-dangle": "off",
     "react/prefer-stateless-function": "off",
     "linebreak-style": [ 0 ]
