@@ -77,14 +77,12 @@ class ChatScreen extends Component {
     return chatClient.getUserChannelDescriptors().then((paginator) => {
       // If this user has channels already, check if there is a channel
       // between current user and the user being messaged
-      for (let i = 0; i < paginator.items.length; i += 1) {
-        const channel = paginator.items[i];
-        if (channel.uniqueName === channelName) {
-          return channel.getChannel();
-        }
-      }
+      const reducer = (accumulator, currentChannel) => (currentChannel.uniqueName === channelName
+        ? currentChannel.getChannel()
+        : accumulator);
 
-      return this.createChannelWithUser(chatClient);
+      const channel = paginator.items.reduce(reducer);
+      return channel || this.createChannelWithUser(chatClient);
     });
   }
 
@@ -110,26 +108,7 @@ class ChatScreen extends Component {
       c.on('messageAdded', message => this.updateLocalMessageStateSingle(message));
 
       c.getMessages().then((messages) => {
-        const totalMessages = messages.items.length;
-        const localMessages = [];
-
-        for (let i = 0; i < totalMessages; i += 1) {
-          const message = messages.items[i];
-          const currMessage = {
-            _id: `${message.index}`,
-            text: `${message.body}`,
-            createdAt: `${message.timestamp}`,
-            user: {
-              _id: `${message.author}`,
-            },
-          };
-
-          localMessages.push(currMessage);
-        }
-
-        this.setState(previousState => ({
-          messages: previousState.messages.concat(localMessages),
-        }));
+        this.updateLocalMessageState(messages);
       });
     });
   }
@@ -143,22 +122,14 @@ class ChatScreen extends Component {
   }
 
   async updateLocalMessageState(messages) {
-    const totalMessages = messages.items.length;
-    const localMessages = [];
-
-    for (let i = 0; i < totalMessages; i += 1) {
-      const message = messages.items[i];
-      const currMessage = {
-        _id: `${message.index}`,
-        text: `${message.body}`,
-        createdAt: `${message.timestamp}`,
-        user: {
-          _id: `${message.author}`,
-        },
-      };
-
-      localMessages.push(currMessage);
-    }
+    const localMessages = messages.items.map(message => ({
+      _id: `${message.index}`,
+      text: `${message.body}`,
+      createdAt: `${message.timestamp}`,
+      user: {
+        _id: `${message.author}`,
+      },
+    }));
 
     this.setState(previousState => ({
       messages: previousState.messages.concat(localMessages),
@@ -207,13 +178,15 @@ class ChatScreen extends Component {
 
       this.channel = this.getChannelForChat(this.client);
       this.getMessage();
-      // this.subscribeToAllChatClientEvents(); TODO: getting logging failures here
+      // TODO: Decide which of these callbacks we need
+      // this.subscribeToAllChatClientEvents();
     }).catch((error) => {
       // TODO: add sentry logging
     });
   }
 
   async subscribeToAllChatClientEvents() {
+    // This function is not currently called. We should decide which callbacks we want to handle, and how
     this.client.on('tokenAboutToExpire', obj => console.log('ChatClientHelper.client', 'tokenAboutToExpire', obj));
     this.client.on('tokenExpired', obj => console.log('ChatClientHelper.client', 'tokenExpired', obj));
 

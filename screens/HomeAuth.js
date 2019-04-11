@@ -114,7 +114,7 @@ class HomeAuth extends Component {
       this.props.navigation.navigate('menteeListView', { headerTitle });
     } else {
       const token = await AsyncStorage.getItem('fb_token');
-      if (token !== null) {
+      if (token) {
         const hmPromise = this.getHeyMentorToken(token, 'facebook');
         hmPromise.then((success) => {
           if (success) {
