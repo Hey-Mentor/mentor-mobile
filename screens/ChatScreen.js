@@ -108,7 +108,7 @@ class ChatScreen extends Component {
   }
 
   async getMessage() {
-    this.channel.then((c) => {
+    await this.channel.then((c) => {
       c.on('messageAdded', message => this.updateLocalMessageStateSingle(message));
 
       c.getMessages().then((messages) => {
@@ -162,7 +162,7 @@ class ChatScreen extends Component {
   }
 
   async initChatClient(token) {
-    TwilioChatClient.create(token, { logLevel: 'info' }).then((chatClient) => {
+    await TwilioChatClient.create(token, { logLevel: 'info' }).then((chatClient) => {
       this.client = chatClient;
 
       this.client.on('tokenAboutToExpire', () => {
