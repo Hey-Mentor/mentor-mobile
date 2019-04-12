@@ -66,13 +66,7 @@ class HomeAuth extends Component {
     const tokenPromise = await this.initFacebookLogin();
 
     if (tokenPromise) {
-      await tokenPromise.then((token) => {
-        if (token) {
-          this.attemptLogin();
-        }
-      }).catch((error) => {
-        // TODO: Add Sentry logs
-      });
+      this.attemptLogin();
     }
   };
 
@@ -117,24 +111,20 @@ class HomeAuth extends Component {
     } else {
       const token = await AsyncStorage.getItem('fb_token');
       if (token) {
-        const hmPromise = await this.getHeyMentorToken(token, 'facebook');
-        hmPromise.then((success) => {
-          if (success) {
-            AsyncStorage.getItem('hm_token').then((hmToken) => {
-              const userType = JSON.parse(hmToken).user_type;
-              if (userType === 'mentor') {
-                headerTitle = 'Mentees';
-              }
-              this.props.navigation.navigate('menteeListView', { headerTitle });
-            }).catch((error) => {
-              // TODO: Add sentry logs
-            });
-          } else {
+        const success = await this.getHeyMentorToken(token, 'facebook');
+        if (success) {
+          await AsyncStorage.getItem('hm_token').then((hmToken) => {
+            const userType = JSON.parse(hmToken).user_type;
+            if (userType === 'mentor') {
+              headerTitle = 'Mentees';
+            }
+            this.props.navigation.navigate('menteeListView', { headerTitle });
+          }).catch((error) => {
             // TODO: Add sentry logs
-          }
-        }).catch((error) => {
+          });
+        } else {
           // TODO: Add sentry logs
-        });
+        }
       }
     }
   }
