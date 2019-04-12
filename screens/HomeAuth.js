@@ -8,9 +8,11 @@ import {
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { Facebook } from 'expo';
-import { API_URL } from '../config.js';
+import { CONFIG } from '../config.js';
 
 const splashScreenImage = require('../assets/heymentorsplash.png');
+
+const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
 class HomeAuth extends Component {
   static navigationOptions = {
@@ -61,22 +63,22 @@ class HomeAuth extends Component {
   }
 
   facebookLogin = async () => {
-    const tokenPromise = this.initFacebookLogin();
+    const tokenPromise = await this.initFacebookLogin();
 
-    tokenPromise.then((token) => {
-      if (token) {
-        this.attemptLogin();
-      }
-    }).catch((error) => {
-      // TODO: Add Sentry logs
-    });
+    if (tokenPromise) {
+      await tokenPromise.then((token) => {
+        if (token) {
+          this.attemptLogin();
+        }
+      }).catch((error) => {
+        // TODO: Add Sentry logs
+      });
+    }
   };
 
   async initFacebookLogin() {
-    const FACEBOOK_APP_ID = '1650628351692070';
-
     return Facebook.logInWithReadPermissionsAsync(
-      FACEBOOK_APP_ID,
+      CONFIG.FACEBOOK_APP_ID,
       {
         permissions: ['public_profile', 'email', 'user_friends']
       }
@@ -115,7 +117,7 @@ class HomeAuth extends Component {
     } else {
       const token = await AsyncStorage.getItem('fb_token');
       if (token) {
-        const hmPromise = this.getHeyMentorToken(token, 'facebook');
+        const hmPromise = await this.getHeyMentorToken(token, 'facebook');
         hmPromise.then((success) => {
           if (success) {
             AsyncStorage.getItem('hm_token').then((hmToken) => {

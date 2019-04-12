@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image, AsyncStorage
+  View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image, AsyncStorage, YellowBox
 } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { Client as TwilioChatClient } from 'twilio-chat';
-import { API_URL } from '../config.js';
+import { CONFIG } from '../config.js';
+
+YellowBox.ignoreWarnings(['Setting a timer for a long period', 'Deprecation warning: value provided is not in a recognized RFC2822']);
 
 const avatarImage = require('../assets/img_avatar.png');
+
+const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
 const headerTitleStyle = {
   flex: 1,
@@ -57,7 +61,7 @@ class ChatScreen extends Component {
 
     this.state.id = `${JSON.parse(token)._id}`;
 
-    this.getTwilioToken().then((twilioToken) => {
+    await this.getTwilioToken().then((twilioToken) => {
       this.initChatClient(twilioToken).catch((error) => {
         // TODO: add sentry logging
       });
@@ -67,7 +71,7 @@ class ChatScreen extends Component {
   }
 
   async onSend(message) {
-    this.channel.then((c) => {
+    await this.channel.then((c) => {
       c.sendMessage(message[0].text);
     });
   }

@@ -4,7 +4,9 @@ import {
   AsyncStorage
 } from 'react-native';
 import MenteeList from '../components/menteeList/MenteeList';
-import { API_URL } from '../config.js';
+import { CONFIG } from '../config.js';
+
+const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
 class MenteeListView extends Component {
   static navigationOptions = ({ navigation }) => ({

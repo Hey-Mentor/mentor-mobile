@@ -14,7 +14,8 @@
     "no-console": 2,
     "no-underscore-dangle": "off",
     "react/prefer-stateless-function": "off",
-    "linebreak-style": [ 0 ]
+    "linebreak-style": [ 0 ],
+    "import/extensions": "off"
   },
   "globals": {
     "fetch": false
