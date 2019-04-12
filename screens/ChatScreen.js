@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image, AsyncStorage, YellowBox
+  View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image, AsyncStorage, YellowBox, ActivityIndicator
 } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { Client as TwilioChatClient } from 'twilio-chat';
@@ -51,6 +51,7 @@ class ChatScreen extends Component {
   state = {
     hmToken: {},
     messages: [],
+    loading: true,
   };
 
   async componentDidMount() {
@@ -62,12 +63,14 @@ class ChatScreen extends Component {
     this.state.id = `${JSON.parse(token)._id}`;
 
     await this.getTwilioToken().then((twilioToken) => {
-      this.initChatClient(twilioToken).catch((error) => {
+      return this.initChatClient(twilioToken).catch((error) => {
         // TODO: add sentry logging
       });
     }).catch((error) => {
       // TODO: add sentry logging
     });
+
+    this.setState({ loading: false });
   }
 
   async onSend(message) {
@@ -235,10 +238,13 @@ class ChatScreen extends Component {
   );
 
   render() {
+    const animating = this.state.loading;
     return (
       <View style={[styles.gcView]}>
+        <ActivityIndicator animating={animating} />
         <GiftedChat
           inverted={false}
+          keyboardShouldPersistTaps="never"
           messages={this.state && this.state.messages}
           onSend={messages => this.onSend(messages)}
           user={{ _id: this.state.id }}

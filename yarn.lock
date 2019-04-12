@@ -753,10 +753,10 @@
     babel-runtime "^6.23.0"
     exec-async "^2.2.0"
 
-"@expo/react-native-action-sheet@^1.0.1":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@expo/react-native-action-sheet/-/react-native-action-sheet-1.1.2.tgz#4c2f9b8190678799552e83134a975ec370a694d9"
-  integrity sha512-//2EvHVBFVGSAzuJvG0I1UoQVzGJBo2f1CkO+RMnEWdR0FeWYmV7+pCThIroL1czRm/oOtoMxiGS6FgXt6QgVA==
+"@expo/react-native-action-sheet@^2.0.1":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@expo/react-native-action-sheet/-/react-native-action-sheet-2.1.0.tgz#7c3f6def52aee15ca7bd9e03cc0529e64618592c"
+  integrity sha512-gtFPQp36pLZxd29vTov+ewaJ7Bd3obP5XxaphwaKZRBVtHrbfd5DvdMBKs8//Y19pRseKrskdATou3b8EKk8Sg==
   dependencies:
     hoist-non-react-statics "^2.2.2"
     prop-types "^15.5.10"
@@ -6631,6 +6631,11 @@ karibu@^2.0.0:
   resolved "https://registry.yarnpkg.com/karibu/-/karibu-2.0.0.tgz#fc92af6af0d412583980a2f52272d51b08d4ff2b"
   integrity sha512-0Ov1bhKDEFp46iGhwdKBgmO31I8RP7eBniTbJLM2ewhFroUpXgIX+VsWoWezJ8aq6MtbjeB6Ldkh2F3N5oZTGA==
 
+keymirror@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/keymirror/-/keymirror-0.1.1.tgz#918889ea13f8d0a42e7c557250eee713adc95c35"
+  integrity sha1-kYiJ6hP40KQufFVyUO7nE63JXDU=
+
 kind-of@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-1.1.0.tgz#140a3d2d41a36d2efcfa9377b62c24f8495a5c44"
@@ -8950,16 +8955,17 @@ react-native-gesture-handler@~1.0.14:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
-react-native-gifted-chat@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-gifted-chat/-/react-native-gifted-chat-0.5.0.tgz#ac56668c57d4bba238ca6dd8bced1f47895a6be1"
-  integrity sha512-b7DHgYsItJHkPebeZMFJx8IPLOZ0g9mnXVSD7GQZAuOG1n5OC8NE/m8WNLk/MJAP1uq97J5mOiOnK4ipTA7oKw==
+react-native-gifted-chat@^0.7.3:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/react-native-gifted-chat/-/react-native-gifted-chat-0.7.3.tgz#613773d408c1c4c90042cc858c17173d82874ff7"
+  integrity sha512-s8FTfjDGRDDNW/Of/Ve/NbzHsUCdjLPLKqjEOScV4ww2dtSCteDx6pYIUEBEKGQ+5v5pE0uWX9ges65Wwp3ipw==
   dependencies:
-    "@expo/react-native-action-sheet" "^1.0.1"
+    "@expo/react-native-action-sheet" "^2.0.1"
     moment "^2.19.0"
     react-native-communications "2.2.1"
     react-native-lightbox "^0.7.0"
     react-native-parsed-text "^0.0.20"
+    react-native-video "^3.2.1"
     uuid "3.3.0"
 
 react-native-lightbox@^0.7.0:
@@ -9067,6 +9073,14 @@ react-native-vector-icons@6.0.0:
     lodash "^4.0.0"
     prop-types "^15.6.2"
     yargs "^8.0.2"
+
+react-native-video@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-3.2.1.tgz#7ba3cbdfc5c747b5b00452811e98193824b16ce3"
+  integrity sha512-Xansfoo/to80FwhM1HKlf7pCxDZ5RtV+kG3piCVvsNAhPY4GGwiOGUH9y3Y+mFQIDEWcY8I9j16lsFYAbnue3g==
+  dependencies:
+    keymirror "0.1.1"
+    prop-types "^15.5.10"
 
 react-native-view-shot@2.5.0:
   version "2.5.0"
