@@ -63,9 +63,9 @@ class HomeAuth extends Component {
   }
 
   facebookLogin = async () => {
-    const tokenPromise = await this.initFacebookLogin();
+    const token = await this.initFacebookLogin();
 
-    if (tokenPromise) {
+    if (token) {
       this.attemptLogin();
     }
   };

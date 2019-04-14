@@ -62,21 +62,24 @@ class ChatScreen extends Component {
 
     this.state.id = `${JSON.parse(token)._id}`;
 
-    await this.getTwilioToken().then((twilioToken) => {
-      return this.initChatClient(twilioToken).catch((error) => {
-        // TODO: add sentry logging
-      });
-    }).catch((error) => {
+
+    try {
+      const twilioToken = await this.getTwilioToken();
+      await this.initChatClient(twilioToken);
+    } catch (e) {
       // TODO: add sentry logging
-    });
+    }
 
     this.setState({ loading: false });
   }
 
   async onSend(message) {
-    await this.channel.then((c) => {
+    try { 
+      const c = await this.channel;
       c.sendMessage(message[0].text);
-    });
+    } catch (e) {
+      // TODO: add sentry logging
+    }
   }
 
   async getChannelForChat(chatClient) {
@@ -111,13 +114,14 @@ class ChatScreen extends Component {
   }
 
   async getMessage() {
-    await this.channel.then((c) => {
+    try { 
+      const c = await this.channel;
       c.on('messageAdded', message => this.updateLocalMessageStateSingle(message));
-
-      c.getMessages().then((messages) => {
-        this.updateLocalMessageState(messages);
-      });
-    });
+      const messages = await c.getMessages();
+      this.updateLocalMessageState(messages);
+    } catch (e) {
+      // TODO: add sentry logging
+    }
   }
 
   async updateLocalMessageStateSingle(message) {
@@ -165,7 +169,7 @@ class ChatScreen extends Component {
   }
 
   async initChatClient(token) {
-    await TwilioChatClient.create(token, { logLevel: 'info' }).then((chatClient) => {
+    return TwilioChatClient.create(token, { logLevel: 'info' }).then((chatClient) => {
       this.client = chatClient;
 
       this.client.on('tokenAboutToExpire', () => {
