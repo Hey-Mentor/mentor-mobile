@@ -10,6 +10,10 @@ For more on the Hey Mentor organization, including how you can get involved, ple
 
 This mobile application is used by the Hey Mentor organization to facilitate communication between mentors and mentees. 
 
+## UI Mock Up 
+
+The latest UI design can be found [here](https://www.figma.com/file/2TOYmQtfx3HTq11em2wZ81/Hey-Mentor---vNext?node-id=0%3A1)
+
 ## Running the Prototype 
 
 1. Download or clone GitHub repository 
@@ -22,22 +26,16 @@ In the directory you want to clone the repo to, run:
 2. Download and install the EXPO CLI on your desktop. Follow [this guide](https://docs.expo.io/versions/latest/introduction/installation/) for detailed instructions. 
 
 
-3. Download and install the [EXPO mobile client](https://expo.io/tools#client) on your phone 
+3. Download and install the [EXPO mobile client](https://expo.io/tools#client) on your phone (or you can use an iOS simulator through Xcode or Android simulator through Android Studio)
 
 
-4. To open the project in EXPO, navigate your terminal to the directory where you cloned the GitHub project. Be sure to navigate to the `web` folder 
+4. [First time only]: If this is the first time executing the project, you will need to execute: 
 
-
-5. If this is the first time executing the project, you will need to execute: 
-
-`npm install`
+`yarn install`
 
 6. Execute: 
 
 `expo start` 
-
-7. Once the project is open, you can either run in a simulator on your machine, or you can open the EXPO mobile client on your phone, and scan the QR code presented by EXPO. 
-
 
 ## Signing In 
 

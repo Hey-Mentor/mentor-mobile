@@ -58,6 +58,7 @@
 		70A6FDE800494BED8B789FFE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7BBC3821EC27414CB4C58966 /* Zocial.ttf */; };
 		985533F680FC41199389FC3F /* libReactNativeConfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E27A7ADC66A64541AD8BFCC4 /* libReactNativeConfig.a */; };
 		20FA21F399EB4BF89EA0D3B7 /* libReactNativeConfig-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34CCD5F427BD48DAB638CE42 /* libReactNativeConfig-tvOS.a */; };
+		268BD222E59D4489BF4A618E /* libRCTTwilioChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C6D797673A84A0AAA69B992 /* libRCTTwilioChat.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -387,6 +388,8 @@
 		91BFB3B7D82B4B908B4670CF /* ReactNativeConfig.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativeConfig.xcodeproj"; path = "../node_modules/react-native-config/ios/ReactNativeConfig.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		E27A7ADC66A64541AD8BFCC4 /* libReactNativeConfig.a */ = {isa = PBXFileReference; name = "libReactNativeConfig.a"; path = "libReactNativeConfig.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		34CCD5F427BD48DAB638CE42 /* libReactNativeConfig-tvOS.a */ = {isa = PBXFileReference; name = "libReactNativeConfig-tvOS.a"; path = "libReactNativeConfig-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		75E9F48D34C645C59ADD522D /* RCTTwilioChat.xcodeproj */ = {isa = PBXFileReference; name = "RCTTwilioChat.xcodeproj"; path = "../node_modules/react-native-twilio-chat/ios/RCTTwilioChat.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		7C6D797673A84A0AAA69B992 /* libRCTTwilioChat.a */ = {isa = PBXFileReference; name = "libRCTTwilioChat.a"; path = "libRCTTwilioChat.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -418,6 +421,7 @@
 				0F4541D1C29D475686DBD3DB /* libz.tbd in Frameworks */,
 				2FA639E1C3BB4BB9BCE24D1E /* libRNVectorIcons.a in Frameworks */,
 				985533F680FC41199389FC3F /* libReactNativeConfig.a in Frameworks */,
+				268BD222E59D4489BF4A618E /* libRCTTwilioChat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -611,6 +615,7 @@
 				2685D2A0FCB54DB28E9DC7D6 /* BugsnagReactNative.xcodeproj */,
 				79C7C647E4954B8BA3C2D446 /* RNVectorIcons.xcodeproj */,
 				91BFB3B7D82B4B908B4670CF /* ReactNativeConfig.xcodeproj */,
+				75E9F48D34C645C59ADD522D /* RCTTwilioChat.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1279,12 +1284,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\bugsnag-react-native\cocoa/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-config\ios\ReactNativeConfig",
+					"$(SRCROOT)\..\node_modules\react-native-twilio-chat\ios\RCTTwilioChat/**",
 				);
 			};
 			name = Debug;
@@ -1308,12 +1315,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\bugsnag-react-native\cocoa/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-config\ios\ReactNativeConfig",
+					"$(SRCROOT)\..\node_modules\react-native-twilio-chat\ios\RCTTwilioChat/**",
 				);
 			};
 			name = Release;
@@ -1339,6 +1348,7 @@
 					"$(SRCROOT)\..\node_modules\bugsnag-react-native\cocoa/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-config\ios\ReactNativeConfig",
+					"$(SRCROOT)\..\node_modules\react-native-twilio-chat\ios\RCTTwilioChat/**",
 				);
 			};
 			name = Debug;
@@ -1363,6 +1373,7 @@
 					"$(SRCROOT)\..\node_modules\bugsnag-react-native\cocoa/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-config\ios\ReactNativeConfig",
+					"$(SRCROOT)\..\node_modules\react-native-twilio-chat\ios\RCTTwilioChat/**",
 				);
 			};
 			name = Release;
@@ -1394,12 +1405,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\bugsnag-react-native\cocoa/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-config\ios\ReactNativeConfig",
+					"$(SRCROOT)\..\node_modules\react-native-twilio-chat\ios\RCTTwilioChat/**",
 				);
 			};
 			name = Debug;
@@ -1431,12 +1444,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\bugsnag-react-native\cocoa/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-config\ios\ReactNativeConfig",
+					"$(SRCROOT)\..\node_modules\react-native-twilio-chat\ios\RCTTwilioChat/**",
 				);
 			};
 			name = Release;
@@ -1467,12 +1482,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\bugsnag-react-native\cocoa/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-config\ios\ReactNativeConfig",
+					"$(SRCROOT)\..\node_modules\react-native-twilio-chat\ios\RCTTwilioChat/**",
 				);
 			};
 			name = Debug;
@@ -1503,12 +1520,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\bugsnag-react-native\cocoa/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-config\ios\ReactNativeConfig",
+					"$(SRCROOT)\..\node_modules\react-native-twilio-chat\ios\RCTTwilioChat/**",
 				);
 			};
 			name = Release;

@@ -4,6 +4,9 @@ import {
   AsyncStorage
 } from 'react-native';
 import MenteeList from '../components/menteeList/MenteeList';
+import { CONFIG } from '../config.js';
+
+const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
 class MenteeListView extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -51,8 +54,6 @@ class MenteeListView extends Component {
 
   async componentDidMount() {
     const token = await AsyncStorage.getItem('hm_token');
-    console.log('HM Token:');
-    console.log(token);
 
     this.setState({
       hmToken: token
@@ -63,51 +64,28 @@ class MenteeListView extends Component {
       const profile = await this.getMyProfile(JSON.parse(this.state.hmToken));
       this.constructContactItemsFromResponse(profile.contacts, JSON.parse(this.state.hmToken));
     } else {
-      console.log("Error, we don't have a HeyMentor token");
+      // TODO: Add sentry logs
     }
   }
 
   getMyProfile = async (token) => {
-    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
-
-    console.log('Getting profile info');
-    console.log(token);
-    console.log(token._id);
-    console.log(token.api_key);
-
-    console.log(`${API_URL}/profile/${token._id}?token=${token.api_key}`);
-
     const response = await fetch(
       `${API_URL}/profile/${token._id}?token=${token.api_key}`
     );
-
     const responseJson = await response.json();
-
-    console.log('Printing getMyProfile results');
-    console.log(responseJson);
-
-    // bugsnag.notify(new Error('Test'));
-
     return responseJson;
   };
 
   constructContactItemsFromResponse = async (contactIds, token) => {
-    console.log('Getting contacts');
-    console.log(contactIds);
-
-    const API_URL = 'http://ppeheymentor-env.qhsppj9piv.us-east-2.elasticbeanstalk.com';
-
     const contactItems = [];
     const requestString = `${API_URL}/contacts/${token._id}?token=${token.api_key}`;
-    console.log(requestString);
     const contactData = fetch(requestString)
       .then(response => response.json())
-      .catch(error => console.log(`Error parsing JSON: ${error}`))
+      .catch((error) => {
+        // TODO: Add sentry logs
+      })
       // TODO: Show "No mentees" error message on screen
       .then(responseJson => responseJson.contacts.map((contact) => {
-        console.log('Working with a contact: ');
-        console.log(contact);
-
         const fullName = `${contact.person.fname} ${contact.person.lname}`;
         return contactItems.push({
           name: fullName,
@@ -118,7 +96,7 @@ class MenteeListView extends Component {
         });
       }))
       .catch((error) => {
-        console.error(error);
+        // TODO: add sentry logs
       });
 
     contactData.then(() => this.setState({ contactItem: contactItems }));
