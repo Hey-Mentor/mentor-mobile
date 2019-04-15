@@ -133,7 +133,7 @@ class ChatScreen extends Component {
   }
 
   async updateLocalMessageState(messages) {
-    const localMessages = messages.items.map(message => ({
+    const localMessages = messages.items.reverse().map(message => ({
       _id: `${message.index}`,
       text: `${message.body}`,
       createdAt: `${message.timestamp}`,
@@ -143,7 +143,7 @@ class ChatScreen extends Component {
     }));
 
     this.setState(previousState => ({
-      messages: previousState.messages.concat(localMessages),
+      messages: localMessages.concat(previousState.messages),
     }));
   }
 
@@ -230,12 +230,20 @@ class ChatScreen extends Component {
   renderBubble = props => (
     <Bubble
       {...props}
-      wrapperStyle={{
+      textStyle={{
         left: {
-          backgroundColor: '#c3c1f9',
+          color: '#262626',
         },
         right: {
-          backgroundColor: '#98f0ab',
+          color: '#262626',
+        },
+      }}
+      wrapperStyle={{
+        left: {
+          backgroundColor: '#FFFFFF',
+        },
+        right: {
+          backgroundColor: '#DCF8C6',
         },
       }}
     />
@@ -247,7 +255,7 @@ class ChatScreen extends Component {
       <View style={[styles.gcView]}>
         <ActivityIndicator animating={animating} />
         <GiftedChat
-          inverted={false}
+          scrollToBottom
           keyboardShouldPersistTaps="never"
           messages={this.state && this.state.messages}
           onSend={messages => this.onSend(messages)}
