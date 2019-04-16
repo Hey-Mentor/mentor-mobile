@@ -25,22 +25,21 @@ class MenteeDetailsView extends Component {
       const messageContextJson = await AsyncStorage.getItem('messages');
       if (messageContextJson) {
         const messageContext = JSON.parse(messageContextJson);
-        console.log(messageContext);
-        console.log(`${this.props.navigation.state.params.mentee._id}`);
-        const messageArray = messageContext[this.props.navigation.state.params.mentee._id];
-        console.log('array');
-        console.log(messageArray);
-        console.log('done array');
-        const messageDelta = Math.round(Math.abs(Date.now() - Date.parse(messageArray[0].createdAt)) / 86400000);
-        if (messageDelta === 1) {
-          this.setState({ messageDeltaString: '1 day' });
-        } else {
-          this.setState({ messageDeltaString: `${messageDelta} days` });
+        const menteeId = this.props.navigation.state.params.mentee._id;
+        if (messageContext && menteeId in messageContext) {
+          const messageArray = messageContext[this.props.navigation.state.params.mentee._id];
+          if (messageArray) {
+            const messageDelta = Math.round(Math.abs(Date.now() - Date.parse(messageArray[0].createdAt)) / 86400000);
+            if (messageDelta === 1) {
+              this.setState({ messageDeltaString: '1 day' });
+            } else {
+              this.setState({ messageDeltaString: `${messageDelta} days` });
+            }
+          }
         }
       }
     } catch (e) {
       // TODO: add sentry logging
-      console.error(e);
     }
   }
 
