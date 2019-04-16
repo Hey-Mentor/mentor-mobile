@@ -62,7 +62,6 @@ class ChatScreen extends Component {
 
     this.state.id = `${JSON.parse(token)._id}`;
 
-
     try {
       const twilioToken = await this.getTwilioToken();
       await this.initChatClient(twilioToken);
@@ -74,7 +73,7 @@ class ChatScreen extends Component {
   }
 
   async onSend(message) {
-    try { 
+    try {
       const c = await this.channel;
       c.sendMessage(message[0].text);
     } catch (e) {
@@ -114,7 +113,7 @@ class ChatScreen extends Component {
   }
 
   async getMessage() {
-    try { 
+    try {
       const c = await this.channel;
       c.on('messageAdded', message => this.updateLocalMessageStateSingle(message));
       const messages = await c.getMessages();
@@ -145,6 +144,24 @@ class ChatScreen extends Component {
     this.setState(previousState => ({
       messages: localMessages.concat(previousState.messages),
     }));
+
+    this.cacheMessages();
+  }
+
+  async cacheMessages() {
+    try {
+      const localMessages = await AsyncStorage.getItem('messages');
+
+      let localMessageDict = {};
+      if (localMessages) {
+        localMessageDict = JSON.parse(localMessages);
+      }
+
+      localMessageDict[this.props.navigation.state.params.mentee._id] = this.state.messages;
+      await AsyncStorage.setItem('messages', JSON.stringify(localMessageDict));
+    } catch (e) {
+      // TODO: Add sentry logging
+    }
   }
 
   async createChannelWithUser(chatClient) {

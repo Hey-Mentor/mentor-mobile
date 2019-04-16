@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import {
-  ScrollView, View, Text, StyleSheet
+  ScrollView, View, StyleSheet
 } from 'react-native';
 import DetailsHeader from './DetailsHeader.js';
 import DetailRow from './DetailRow.js';
 import DetailSectionHeader from './DetailSectionHeader.js';
 import BubbleList from './BubbleList.js';
-import CollegeList from './CollegeList.js';
 
 class MenteeDetails extends Component {
   render() {
-    const mentee = this.props.mentee;
+    const { mentee } = this.props;
 
     const supportAreas = [
       { name: 'College applications', highlight: false },
@@ -34,7 +33,7 @@ class MenteeDetails extends Component {
 
     return (
       <ScrollView style={styles.scrollView}>
-        <DetailsHeader image="https://www.w3schools.com/howto/img_avatar.png" delay="0 days" mentee={mentee} />
+        <DetailsHeader image="https://www.w3schools.com/howto/img_avatar.png" delay={this.props.messageDelta} mentee={mentee} />
         <View id="detailSectionList" style={styles.detailSectionList}>
           <DetailSectionHeader title="Demographics" />
           <DetailRow name="Gender" value={mentee.demo.gender} />
