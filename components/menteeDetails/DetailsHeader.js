@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import {
   View, Text, Image, StyleSheet
 } from 'react-native';
-import BubbleRect from './BubbleRect.js';
 
 class DetailsHeader extends Component {
   render() {
-    const mentee = this.props.mentee;
+    const { mentee } = this.props;
 
     const styles = StyleSheet.create({
       detailsHeader: {
