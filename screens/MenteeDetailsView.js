@@ -10,6 +10,8 @@ const headerTitleStyle = {
   fontWeight: 'bold'
 };
 
+const MILLISEC_PER_DAY = 86400000;
+
 class MenteeDetailsView extends Component {
   static navigationOptions = () => ({
     // title: {state.params.mentee.fname},
@@ -29,12 +31,8 @@ class MenteeDetailsView extends Component {
         if (messageContext && menteeId in messageContext) {
           const messageArray = messageContext[this.props.navigation.state.params.mentee._id];
           if (messageArray) {
-            const messageDelta = Math.round(Math.abs(Date.now() - Date.parse(messageArray[0].createdAt)) / 86400000);
-            if (messageDelta === 1) {
-              this.setState({ messageDeltaString: '1 day' });
-            } else {
-              this.setState({ messageDeltaString: `${messageDelta} days` });
-            }
+            const messageDelta = Math.round(Math.abs(Date.now() - Date.parse(messageArray[0].createdAt)) / MILLISEC_PER_DAY);
+            this.setState({ messageDeltaString: `${messageDelta} ${messageDelta === 1 ? 'day' : 'days'}` });
           }
         }
       }

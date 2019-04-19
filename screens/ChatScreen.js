@@ -51,6 +51,7 @@ class ChatScreen extends Component {
   state = {
     hmToken: {},
     messages: [],
+    channel: null,
     loading: true,
   };
 
@@ -74,14 +75,14 @@ class ChatScreen extends Component {
     // If we are the user who created the channel, always attempt to invite the other user
     //  We only want to do this if we created the channel, because any other user on the channel
     //   will not have permission to invite new users
-    if (this.channel.createdBy === this.state.id) {
+    if (this.state.channel.createdBy === this.state.id) {
       this.tryInviteContact();
     }
   }
 
   async onSend(message) {
     try {
-      const c = this.channel;
+      const c = this.state.channel;
       c.sendMessage(message[0].text);
     } catch (e) {
       // TODO: add sentry logging
@@ -120,7 +121,7 @@ class ChatScreen extends Component {
 
   async getMessage() {
     try {
-      const c = await this.channel;
+      const c = await this.state.channel;
       c.on('messageAdded', message => this.updateLocalMessageStateSingle(message));
       const messages = await c.getMessages();
       this.updateLocalMessageState(messages);
@@ -133,7 +134,7 @@ class ChatScreen extends Component {
     try {
       // TODO: if the user isn't found, or if the user trying to invite doesn't have permission, we still
       //  end up showing the error screen, and not catching the failure...
-      this.channel.invite(this.props.navigation.state.params.mentee._id);
+      this.state.channel.invite(this.props.navigation.state.params.mentee._id);
     } catch (e) {
       // TODO: add sentry logging
     }
@@ -208,7 +209,7 @@ class ChatScreen extends Component {
         channel.join();
       });
 
-      this.channel = await this.getChannelForChat(this.client);
+      this.state.channel = await this.getChannelForChat(this.client);
       await this.getMessage();
       // TODO: Decide which of these callbacks we need
       // this.subscribeToAllChatClientEvents();
