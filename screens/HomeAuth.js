@@ -24,7 +24,7 @@ class HomeAuth extends Component {
   };
 
   async componentDidMount() {
-    // AsyncStorage.clear();
+    // await AsyncStorage.clear();
     this.attemptLogin();
   }
 
@@ -40,6 +40,10 @@ class HomeAuth extends Component {
     );
 
     try {
+      if (response.status === 401) {
+        return false;
+      }
+
       const responseJson = await response.json();
       if (responseJson && !responseJson.error) {
         await AsyncStorage.setItem('hm_token', JSON.stringify(responseJson));

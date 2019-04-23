@@ -15,7 +15,8 @@
     "no-underscore-dangle": "off",
     "react/prefer-stateless-function": "off",
     "linebreak-style": [ 0 ],
-    "import/extensions": "off"
+    "import/extensions": "off",
+    "max-len": 0
   },
   "globals": {
     "fetch": false

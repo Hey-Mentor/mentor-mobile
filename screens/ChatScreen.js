@@ -51,6 +51,7 @@ class ChatScreen extends Component {
   state = {
     hmToken: {},
     messages: [],
+    channel: null,
     loading: true,
   };
 
@@ -62,7 +63,6 @@ class ChatScreen extends Component {
 
     this.state.id = `${JSON.parse(token)._id}`;
 
-
     try {
       const twilioToken = await this.getTwilioToken();
       await this.initChatClient(twilioToken);
@@ -71,11 +71,18 @@ class ChatScreen extends Component {
     }
 
     this.setState({ loading: false });
+
+    // If we are the user who created the channel, always attempt to invite the other user
+    //  We only want to do this if we created the channel, because any other user on the channel
+    //   will not have permission to invite new users
+    if (this.state.channel.createdBy === this.state.id) {
+      this.tryInviteContact();
+    }
   }
 
   async onSend(message) {
-    try { 
-      const c = await this.channel;
+    try {
+      const c = this.state.channel;
       c.sendMessage(message[0].text);
     } catch (e) {
       // TODO: add sentry logging
@@ -87,12 +94,11 @@ class ChatScreen extends Component {
     return chatClient.getUserChannelDescriptors().then((paginator) => {
       // If this user has channels already, check if there is a channel
       // between current user and the user being messaged
-      const reducer = (accumulator, currentChannel) => (currentChannel.uniqueName === channelName
-        ? currentChannel.getChannel()
-        : accumulator);
-
-      const channel = paginator.items.reduce(reducer);
-      return channel || this.createChannelWithUser(chatClient);
+      const channel = paginator.items.find(currentChannel => currentChannel.uniqueName === channelName);
+      if (channel) {
+        return channel.getChannel();
+      }
+      return this.createChannelWithUser(chatClient);
     });
   }
 
@@ -114,11 +120,21 @@ class ChatScreen extends Component {
   }
 
   async getMessage() {
-    try { 
-      const c = await this.channel;
+    try {
+      const c = await this.state.channel;
       c.on('messageAdded', message => this.updateLocalMessageStateSingle(message));
       const messages = await c.getMessages();
       this.updateLocalMessageState(messages);
+    } catch (e) {
+      // TODO: add sentry logging
+    }
+  }
+
+  tryInviteContact() {
+    try {
+      // TODO: if the user isn't found, or if the user trying to invite doesn't have permission, we still
+      //  end up showing the error screen, and not catching the failure...
+      this.state.channel.invite(this.props.navigation.state.params.mentee._id);
     } catch (e) {
       // TODO: add sentry logging
     }
@@ -145,31 +161,37 @@ class ChatScreen extends Component {
     this.setState(previousState => ({
       messages: localMessages.concat(previousState.messages),
     }));
+
+    this.cacheMessages();
+  }
+
+  async cacheMessages() {
+    try {
+      const localMessages = await AsyncStorage.getItem('messages');
+
+      let localMessageDict = {};
+      if (localMessages) {
+        localMessageDict = JSON.parse(localMessages);
+      }
+
+      localMessageDict[this.props.navigation.state.params.mentee._id] = this.state.messages;
+      await AsyncStorage.setItem('messages', JSON.stringify(localMessageDict));
+    } catch (e) {
+      // TODO: Add sentry logging
+    }
   }
 
   async createChannelWithUser(chatClient) {
-    const user = this.props.navigation.state.params.mentee._id;
-    // Sort the IDs so that we have a deterministic order
     const channelName = this.getChannelName();
     return chatClient.createChannel({
       uniqueName: channelName,
       friendlyName: channelName,
-    }).then((channel) => {
-      channel.join().catch((err) => {
-        // TODO: add sentry logging
-      });
-
-      // Invite other user to your channel
-      channel.invite(user).catch((error) => {
-        // TODO: add sentry logging
-      });
-    }).catch((error) => {
-      // TODO: add sentry logging
     });
   }
 
   async initChatClient(token) {
-    return TwilioChatClient.create(token, { logLevel: 'info' }).then((chatClient) => {
+    try {
+      const chatClient = await TwilioChatClient.create(token, { logLevel: 'info' });
       this.client = chatClient;
 
       this.client.on('tokenAboutToExpire', () => {
@@ -187,13 +209,13 @@ class ChatScreen extends Component {
         channel.join();
       });
 
-      this.channel = this.getChannelForChat(this.client);
-      this.getMessage();
+      this.state.channel = await this.getChannelForChat(this.client);
+      await this.getMessage();
       // TODO: Decide which of these callbacks we need
       // this.subscribeToAllChatClientEvents();
-    }).catch((error) => {
+    } catch (e) {
       // TODO: add sentry logging
-    });
+    }
   }
 
   async subscribeToAllChatClientEvents() {
