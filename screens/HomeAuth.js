@@ -8,9 +8,11 @@ import {
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { Facebook } from 'expo';
-import { API_URL } from '../config.js';
+import { CONFIG } from '../config.js';
 
 const splashScreenImage = require('../assets/heymentorsplash.png');
+
+const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
 class HomeAuth extends Component {
   static navigationOptions = {
@@ -18,13 +20,11 @@ class HomeAuth extends Component {
   };
 
   state = {
-    loading: false,
-    fbToken: null,
-    hmToken: {}
+    loading: false
   };
 
   async componentDidMount() {
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
     this.attemptLogin();
   }
 
@@ -34,104 +34,97 @@ class HomeAuth extends Component {
   };
 
   getHeyMentorToken = async (token, authType) => {
-    console.log(`${API_URL}/register/${authType}?access_token=${token}`);
-
     const response = await fetch(
       `${API_URL}/register/${authType}?access_token=${token}`,
       { method: 'post' }
     );
-    let responseJson = {};
+
     try {
-      responseJson = await response.json();
-      console.log(responseJson);
+      const responseJson = await response.json();
+      if (responseJson && !responseJson.error) {
+        await AsyncStorage.setItem('hm_token', JSON.stringify(responseJson));
+      }
+      return true;
     } catch (e) {
-      console.log('Error authenticating with fed token');
-      console.log(e);
+      // TODO: Add Sentry logs
     }
-
-    if (responseJson && !responseJson.error) {
-      await AsyncStorage.setItem('hm_token', JSON.stringify(responseJson));
-      return responseJson;
-    }
-
-    console.log('Error authenticating with fed token');
-    return null;
+    return false;
   };
 
+  async getFacebookData(token) {
+    // API call to FB Graph API. Will add more code to fetch social media data
+    const response = await fetch(
+      `https://graph.facebook.com/me?access_token=${token}`
+    );
+    const responseJson = await response.json();
+    this.fbId = `${responseJson.id}`;
+
+    return responseJson;
+  }
+
   facebookLogin = async () => {
-    const token = this.initFacebookLogin();
+    const token = await this.initFacebookLogin();
 
     if (token) {
       this.attemptLogin();
-    } else {
-      console.log('Did not get a login token');
     }
   };
 
-  initFacebookLogin = async () => {
-    const FACEBOOK_APP_ID = '1650628351692070';
-
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      FACEBOOK_APP_ID,
+  async initFacebookLogin() {
+    return Facebook.logInWithReadPermissionsAsync(
+      CONFIG.FACEBOOK_APP_ID,
       {
         permissions: ['public_profile', 'email', 'user_friends']
       }
+    ).then((response) => {
+      if (response.type === 'cancel') {
+        this.setState({ loading: false });
+      }
+
+      if (response.type === 'success') {
+        AsyncStorage.setItem('fb_token', response.token);
+        this.getFacebookData(response.token).then((responseJson) => {
+          this.setState({
+            // fbId: responseJson.Id,
+            loading: false
+          });
+        }).catch();
+
+        return response.token;
+      }
+
+      return null;
+    }).catch(
+      // TODO: Add Sentry logs
     );
-
-    if (type === 'cancel') {
-      this.setState({ loading: false });
-    }
-
-    if (type === 'success') {
-      // API call to FB Graph API. Will add more code to fetch social media data
-      const response = await fetch(
-        `https://graph.facebook.com/me?access_token=${token}`
-      );
-      const responseJson = await response.json();
-      console.log(`Facebook ID: ${responseJson.id}`);
-
-      await AsyncStorage.multiSet([
-        ['fb_token', token],
-        ['fb_id', responseJson.id]
-      ]);
-
-      this.setState({
-        fbToken: token,
-        loading: false
-      });
-    }
-
-    return token;
-  };
+  }
 
   async attemptLogin() {
-    const token = await AsyncStorage.getItem('fb_token');
-    const hmToken = await AsyncStorage.getItem('hm_token');
-
-    this.setState({
-      fbToken: token,
-      hmToken
-    });
-
     let headerTitle = 'Mentors';
-
-    if (this.state.hmToken !== null) {
-      console.log('Already have HM token');
-      const userType = JSON.parse(this.state.hmToken).user_type;
+    const localHmToken = await AsyncStorage.getItem('hm_token');
+    if (localHmToken !== null) {
+      const userType = JSON.parse(localHmToken).user_type;
       if (userType === 'mentor') {
         headerTitle = 'Mentees';
       }
       this.props.navigation.navigate('menteeListView', { headerTitle });
     } else {
-      console.log('Getting HM token');
-      if (this.state.fbToken !== null) {
-        const hmDone = await this.getHeyMentorToken(this.state.fbToken, 'facebook');
-        const userType = JSON.parse(hmDone).user_type;
-        if (userType === 'mentor') {
-          headerTitle = 'Mentees';
+      const token = await AsyncStorage.getItem('fb_token');
+      if (token) {
+        const success = await this.getHeyMentorToken(token, 'facebook');
+        if (success) {
+          await AsyncStorage.getItem('hm_token').then((hmToken) => {
+            const userType = JSON.parse(hmToken).user_type;
+            if (userType === 'mentor') {
+              headerTitle = 'Mentees';
+            }
+            this.props.navigation.navigate('menteeListView', { headerTitle });
+          }).catch((error) => {
+            // TODO: Add sentry logs
+          });
+        } else {
+          // TODO: Add sentry logs
         }
-
-        this.props.navigation.navigate('menteeListView', { headerTitle });
       }
     }
   }
