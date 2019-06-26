@@ -24,11 +24,15 @@ class TwilioService {
     const success = await this.loadTwilioClient();
     if (success) {
       // Initialize all channels
-      const doneInitChannels = await this.initAllChannels(contacts);
-      if (doneInitChannels) {
-        await this.getAllMessages();
-      } else {
-        // TODO: something bad happened
+      try {
+        const doneInitChannels = await this.initAllChannels(contacts);
+        if (doneInitChannels) {
+          await this.getAllMessages();
+        } else {
+          // TODO: something bad happened
+        }
+      } catch (e) {
+        // TODO: Add sentry logging
       }
     } else {
       // TODO: Add failure logging
@@ -50,10 +54,7 @@ class TwilioService {
 
   async initAllChannels(contacts) {
     const success = await Promise.all(contacts.map(contact => this.initSingleChannel(contact)));
-    if (success) {
-      return true;
-    }
-    return false;
+    return success.every(val => val);
   }
 
   async initSingleChannel(contact) {
@@ -88,7 +89,7 @@ class TwilioService {
   }
 
   async loadTwilioClient() {
-    let localToken = null; // await AsyncStorage.getItem('twilio_token');
+    let localToken = await AsyncStorage.getItem('twilio_token');
 
     if (localToken) {
       const clientReady = await this.initChatClient(localToken);
@@ -99,9 +100,15 @@ class TwilioService {
 
     localToken = await this.getTwilioToken();
     if (localToken) {
-      await AsyncStorage.setItem('twilio_token', localToken);
-      const clientInit = await this.initChatClient(localToken);
-      return clientInit;
+      try {
+        await AsyncStorage.setItem('twilio_token', localToken);
+      } catch (e) {
+        // TODO: add sentry
+        // If we fail to set the local storage for the token, just continue processing
+        //  and we will attempt to cache the token again next time we refresh it
+      }
+
+      return this.initChatClient(localToken);
     }
 
     return false;
@@ -112,15 +119,19 @@ class TwilioService {
     const requestUri = `${API_URL}/chat/token/${localToken._id}?token=${localToken.api_key}`;
     // TODO: add device ID
     const bodyData = { device: 'test' };
-    const response = await fetch(requestUri, { method: 'post', body: JSON.stringify(bodyData), headers: { 'Content-Type': 'application/json' } });
-    const responseJson = await response.json();
-    const twilioToken = responseJson.chat_token;
-    return twilioToken;
+    try {
+      const response = await fetch(requestUri, { method: 'post', body: JSON.stringify(bodyData), headers: { 'Content-Type': 'application/json' } });
+      const responseJson = await response.json();
+      const twilioToken = responseJson.chat_token;
+      return twilioToken;
+    } catch (e) {
+      // TODO: Add sentry logging
+    }
+    return false;
   }
 
   getChannelName(contact) {
     const localToken = JSON.parse(this.hmToken);
-    // const contact = this.props.navigation.state.params.mentee._id;
     return localToken._id > contact ? `${localToken._id}.${contact}` : `${contact}.${localToken._id}`;
   }
 
@@ -178,8 +189,6 @@ class TwilioService {
         channel.join();
       });
 
-      // this.channel = await this.getChannelForChat();
-      // await this.getMessage();
       // TODO: Decide which of these callbacks we need
       // this.subscribeToAllChatClientEvents();
       return true;
@@ -191,6 +200,9 @@ class TwilioService {
 
   /*
   async subscribeToAllChatClientEvents() {
+    // TODO: Ensure that all webooks from this doc are included:
+    // https://www.twilio.com/docs/chat/webhook-events
+
     // This function is not currently called. We should decide which callbacks we want to handle, and how
     this.client.on('tokenAboutToExpire', obj => console.log('ChatClientHelper.client', 'tokenAboutToExpire', obj));
     this.client.on('tokenExpired', obj => console.log('ChatClientHelper.client', 'tokenExpired', obj));

@@ -23,11 +23,7 @@ class MessageService {
   }
 
   async updateLocalMessageStateSingle(contact, message) {
-    const messages = {
-      items: [message]
-    };
-
-    this.updateLocalMessageState(contact, messages);
+    this.updateLocalMessageState(contact, { items: [message] });
   }
 
   async updateLocalMessageState(contact, rawMessages) {
