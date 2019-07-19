@@ -166,3 +166,4 @@ shellAppWorkspaces
 
 # Expo web env
 .env*
+config*
