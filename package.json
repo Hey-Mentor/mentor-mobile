@@ -10,6 +10,7 @@
     "eslint-utils": "^1.4.2",
     "events": "^3.0.0",
     "expo": "^35.0.0",
+    "expo-facebook": "~7.0.0",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
     "lodash-es": "^4.17.15",
