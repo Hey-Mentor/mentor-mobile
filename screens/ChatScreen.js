@@ -27,8 +27,20 @@ const styles = StyleSheet.create({
   },
   gcView: {
     flex: 1,
-    paddingTop: 20
-  }
+    paddingTop: 0,
+  },
+  floatingView:{
+    position: 'absolute',
+    //justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+    flex: 1,
+    margin:10,
+    top: 0, 
+    left: 0, 
+    right: 0, 
+    bottom: 0,
+  },
 });
 
 class ChatScreen extends Component {
@@ -103,7 +115,14 @@ class ChatScreen extends Component {
     const animating = this.state.loading;
     return (
       <View style={[styles.gcView]}>
-        <ActivityIndicator animating={animating} />
+
+        <View style= {styles.floatingView}>
+          <ActivityIndicator 
+                animating={animating} 
+                size="large" 
+                color="#0000ff" />
+        </View>
+
         <GiftedChat
           scrollToBottom
           keyboardShouldPersistTaps="never"

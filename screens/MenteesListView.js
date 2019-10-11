@@ -107,8 +107,8 @@ class MenteeListView extends Component {
     const contactData = fetch(requestString)
 
       .then((response) => {
-        //statusCode = 300;
         statusCode = response.status;
+        //statusCode = 300;
 
         //If the database returns the status code 200 (OK)
         if (statusCode == 200){
@@ -132,6 +132,7 @@ class MenteeListView extends Component {
 
       .catch((error) => {
         // TODO: Add sentry logs
+        console.log("Error2: " + error)
       })
 
       // TODO: Show "No mentees" error message on screen
@@ -146,6 +147,7 @@ class MenteeListView extends Component {
         });
       }))
       .catch((error) => {
+        console.log("Error3: " + error)
         // TODO: add sentry logs
       });
 
