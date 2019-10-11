@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
+
 import {
   ScrollView,
-  AsyncStorage
+  AsyncStorage,
+  Text,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
+
+import {
+  Image,
+} from 'react-native-elements';
+
 import MenteeList from '../components/menteeList/MenteeList';
 import { CONFIG } from '../config.js';
+import { MessageBox } from '../components/common/MessageBox';
 
 const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
@@ -49,7 +61,17 @@ class MenteeListView extends Component {
 
   state = {
     contactItem: [],
-    hmToken: ''
+    hmToken: '',
+    loading: true,
+
+    //MessageBox default Configuration
+    messageBoxVisibile: false,
+    messageBoxText: 'Specify the text output',
+    messageBoxTitle: 'Add a title',
+    messageBoxImage: {uri: 'https://storage.needpix.com/rsynced_images/question-310891_1280.png'},
+    
+    //Pull to refresh
+    refreshing: false,
   };
 
   async componentDidMount() {
@@ -78,12 +100,40 @@ class MenteeListView extends Component {
 
   constructContactItemsFromResponse = async (contactIds, token) => {
     const contactItems = [];
+    var contactCount = 0;
     const requestString = `${API_URL}/contacts/${token._id}?token=${token.api_key}`;
+    var statusCode = 0;
+    
     const contactData = fetch(requestString)
+
+      .then((response) => {
+        //statusCode = 300;
+        statusCode = response.status;
+
+        //If the database returns the status code 200 (OK)
+        if (statusCode == 200){
+          console.log("Successfully fetched data with the response code: " + statusCode)
+
+          //Continuing the promise chain
+          return response;
+        }
+
+        //Any other status codes
+        else{
+          return Promise.reject('Failed with status code: ' + statusCode);
+        }
+      })
+
+      .catch((error) =>{
+        console.log("Error: " + error)
+      })
+
       .then(response => response.json())
+
       .catch((error) => {
         // TODO: Add sentry logs
       })
+
       // TODO: Show "No mentees" error message on screen
       .then(responseJson => responseJson.contacts.map((contact) => {
         const fullName = `${contact.person.fname} ${contact.person.lname}`;
@@ -99,27 +149,168 @@ class MenteeListView extends Component {
         // TODO: add sentry logs
       });
 
-    contactData.then(() => this.setState({ contactItem: contactItems }));
+      //Stop the loading indicator
+      
+
+    contactData.then(() => this.setState({ contactItem: contactItems }))
+    .then(()=>{
+      //Successfully loaded all contacts. 
+      this.setState({ loading: false });
+
+      //Checking how many items are in the contact list.
+      contactCount = contactItems.length
+      console.log("contactCount: " + contactCount);
+
+
+
+      
+      //Checking if the app should display an error message
+
+      //fetch was successfull, but there were no contacts
+      if(contactCount == 0 && statusCode == 200){
+        //Display message to user
+        this.setState({
+          messageBoxVisibile: true,
+          messageBoxTitle: '',
+          messageBoxText: "You don't have any contacts to display."
+        });
+      }
+      //The fetch was not successfull
+      if(statusCode !== 200){
+        this.setState({
+          messageBoxVisibile: true,
+          messageBoxTitle: 'Failed to retrieve contacts.',
+          messageBoxText: "Statuscode: " + statusCode,
+        });
+      }
+    });
+
+
+    
   };
+
 
   render() {
     return (
-      <ScrollView>
-        <MenteeList
-          menteeItem={this.state.contactItem}
-          navigation={this.props.navigation}
-        />
-      </ScrollView>
+      <View style={styles.contentWrap}>
+        {/* //View for displaying messages. */}
+        <View style= {styles.floatingView}>
+          <ActivityIndicator 
+                animating={this.state.loading} 
+                size="large" 
+                color="#0000ff" />
+        </View>
+
+ 
+          {/* No content messages */}
+            {/*Public Domain picture: https://www.needpix.com/photo/180045/question-worry-wonder-unsure-confused-uncertain-asking-wondering-uncertainty */}
+            <MessageBox
+            title = {this.state.messageBoxTitle}
+            text = {this.state.messageBoxText}
+            imageSource = {this.state.messageBoxImage}
+            visible = {this.state.messageBoxVisibile}
+            />
+            
+          {/* Contact list */}
+          <ScrollView
+            refreshControl={
+
+              //Pull to refresh
+              <RefreshControl refreshing={this.state.refreshing} 
+                onRefresh={() => {
+                  this.setState.refreshing = true;
+                  
+                  //Might cause bugs
+                  this.setState.contactItem = [];
+                  //this.componentDidMount();
+
+                  setTimeout(()=>{
+                    // Add your logic for the transition
+                    this.setState.refreshing = false;
+                  }, 5000);
+                
+              }}/>
+            }
+            >
+            <MenteeList
+              menteeItem={this.state.contactItem}
+              navigation={this.props.navigation}/>  
+          </ScrollView>   
+      </View>
     );
   }
 }
 
+const styles = StyleSheet.create({
+  //
+  contentWrap: {
+  },
+
+  //First
+  floatingView:{
+    position: 'absolute',
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+    flex: 1,
+    margin:30,
+    top: 0, 
+    left: 0, 
+    right: 0, 
+    bottom: 0,
+  },
+
+
+  messageBox: {
+    backgroundColor: "#ef553a", //Red
+    borderRadius: 8,
+    width: '90%',
+    margin: 20,
+  },
+
+  //Second
+  messageBoxTitleText: {
+    fontSize:20,
+    color: '#fff',
+    fontWeight:'bold',
+
+    alignItems: 'center',
+    textAlign: 'center'
+  },
+
+  messageBoxText: {
+    fontWeight: 'bold',
+    color: '#fff',
+    fontSize: 16,
+
+    margin:10,
+    textAlign:'center',
+  },
+
+  imageBox: {
+
+  },
+
+  imageBoxImage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 180,
+    height: 350,
+    marginTop: 50,
+  },
+
+  
+
+})
 const headerTitleStyle = {
   flex: 1,
   textAlign: 'center',
   color: '#000000',
   fontSize: 24,
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  position: 'absolute',
+  top:0,
+  left:0,
 };
 
 export default MenteeListView;
