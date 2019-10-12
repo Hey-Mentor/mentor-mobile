@@ -83,7 +83,13 @@ class MenteeListView extends Component {
 
     // this.getUserData(this.state.fbUserId, this.state.fbToken);
     if (this.state.hmToken) {
-      const profile = await this.getMyProfile(JSON.parse(this.state.hmToken));
+      console.log('gello');
+      const profile = await this.getMyProfile(JSON.parse(this.state.hmToken)).catch((error) =>{
+        console.log('ERrorororo' + error.statusCode);
+        this.newErrorMessage('Uh-Oh','Failed to retrieve user information.',true);
+        
+        
+      });
       this.constructContactItemsFromResponse(profile.contacts, JSON.parse(this.state.hmToken));
     } else {
       // TODO: Add sentry logs
@@ -98,6 +104,14 @@ class MenteeListView extends Component {
     return responseJson;
   };
 
+  newErrorMessage = async (title, message, visible) => {
+    this.setState({
+      messageBoxVisibile: visible,
+      messageBoxTitle: title,
+      messageBoxText: message
+    });
+  };
+
   constructContactItemsFromResponse = async (contactIds, token) => {
     const contactItems = [];
     var contactCount = 0;
@@ -106,9 +120,10 @@ class MenteeListView extends Component {
     
     const contactData = fetch(requestString)
 
-      .then((response) => {
+      .then(
+        (response) => {
         statusCode = response.status;
-        //statusCode = 300;
+        //statusCode = 300; //Test other status codes
 
         //If the database returns the status code 200 (OK)
         if (statusCode == 200){
@@ -149,6 +164,9 @@ class MenteeListView extends Component {
       .catch((error) => {
         console.log("Error3: " + error)
         // TODO: add sentry logs
+      })
+      .catch((error) => {
+        
       });
 
       //Stop the loading indicator
@@ -171,19 +189,14 @@ class MenteeListView extends Component {
       //fetch was successfull, but there were no contacts
       if(contactCount == 0 && statusCode == 200){
         //Display message to user
-        this.setState({
-          messageBoxVisibile: true,
-          messageBoxTitle: '',
-          messageBoxText: "You don't have any contacts to display."
-        });
+        this.newErrorMessage('Uh-Oh',"You don't have any contacts to display.",true);
       }
       //The fetch was not successfull
       if(statusCode !== 200){
-        this.setState({
-          messageBoxVisibile: true,
-          messageBoxTitle: 'Failed to retrieve contacts.',
-          messageBoxText: "Statuscode: " + statusCode,
-        });
+        this.newErrorMessage(
+          'Failed to retrieve contacts.',
+          "Statuscode: " + statusCode
+          ,true);
       }
     });
 
@@ -203,15 +216,6 @@ class MenteeListView extends Component {
                 color="#0000ff" />
         </View>
 
- 
-          {/* No content messages */}
-            {/*Public Domain picture: https://www.needpix.com/photo/180045/question-worry-wonder-unsure-confused-uncertain-asking-wondering-uncertainty */}
-            <MessageBox
-            title = {this.state.messageBoxTitle}
-            text = {this.state.messageBoxText}
-            imageSource = {this.state.messageBoxImage}
-            visible = {this.state.messageBoxVisibile}
-            />
             
           {/* Contact list */}
           <ScrollView
@@ -234,6 +238,15 @@ class MenteeListView extends Component {
               }}/>
             }
             >
+
+              {/* No content messages */}
+          <MessageBox
+            title = {this.state.messageBoxTitle}
+            text = {this.state.messageBoxText}
+            imageSource = {this.state.messageBoxImage}
+            visible = {this.state.messageBoxVisibile}
+            />
+            
             <MenteeList
               menteeItem={this.state.contactItem}
               navigation={this.props.navigation}/>  
@@ -244,11 +257,10 @@ class MenteeListView extends Component {
 }
 
 const styles = StyleSheet.create({
-  //
+  
   contentWrap: {
   },
 
-  //First
   floatingView:{
     position: 'absolute',
     justifyContent: 'center',
@@ -269,8 +281,6 @@ const styles = StyleSheet.create({
     width: '90%',
     margin: 20,
   },
-
-  //Second
   messageBoxTitleText: {
     fontSize:20,
     color: '#fff',
