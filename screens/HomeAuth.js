@@ -7,7 +7,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Button } from 'react-native-elements';
-//import { Facebook } from 'expo';'
 import * as Facebook from 'expo-facebook'
 import { CONFIG } from '../config.js';
 
