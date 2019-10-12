@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import TwilioService from '../services/twilioService';
+import { MessageBox } from '../components/common/MessageBox';
 
 YellowBox.ignoreWarnings(['Setting a timer for a long period', 'Deprecation warning: value provided is not in a recognized RFC2822']);
 
@@ -61,16 +62,28 @@ class ChatScreen extends Component {
     messages: [],
     contact: this.props.navigation.state.params.mentee._id,
     loading: true,
-    id: null
+    id: null,
+
+
+    //MessageBox default Configuration
+    messageBoxVisibile: false,
+    messageBoxText: 'Specify the text output',
+    messageBoxTitle: 'Add a title',
+    messageBoxImage: {uri: 'https://storage.needpix.com/rsynced_images/question-310891_1280.png'},
+    
   };
 
   async componentDidMount() {
-    const token = await AsyncStorage.getItem('hm_token');
+    const token = await AsyncStorage.getItem('hm_token')
     this.state.id = `${JSON.parse(token)._id}`;
 
     // Init Twilio service and message service
     this.newMessagesCallback = this.newMessagesCallback.bind(this);
     this.twilioService = new TwilioService(token, [this.state.contact], this.newMessagesCallback);
+
+    //TODO: No messages and failed loading catches
+    //See function afterLoading()
+    
   }
 
   async onSend(message) {
@@ -86,6 +99,22 @@ class ChatScreen extends Component {
       messages: newMessages.concat(previousState.messages),
     }));
 
+    //Checking the amount of messages
+    this.afterLoading();
+  }
+
+  afterLoading () {
+    console.log('Messages size: ' + this.state.messages.length);
+
+    //this.setState({ messages: [] });
+
+    if (this.state.messages.length == 0){
+      this.setState({ 
+        messageBoxVisibile: true,
+        messageBoxTitle: "Uh-Oh",
+        messageBoxText: "There are no messages.",
+      });
+    };
     this.setState({ loading: false });
   }
 
@@ -122,6 +151,16 @@ class ChatScreen extends Component {
                 size="large" 
                 color="#0000ff" />
         </View>
+          
+        <View style= {styles.floatingView}>
+          <MessageBox 
+            title = {this.state.messageBoxTitle}
+            text = {this.state.messageBoxText}
+            imageSource = {this.state.messageBoxImage}
+            visible = {this.state.messageBoxVisibile}
+            />
+        </View>
+        
 
         <GiftedChat
           scrollToBottom
