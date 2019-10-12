@@ -85,7 +85,7 @@ class MenteeListView extends Component {
     // this.getUserData(this.state.fbUserId, this.state.fbToken);
     if (this.state.hmToken) {
       const profile = await this.getMyProfile(JSON.parse(this.state.hmToken)).catch((error) =>{
-        console.log('ERrorororo' + error.statusCode);
+        console.log('Failed fetching profile information (errorcode: ' + error.statusCode+ ")");
         this.newErrorMessage('Uh-Oh','Failed to retrieve user information.',true);
         this.setState({loading: false});
       });
@@ -125,8 +125,8 @@ class MenteeListView extends Component {
         //statusCode = 300; //Test other status codes
 
         //If the database returns the status code 200 (OK)
-        if (statusCode == 200){
-          console.log("Successfully fetched data with the response code: " + statusCode)
+        if (response.ok){
+          console.log("Successfully fetched all contacts. Status code: " + statusCode)
 
           //Continuing the promise chain
           return response;
@@ -134,6 +134,7 @@ class MenteeListView extends Component {
 
         //Any other status codes
         else{
+          console.log("Failed to fetch contacts. Status code: " + statusCode);
           return Promise.reject('Failed with status code: ' + statusCode);
         }
       })
@@ -178,7 +179,7 @@ class MenteeListView extends Component {
 
       //Checking how many items are in the contact list.
       contactCount = contactItems.length
-      console.log("contactCount: " + contactCount);
+      console.log(" ... contactCount: " + contactCount);
 
 
 
