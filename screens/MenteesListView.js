@@ -75,20 +75,19 @@ class MenteeListView extends Component {
   };
 
   async componentDidMount() {
-    const token = await AsyncStorage.getItem('hm_token');
+    //Starting loading icon animation
+    this.setState({loading:true});
 
-    this.setState({
-      hmToken: token
-    });
+    //Fetching token
+    const token = await AsyncStorage.getItem('hm_token');
+    this.setState({hmToken: token});
 
     // this.getUserData(this.state.fbUserId, this.state.fbToken);
     if (this.state.hmToken) {
-      console.log('gello');
       const profile = await this.getMyProfile(JSON.parse(this.state.hmToken)).catch((error) =>{
         console.log('ERrorororo' + error.statusCode);
         this.newErrorMessage('Uh-Oh','Failed to retrieve user information.',true);
-        
-        
+        this.setState({loading: false});
       });
       this.constructContactItemsFromResponse(profile.contacts, JSON.parse(this.state.hmToken));
     } else {
@@ -208,7 +207,7 @@ class MenteeListView extends Component {
   render() {
     return (
       <View style={styles.contentWrap}>
-        {/* //View for displaying messages. */}
+        {/* //Floating view*/}
         <View style= {styles.floatingView}>
           <ActivityIndicator 
                 animating={this.state.loading} 
@@ -216,41 +215,39 @@ class MenteeListView extends Component {
                 color="#0000ff" />
         </View>
 
-            
-          {/* Contact list */}
-          <ScrollView
-            refreshControl={
+        {/* Contact list */}
+        <ScrollView
+          refreshControl={
 
-              //Pull to refresh
-              <RefreshControl refreshing={this.state.refreshing} 
-                onRefresh={() => {
-                  this.setState.refreshing = true;
-                  
-                  //Might cause bugs
-                  this.setState.contactItem = [];
-                  //this.componentDidMount();
+            //Pull to refresh
+            <RefreshControl refreshing={this.state.refreshing} 
+              onRefresh={() => {
+                //Removing old data
+                this.setState({
+                  refreshing: true,
+                  contactItem: []
+                });
+                //Hiding errormessage
+                this.newErrorMessage("","",false);
 
-                  setTimeout(()=>{
-                    // Add your logic for the transition
-                    this.setState.refreshing = false;
-                  }, 5000);
-                
-              }}/>
-            }
-            >
-
-              {/* No content messages */}
+                //Reload page
+                this.componentDidMount();
+                this.setState({refreshing: false});
+              
+            }}/>
+        }>
+            {/* No content messages */}
           <MessageBox
             title = {this.state.messageBoxTitle}
             text = {this.state.messageBoxText}
             imageSource = {this.state.messageBoxImage}
             visible = {this.state.messageBoxVisibile}
             />
-            
-            <MenteeList
-              menteeItem={this.state.contactItem}
-              navigation={this.props.navigation}/>  
-          </ScrollView>   
+          <MenteeList
+            menteeItem={this.state.contactItem}
+            navigation={this.props.navigation}
+            />  
+        </ScrollView>   
       </View>
     );
   }
