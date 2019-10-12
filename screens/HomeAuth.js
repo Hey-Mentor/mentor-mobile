@@ -7,7 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Button } from 'react-native-elements';
-import * as Facebook from 'expo-facebook';
+import * as Facebook from 'expo-facebook'
 import { CONFIG } from '../config.js';
 
 const splashScreenImage = require('../assets/heymentorsplash.png');
