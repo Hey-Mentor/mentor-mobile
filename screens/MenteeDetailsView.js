@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
+import { 
+  AsyncStorage ,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+} from 'react-native';
+
 import MenteeDetails from '../components/menteeDetails/MenteeDetails';
 
 const headerTitleStyle = {
@@ -19,12 +25,15 @@ class MenteeDetailsView extends Component {
   });
 
   state = {
-    messageDeltaString: '0 days'
+    messageDeltaString: '0 days',
+    loading: true,
   };
 
   async componentDidMount() {
     try {
+      
       const messageContextJson = await AsyncStorage.getItem('messages');
+      //The timeout should be removed after server
       if (messageContextJson) {
         const messageContext = JSON.parse(messageContextJson);
         const menteeId = this.props.navigation.state.params.mentee._id;
@@ -36,20 +45,52 @@ class MenteeDetailsView extends Component {
           }
         }
       }
-    } catch (e) {
+    }
+      
+    catch (e) {
       // TODO: add sentry logging
+    }
+    finally{
+      //Timeout for a delayed animation. TODO: This should be removed before we launch the app
+      setTimeout(()=>{
+        this.setState({loading: false})
+      }, 100);
     }
   }
 
   render() {
     const { state } = this.props.navigation;
     return (
-      <MenteeDetails
-        mentee={state.params.mentee}
-        messageDelta={this.state.messageDeltaString}
-      />
+      <View>
+        <MenteeDetails
+          mentee={state.params.mentee}
+          messageDelta={this.state.messageDeltaString}
+        />
+
+          <View style={styles.floatingView}>
+            <ActivityIndicator 
+                  animating = {this.state.loading}
+                  size="large" 
+                  color="#0000ff"
+                  />
+          </View>
+
+        
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  floatingView:{
+    position: 'absolute',
+    
+    margin:10,
+    top: 0, 
+    left: 0, 
+    right: 0, 
+    bottom: 0,
+  }
+});
 
 export default MenteeDetailsView;
