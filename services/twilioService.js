@@ -53,7 +53,19 @@ class TwilioService {
   }
 
   async initAllChannels(contacts) {
-    const success = await Promise.all(contacts.map(contact => this.initSingleChannel(contact)));
+    var success;
+    try{ 
+       // console.log("Contact amount: " + contacts.)
+        var map = contacts.map(
+          contact => this.initSingleChannel(contact)
+        );
+      
+      success = await Promise.all(map);
+    }
+    catch{
+      console.log("Failed to initiate channel");
+      return null;
+    }
     return success.every(val => val);
   }
 
@@ -77,10 +89,15 @@ class TwilioService {
 
   async getChannelForChat(contact) {
     const channelName = this.getChannelName(contact);
-    return this.chatClient.getUserChannelDescriptors().then((paginator) => {
+    return this.chatClient.getUserChannelDescriptors()
+    .then((paginator) => {
       // If this user has channels already, check if there is a channel
       // between current user and the user being messaged
       const channel = paginator.items.find(currentChannel => currentChannel.uniqueName === channelName);
+
+      //For an unknown reason console.log will in some occations prevent a console.error()
+      console.log("--------------------------------- channel: " + channel.channel);
+      
       if (channel) {
         return channel.getChannel();
       }
