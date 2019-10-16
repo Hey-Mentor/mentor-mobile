@@ -85,7 +85,7 @@ class MenteeListView extends Component {
     // this.getUserData(this.state.fbUserId, this.state.fbToken);
     if (this.state.hmToken) {
       const profile = await this.getMyProfile(JSON.parse(this.state.hmToken)).catch((error) =>{
-        console.log('Failed fetching profile information (errorcode: ' + error.statusCode+ ")");
+        console.log('Failed fetching profile information (' + error.message+ ")");
         this.newErrorMessage('Uh-Oh','Failed to retrieve user information.',true);
         this.setState({loading: false});
       });
