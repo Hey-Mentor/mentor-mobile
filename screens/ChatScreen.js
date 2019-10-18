@@ -52,7 +52,7 @@ class ChatScreen extends Component {
       <TouchableOpacity
         onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
       >
-        <Image style={styles.headerImage} source={avatarImage} />
+        <Image style={styles.headerImage} source={{ uri: 'https://graph.facebook.com/' + navigation.state.params.mentee.facebook_id + '/picture?type=large',  }} />
       </TouchableOpacity>
 
     )

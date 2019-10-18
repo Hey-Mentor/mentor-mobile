@@ -33,7 +33,7 @@ class MenteeDetails extends Component {
 
     return (
       <ScrollView style={styles.scrollView}>
-        <DetailsHeader image="https://www.w3schools.com/howto/img_avatar.png" delay={this.props.messageDelta} mentee={mentee} />
+        <DetailsHeader image= {{ uri: 'https://graph.facebook.com/' + mentee.facebook_id + '/picture?type=large',  }} delay={this.props.messageDelta} mentee={mentee} />
         <View id="detailSectionList" style={styles.detailSectionList}>
           <DetailSectionHeader title="Demographics" />
           <DetailRow name="Gender" value={mentee.demo.gender} />

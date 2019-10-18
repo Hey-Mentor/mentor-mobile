@@ -158,6 +158,7 @@ class MenteeListView extends Component {
           school: contact.school.name,
           grade: contact.school.grade,
           id: contact._id,
+          facebook_id: contact.facebook_id,
           fullContact: contact
         });
       }))
