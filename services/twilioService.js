@@ -95,8 +95,8 @@ class TwilioService {
       // between current user and the user being messaged
       const channel = paginator.items.find(currentChannel => currentChannel.uniqueName === channelName);
 
-      //For an unknown reason console.log will in some occations prevent a console.error()
-      console.log("--------------------------------- channel: " + channel.channel);
+      //Checking the item property makes the app catch an error that in some cases crashes the app. (console.error())
+      console.log("Channel: " + channel.channel);
       
       if (channel) {
         return channel.getChannel();

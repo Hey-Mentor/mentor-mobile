@@ -31,9 +31,7 @@ class MenteeDetailsView extends Component {
 
   async componentDidMount() {
     try {
-      
       const messageContextJson = await AsyncStorage.getItem('messages');
-      //The timeout should be removed after server
       if (messageContextJson) {
         const messageContext = JSON.parse(messageContextJson);
         const menteeId = this.props.navigation.state.params.mentee._id;
@@ -74,8 +72,6 @@ class MenteeDetailsView extends Component {
                   color="#0000ff"
                   />
           </View>
-
-        
       </View>
     );
   }

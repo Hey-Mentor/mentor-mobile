@@ -6,11 +6,11 @@ import {
 const avatarImage = require('../../assets/img_avatar.png');
 
 class MenteeListItem extends Component {
-
-
   render() {
     const mentee = this.props.item;
-    console.log('Hello: ' + this.props.item.fullContact.id);
+
+    //Output the facebook ids of all loaded contacts
+    //console.log('Facebook id: ' + this.props.item.fullContact.id);
 
     return (
       <TouchableOpacity onPress={() => this.props.navigation.navigate('chat', { mentee: this.props.item.fullContact })}>
