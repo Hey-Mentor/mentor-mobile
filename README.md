@@ -23,7 +23,7 @@ In the directory you want to clone the repo to, run:
 	git clone https://github.com/Hey-Mentor/mentor-mobile.git
 
 
-2. Download and install the EXPO CLI on your desktop. Follow [this guide](https://docs.expo.io/versions/latest/introduction/installation/) for detailed instructions. 
+2. Download and install the EXPO CLI on your desktop. Follow [this guide](https://docs.expo.io/versions/v35.0.0/get-started/installation/) for detailed instructions. 
 
 
 3. Download and install the [EXPO mobile client](https://expo.io/tools#client) on your phone (or you can use an iOS simulator through Xcode or Android simulator through Android Studio)
