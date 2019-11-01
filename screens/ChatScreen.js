@@ -8,8 +8,6 @@ import { MessageBox } from '../components/common/MessageBox';
 
 YellowBox.ignoreWarnings(['Setting a timer for a long period', 'Deprecation warning: value provided is not in a recognized RFC2822']);
 
-const avatarImage = require('../assets/img_avatar.png');
-
 const headerTitleStyle = {
   flex: 1,
   textAlign: 'center',
@@ -30,17 +28,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 0,
   },
-  floatingView:{
-    position: 'absolute',
-    //justifyContent: 'center',
+  floatingCenter: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  floatingView: {
     textAlign: 'center',
     alignItems: 'center',
     flex: 1,
-    margin:10,
-    top: 0, 
-    left: 0, 
-    right: 0, 
-    bottom: 0,
+    justifyContent: 'center',
+    margin: 10,
   },
 });
 
@@ -52,7 +50,7 @@ class ChatScreen extends Component {
       <TouchableOpacity
         onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
       >
-        <Image style={styles.headerImage} source={{ uri: 'https://graph.facebook.com/' + navigation.state.params.mentee.facebook_id + '/picture?type=large',  }} />
+        <Image style={styles.headerImage} source={{ uri: `https://graph.facebook.com/${navigation.state.params.mentee.facebook_id}/picture?type=large`, }} />
       </TouchableOpacity>
 
     )
@@ -63,27 +61,19 @@ class ChatScreen extends Component {
     contact: this.props.navigation.state.params.mentee._id,
     loading: true,
     id: null,
-
-
-    //MessageBox default Configuration
     messageBoxVisibile: false,
-    messageBoxText: 'Specify the text output',
-    messageBoxTitle: 'Add a title',
-    messageBoxImage: {uri: 'https://storage.needpix.com/rsynced_images/question-310891_1280.png'},
-    
   };
 
   async componentDidMount() {
-    const token = await AsyncStorage.getItem('hm_token')
+    const token = await AsyncStorage.getItem('hm_token');
     this.state.id = `${JSON.parse(token)._id}`;
 
     // Init Twilio service and message service
     this.newMessagesCallback = this.newMessagesCallback.bind(this);
     this.twilioService = new TwilioService(token, [this.state.contact], this.newMessagesCallback);
 
-    //TODO: No messages and failed loading catches
-    //See function afterLoading()
-    
+    // TODO: No messages and failed loading catches
+    // See function afterLoading()
   }
 
   async onSend(message) {
@@ -99,23 +89,16 @@ class ChatScreen extends Component {
       messages: newMessages.concat(previousState.messages),
     }));
 
-    //Checking the amount of messages
+    this.setState({ loading: false });
     this.afterLoading();
   }
 
-  afterLoading () {
-    console.log('Messages size: ' + this.state.messages.length);
-
-    //this.setState({ messages: [] });
-
-    if (this.state.messages.length == 0){
-      this.setState({ 
-        messageBoxVisibile: true,
-        messageBoxTitle: "Uh-Oh",
-        messageBoxText: "There are no messages.",
+  afterLoading() {
+    if (this.state.messages.length === 0) {
+      this.setState({
+        messageBoxVisibile: true
       });
-    };
-    this.setState({ loading: false });
+    }
   }
 
   renderBubble = props => (
@@ -144,24 +127,20 @@ class ChatScreen extends Component {
     const animating = this.state.loading;
     return (
       <View style={[styles.gcView]}>
-
-        <View style= {styles.floatingView}>
-          <ActivityIndicator 
-                animating={animating} 
-                size="large" 
-                color="#0000ff" />
+        <View style={styles.floatingCenter}>
+          <ActivityIndicator
+            animating={animating}
+            size="large"
+            color="#0000ff"
+          />
         </View>
-          
-        <View style= {styles.floatingView}>
-          <MessageBox 
-            title = {this.state.messageBoxTitle}
-            text = {this.state.messageBoxText}
-            imageSource = {this.state.messageBoxImage}
-            visible = {this.state.messageBoxVisibile}
-            />
+        <View style={styles.floatingView}>
+          <MessageBox
+            title="It's Quiet in Here"
+            text="Send a message to get the party started"
+            visible={this.state.messageBoxVisibile}
+          />
         </View>
-        
-
         <GiftedChat
           scrollToBottom
           keyboardShouldPersistTaps="never"

@@ -1,92 +1,64 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import {
-    Text, 
-    View, 
-    StyleSheet,
-    Image
+  Text,
+  View,
+  StyleSheet,
+  Image
 } from 'react-native';
 
-
-
-const MessageBox = ({title, text, imageSource, visible}) => {
-    if (visible){
-      return(
-      
-        <View style = {styles.contentWrap}>
-            {/* Textbox */}
-            <View style={styles.messageBox}>
-              <Text style={styles.messageBoxTitleText}>{title}</Text>
-              <Text style={styles.messageBoxText}>
-                {text}
-              </Text>
-            </View>
-
-            <View style={styles.imageBox}>
-              <Image style={styles.imageBoxImage} source={imageSource}/>
-            </View>
+const MessageBox = ({
+  title, text, imageSource, visible
+}) => {
+  if (visible) {
+    return (
+      <View style={styles.contentWrap}>
+        {/* Textbox */}
+        <View style={styles.messageBox}>
+          <Text style={styles.messageBoxTitleText}>{title}</Text>
+          <Text style={styles.messageBoxText}>
+            {text}
+          </Text>
         </View>
-      );
-    }
-
-    else{
-      return null;
-    }
-    
-}
-
-
-MessageBox.propTypes = {
-    title: PropTypes.string,
-    text: PropTypes.string,
-    imageUrl: PropTypes.string,
-    visible: PropTypes.bool
+        <View style={styles.imageBox}>
+          <Image style={styles.imageBoxImage} source={imageSource} />
+        </View>
+      </View>
+    );
+  }
+  return (null);
 };
 
-
 const styles = StyleSheet.create({
-    contentWrap: {
-        alignItems:"center",
-    },
-    messageBox: {
-        backgroundColor: "#ef553a", //Red
-        borderRadius: 8,
-        padding:10,
-        margin: 20,
-        width: '90%'
-      },
-    
-      //Second
-      messageBoxTitleText: {
-        fontSize:20,
-        color: '#fff',
-        fontWeight:'bold',
-    
-        alignItems: 'center',
-        textAlign: 'center'
-      },
-    
-      messageBoxText: {
-        fontWeight: 'bold',
-        color: '#fff',
-        fontSize: 16,
-    
-        margin:10,
-        textAlign:'center',
-      },
-    
-      imageBox: {
-    
-      },
-    
-      imageBoxImage: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 180,
-        height: 350,
-        marginTop: 50,
-      },
-})
+  contentWrap: {
+    alignItems: 'center',
+  },
+  messageBox: {
+    backgroundColor: '#d9f0f9',
+    borderRadius: 8,
+    padding: 10,
+    margin: 20,
+    width: '90%'
+  },
+  messageBoxTitleText: {
+    fontSize: 20,
+    color: '#222222',
+    alignItems: 'center',
+    textAlign: 'center'
+  },
+  messageBoxText: {
+    color: '#222222',
+    fontSize: 16,
+    margin: 10,
+    textAlign: 'center',
+  },
+  imageBoxImage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 180,
+    height: 350,
+    marginTop: 50,
+  },
+});
 
-
-export {MessageBox};
+export { MessageBox };

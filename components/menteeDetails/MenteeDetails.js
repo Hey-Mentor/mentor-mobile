@@ -6,6 +6,7 @@ import DetailsHeader from './DetailsHeader.js';
 import DetailRow from './DetailRow.js';
 import DetailSectionHeader from './DetailSectionHeader.js';
 import BubbleList from './BubbleList.js';
+import { CONFIG } from '../../config.js';
 
 class MenteeDetails extends Component {
   render() {
@@ -33,7 +34,7 @@ class MenteeDetails extends Component {
 
     return (
       <ScrollView style={styles.scrollView}>
-        <DetailsHeader image= {{ uri: 'https://graph.facebook.com/' + mentee.facebook_id + '/picture?type=large',  }} delay={this.props.messageDelta} mentee={mentee} />
+        <DetailsHeader image={{ uri: `${CONFIG.FACEBOOK_PROFILE_LINK.PREFIX}${mentee.facebook_id}${CONFIG.FACEBOOK_PROFILE_LINK.SUFFIX}` }} delay={this.props.messageDelta} mentee={mentee} />
         <View id="detailSectionList" style={styles.detailSectionList}>
           <DetailSectionHeader title="Demographics" />
           <DetailRow name="Gender" value={mentee.demo.gender} />

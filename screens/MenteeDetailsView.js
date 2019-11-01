@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { 
-  AsyncStorage ,
+import {
+  AsyncStorage,
   StyleSheet,
   View,
   ActivityIndicator,
@@ -17,6 +17,7 @@ const headerTitleStyle = {
 };
 
 const MILLISEC_PER_DAY = 86400000;
+const LOADING_DATA_TIMEOUT_SECS = 100;
 
 class MenteeDetailsView extends Component {
   static navigationOptions = () => ({
@@ -43,16 +44,14 @@ class MenteeDetailsView extends Component {
           }
         }
       }
-    }
-      
-    catch (e) {
+    } catch (e) {
       // TODO: add sentry logging
-    }
-    finally{
-      //Timeout for a delayed animation. TODO: This should be removed before we launch the app
-      setTimeout(()=>{
-        this.setState({loading: false})
-      }, 100);
+    } finally {
+      // Timeout for a delayed animation
+      // TODO: This should be removed when we are pulling data from Redux
+      setTimeout(() => {
+        this.setState({ loading: false });
+      }, LOADING_DATA_TIMEOUT_SECS);
     }
   }
 
@@ -64,28 +63,25 @@ class MenteeDetailsView extends Component {
           mentee={state.params.mentee}
           messageDelta={this.state.messageDeltaString}
         />
-
-          <View style={styles.floatingView}>
-            <ActivityIndicator 
-                  animating = {this.state.loading}
-                  size="large" 
-                  color="#0000ff"
-                  />
-          </View>
+        <View style={styles.floatingView}>
+          <ActivityIndicator
+            animating={this.state.loading}
+            size="large"
+            color="#0000ff"
+          />
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  floatingView:{
-    position: 'absolute',
-    
-    margin:10,
-    top: 0, 
-    left: 0, 
-    right: 0, 
-    bottom: 0,
+  floatingView: {
+    textAlign: 'center',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    margin: 10,
   }
 });
 
