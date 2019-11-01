@@ -4,10 +4,9 @@ import {
 } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import TwilioService from '../services/twilioService';
+import { MessageBox } from '../components/common/MessageBox';
 
 YellowBox.ignoreWarnings(['Setting a timer for a long period', 'Deprecation warning: value provided is not in a recognized RFC2822']);
-
-const avatarImage = require('../assets/img_avatar.png');
 
 const headerTitleStyle = {
   flex: 1,
@@ -27,8 +26,20 @@ const styles = StyleSheet.create({
   },
   gcView: {
     flex: 1,
-    paddingTop: 20
-  }
+    paddingTop: 0,
+  },
+  floatingCenter: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  floatingView: {
+    textAlign: 'center',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    margin: 10,
+  },
 });
 
 class ChatScreen extends Component {
@@ -39,7 +50,7 @@ class ChatScreen extends Component {
       <TouchableOpacity
         onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
       >
-        <Image style={styles.headerImage} source={avatarImage} />
+        <Image style={styles.headerImage} source={{ uri: `https://graph.facebook.com/${navigation.state.params.mentee.facebook_id}/picture?type=large`, }} />
       </TouchableOpacity>
 
     )
@@ -49,7 +60,8 @@ class ChatScreen extends Component {
     messages: [],
     contact: this.props.navigation.state.params.mentee._id,
     loading: true,
-    id: null
+    id: null,
+    messageBoxVisibile: false,
   };
 
   async componentDidMount() {
@@ -59,6 +71,9 @@ class ChatScreen extends Component {
     // Init Twilio service and message service
     this.newMessagesCallback = this.newMessagesCallback.bind(this);
     this.twilioService = new TwilioService(token, [this.state.contact], this.newMessagesCallback);
+
+    // TODO: No messages and failed loading catches
+    // See function afterLoading()
   }
 
   async onSend(message) {
@@ -75,6 +90,15 @@ class ChatScreen extends Component {
     }));
 
     this.setState({ loading: false });
+    this.afterLoading();
+  }
+
+  afterLoading() {
+    if (this.state.messages.length === 0) {
+      this.setState({
+        messageBoxVisibile: true
+      });
+    }
   }
 
   renderBubble = props => (
@@ -103,7 +127,20 @@ class ChatScreen extends Component {
     const animating = this.state.loading;
     return (
       <View style={[styles.gcView]}>
-        <ActivityIndicator animating={animating} />
+        <View style={styles.floatingCenter}>
+          <ActivityIndicator
+            animating={animating}
+            size="large"
+            color="#0000ff"
+          />
+        </View>
+        <View style={styles.floatingView}>
+          <MessageBox
+            title="It's Quiet in Here"
+            text="Send a message to get the party started"
+            visible={this.state.messageBoxVisibile}
+          />
+        </View>
         <GiftedChat
           scrollToBottom
           keyboardShouldPersistTaps="never"

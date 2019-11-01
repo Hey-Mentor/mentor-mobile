@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
+import {
+  AsyncStorage,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+} from 'react-native';
+
 import MenteeDetails from '../components/menteeDetails/MenteeDetails';
 
 const headerTitleStyle = {
@@ -11,6 +17,7 @@ const headerTitleStyle = {
 };
 
 const MILLISEC_PER_DAY = 86400000;
+const LOADING_DATA_TIMEOUT_SECS = 100;
 
 class MenteeDetailsView extends Component {
   static navigationOptions = () => ({
@@ -19,7 +26,8 @@ class MenteeDetailsView extends Component {
   });
 
   state = {
-    messageDeltaString: '0 days'
+    messageDeltaString: '0 days',
+    loading: true,
   };
 
   async componentDidMount() {
@@ -38,18 +46,43 @@ class MenteeDetailsView extends Component {
       }
     } catch (e) {
       // TODO: add sentry logging
+    } finally {
+      // Timeout for a delayed animation
+      // TODO: This should be removed when we are pulling data from Redux
+      setTimeout(() => {
+        this.setState({ loading: false });
+      }, LOADING_DATA_TIMEOUT_SECS);
     }
   }
 
   render() {
     const { state } = this.props.navigation;
     return (
-      <MenteeDetails
-        mentee={state.params.mentee}
-        messageDelta={this.state.messageDeltaString}
-      />
+      <View>
+        <MenteeDetails
+          mentee={state.params.mentee}
+          messageDelta={this.state.messageDeltaString}
+        />
+        <View style={styles.floatingView}>
+          <ActivityIndicator
+            animating={this.state.loading}
+            size="large"
+            color="#0000ff"
+          />
+        </View>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  floatingView: {
+    textAlign: 'center',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    margin: 10,
+  }
+});
 
 export default MenteeDetailsView;

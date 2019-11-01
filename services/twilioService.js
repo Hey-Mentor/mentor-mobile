@@ -53,7 +53,16 @@ class TwilioService {
   }
 
   async initAllChannels(contacts) {
-    const success = await Promise.all(contacts.map(contact => this.initSingleChannel(contact)));
+    let success;
+    try {
+      const map = contacts.map(
+        contact => this.initSingleChannel(contact)
+      );
+      success = await Promise.all(map);
+    } catch {
+      // TODO: Add sentry logging
+      return false;
+    }
     return success.every(val => val);
   }
 
@@ -69,7 +78,6 @@ class TwilioService {
       if (channel.createdBy === this.id) {
         this.tryInviteContact(contact);
       }
-
       return true;
     }
     return false;
@@ -77,15 +85,21 @@ class TwilioService {
 
   async getChannelForChat(contact) {
     const channelName = this.getChannelName(contact);
-    return this.chatClient.getUserChannelDescriptors().then((paginator) => {
-      // If this user has channels already, check if there is a channel
-      // between current user and the user being messaged
-      const channel = paginator.items.find(currentChannel => currentChannel.uniqueName === channelName);
-      if (channel) {
-        return channel.getChannel();
-      }
-      return this.createChannelWithUser();
-    });
+    return this.chatClient.getUserChannelDescriptors()
+      .then((paginator) => {
+        // If this user has channels already, check if there is a channel
+        // between current user and the user being messaged
+        const channel = paginator.items.find(currentChannel => currentChannel.uniqueName === channelName);
+
+        // TODO: logging will prevent the "creation error" issue, but
+        //  we need a cleaner solution
+        // console.log(channel.channel);
+
+        if (channel && channel.channel) {
+          return channel.getChannel();
+        }
+        return this.createChannelWithUser();
+      });
   }
 
   async loadTwilioClient() {
@@ -107,10 +121,8 @@ class TwilioService {
         // If we fail to set the local storage for the token, just continue processing
         //  and we will attempt to cache the token again next time we refresh it
       }
-
       return this.initChatClient(localToken);
     }
-
     return false;
   }
 

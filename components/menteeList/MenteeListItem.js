@@ -2,17 +2,15 @@ import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity
 } from 'react-native';
-
-const avatarImage = require('../../assets/img_avatar.png');
+import { CONFIG } from '../../config.js';
 
 class MenteeListItem extends Component {
   render() {
     const mentee = this.props.item;
-
     return (
       <TouchableOpacity onPress={() => this.props.navigation.navigate('chat', { mentee: this.props.item.fullContact })}>
         <View style={styles.containerStyle}>
-          <Image style={styles.headerImage} source={avatarImage} />
+          <Image style={styles.headerImage} source={{ uri: `${CONFIG.FACEBOOK_PROFILE_LINK.PREFIX}${mentee.facebook_id}${CONFIG.FACEBOOK_PROFILE_LINK.SUFFIX}` }} />
           <View style={styles.textHeader}>
             <Text style={styles.textTitle}>
               {mentee.name}
