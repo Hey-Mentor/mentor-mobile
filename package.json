@@ -15,6 +15,7 @@
     "lodash": "^4.17.15",
     "lodash-es": "^4.17.15",
     "mem": "^5.1.1",
+    "mixin-deep": "^2.0.1",
     "prettier": "^1.15.2",
     "prop-types": "^15.7.2",
     "react": "16.8.3",
@@ -24,6 +25,7 @@
     "react-native-twilio-chat": "^0.3.1",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^1.6.1",
+    "set-value": "^3.0.1",
     "twilio-chat": "^3.2.1",
     "utf8": "^3.0.0",
     "util": "^0.11.1"
