@@ -12,6 +12,7 @@ import {
 import MenteeList from '../components/menteeList/MenteeList';
 import { CONFIG } from '../config.js';
 import { MessageBox } from '../components/common/MessageBox';
+import PushNotificationService from '../services/pushNotificationService';
 
 const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
@@ -79,6 +80,15 @@ class MenteeListView extends Component {
       // TODO: Add sentry logs
     }
 
+
+
+
+
+    //Testing PushNotification service
+    this.PushNotificationService = new PushNotificationService('Title', 'Message');
+
+
+    //
     this.setState({ loading: false });
   }
 
