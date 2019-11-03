@@ -85,7 +85,8 @@ class MenteeListView extends Component {
 
 
     //Testing PushNotification service
-    this.PushNotificationService = new PushNotificationService('Title', 'Message');
+    this.PushNotificationService = new PushNotificationService();
+    this.PushNotificationService.pushLocalNotification("Local notification", "Body");
 
 
     //
