@@ -3,12 +3,8 @@ import * as Permissions from 'expo-permissions';
 
 
 class PushNotificationService {
-    constructor(title, message) {
-        console.log('Startig the push notification service ...');
-
-        //
-        this.registerForPushNotificationsAsync();
-        console.log('Title: ' + title + " Message: " + message)
+    constructor() {
+        this.registerForPushNotificationsAsync();        
     }
 
 
@@ -49,19 +45,22 @@ class PushNotificationService {
         console.log('Token for push notification: ', token);
         
 
-        //Local test notification
+        
+
+        return token;
+    }
+
+    pushLocalNotification = async(title, body) =>{
         Notifications.presentLocalNotificationAsync({
-            title: 'Local Notification',
-            body: 'The token is: ' + token,
+            title: title,
+            body: body,
             data: {
-                token: token,
+                //token: token,
             },
             ios: {
                 sound: true,
             },
           });
-
-        return token;
     }
 }
 
