@@ -59,9 +59,33 @@ class PushNotificationService {
             },
             ios: {
                 sound: true,
-            },
-          });
+            }
+          }
+      );
     }
+    
+    scheduleLocalNotification = async(title, body, date) =>{
+
+      if (date <= Date.now()){
+        throw new Error('Failed to schedule push notification. Provided value for "date" is before the current date.');
+      }
+      
+      Notifications.scheduleLocalNotificationAsync({
+          title: title,
+          body: body + "" + date,
+          data: {
+              //token: token,
+          },
+          ios: {
+              sound: true,
+          },
+        }
+        ,
+      {
+        time: date.getTime(),
+      });
+      console.log("Notification scheduled for: " + date);
+  }
 }
 
 
