@@ -34,7 +34,7 @@ In the directory you want to clone the repo to, run:
 `yarn install`
 
 5. Add `config.js` which should contain the env vars. 
-**Note:** If you're using a local dev env, make sure that `API_URL` and `API_TEST_URL` are pointing to your machine's IP address rather than 127.0.0.1/localhost as 127.0.0.1/localhost would basically point the mobile phone to itself
+**Note:** If you're using a local dev env, make sure that `API_URL` and `API_TEST_URL` are pointing to your machine's IP address rather than 127.0.0.1 or localhost as 127.0.0.1/localhost will point the mobile phone to itself
 
 6. Execute: 
 
