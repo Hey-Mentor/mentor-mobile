@@ -15,9 +15,9 @@ class BubbleList extends Component {
     });
 
     const items = [];
-    this.props.items.forEach((item, idx) => {
+    this.props.items.forEach((item) => {
       items.push(
-        <View key={idx} style={styles.bubbleContainer}>
+        <View key={item.name} style={styles.bubbleContainer}>
           <BubbleRect name={item.name} highlight={item.highlight} />
         </View>
       );

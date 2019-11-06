@@ -35,7 +35,7 @@
     "eject": "react-native-scripts eject",
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
-    "lint": "eslint *.js **/*.js"
+    "lint": "eslint \"**/*.js\""
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

@@ -61,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export { MessageBox };
+export default MessageBox;

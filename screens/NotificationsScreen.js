@@ -47,8 +47,8 @@ class Notification extends Component {
   }
 
   render() {
-    const isDeleted = this.state.isDeleted;
-    const isRead = this.state.isRead;
+    const { isDeleted } = this.state;
+    const { isRead } = this.state;
 
     return !isDeleted ? (
       <View style={styles.card}>

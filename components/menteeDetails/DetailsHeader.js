@@ -50,7 +50,7 @@ class DetailsHeader extends Component {
     return (
       <View id="detailsHeader" style={styles.detailsHeader}>
         <View id="headerPicture" style={[styles.headerSection]}>
-          <Image style={styles.headerImage} source={ this.props.image } />
+          <Image style={styles.headerImage} source={this.props.image} />
         </View>
         <View id="headerInfo" style={[styles.headerSection]}>
           <Text style={[styles.headerText]}>{mentee.person.fname}</Text>

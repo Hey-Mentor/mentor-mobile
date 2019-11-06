@@ -22,9 +22,9 @@ class CollegeList extends Component {
 
     // Construct college list
     const colleges = [];
-    this.props.colleges.forEach((college, idx) => {
+    this.props.colleges.forEach((college) => {
       colleges.push(
-        <View key={idx}>
+        <View key={college.name}>
           <Text style={styles.collegeDetails}>{ college.name }</Text>
           <Text style={styles.collegeDetails}>{ college.location }</Text>
         </View>

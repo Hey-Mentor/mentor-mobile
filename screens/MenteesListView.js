@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 
 import MenteeList from '../components/menteeList/MenteeList';
-import { CONFIG } from '../config.js';
-import { MessageBox } from '../components/common/MessageBox';
+import CONFIG from '../config.js';
+import MessageBox from '../components/common/MessageBox';
 
 const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
@@ -70,7 +70,7 @@ class MenteeListView extends Component {
     this.setState({ hmToken: token });
 
     if (this.state.hmToken) {
-      const profile = await this.getMyProfile(JSON.parse(this.state.hmToken)).catch((error) => {
+      const profile = await this.getMyProfile(JSON.parse(this.state.hmToken)).catch(() => {
         // TODO: Add sentry logs for error
         this.newErrorMessage('Uh-Oh', 'Failed to retrieve user information.');
       });
@@ -108,7 +108,8 @@ class MenteeListView extends Component {
           if (response.ok) {
             return response;
           }
-          return Promise.reject(`Failed with status code: ${response.status}`);
+          // @TODO: double check if https://eslint.org/docs/rules/prefer-promise-reject-errors is an agreed upon rule
+          return Promise.reject(new Error(`Failed with status code: ${response.status}`));
         }
       );
 
@@ -135,10 +136,10 @@ class MenteeListView extends Component {
           this.newErrorMessage("Hmm, nobody's here", 'Get in touch with Hey Mentor to get paired with someone.');
         }
         return contactItems;
-      })
-      .catch((error) => {
-        // TODO: add sentry logs
       });
+      // .catch((error) => {
+      //   // TODO: add sentry logs
+      // });
 
     // Stop the loading indicator
     contactData.then(() => this.setState({ contactItem: contactItems }));

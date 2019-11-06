@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import TwilioService from '../services/twilioService';
-import { MessageBox } from '../components/common/MessageBox';
+import MessageBox from '../components/common/MessageBox';
 
 YellowBox.ignoreWarnings(['Setting a timer for a long period', 'Deprecation warning: value provided is not in a recognized RFC2822']);
 
