@@ -4,6 +4,7 @@
   "env": {
     "jest": true
   },
+  "plugins": ["promise"],
   "rules": {
     "no-use-before-define": "off",
     "react/jsx-filename-extension": "off",
@@ -16,7 +17,19 @@
     "react/prefer-stateless-function": "off",
     "linebreak-style": [ 0 ],
     "import/extensions": "off",
-    "max-len": 0
+    "max-len": 0,
+    "promise/always-return": "error",
+    "promise/no-return-wrap": "error",
+    "promise/param-names": "error",
+    "promise/catch-or-return": "error",
+    "promise/no-native": "off",
+    "promise/no-nesting": "warn",
+    "promise/no-promise-in-callback": "warn",
+    "promise/no-callback-in-promise": "warn",
+    "promise/avoid-new": "warn",
+    "promise/no-new-statics": "error",
+    "promise/no-return-in-finally": "warn",
+    "promise/valid-params": "warn"
   },
   "globals": {
     "fetch": false
