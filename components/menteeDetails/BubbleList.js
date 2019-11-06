@@ -4,16 +4,6 @@ import BubbleRect from './BubbleRect.js';
 
 class BubbleList extends Component {
   render() {
-    const styles = StyleSheet.create({
-      bubbleContainer: {
-        width: 150
-      },
-      bubbleList: {
-        flexDirection: 'row',
-        flexWrap: 'wrap'
-      }
-    });
-
     const items = [];
     this.props.items.forEach((item) => {
       items.push(
@@ -30,5 +20,15 @@ class BubbleList extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  bubbleContainer: {
+    width: 150
+  },
+  bubbleList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  }
+});
 
 export default BubbleList;

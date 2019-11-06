@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
 import { View, Text, Button } from 'react-native';
 
-const headerTitleStyle = {
-  // flex: 1,
-  textAlign: 'center',
-  color: '#000000',
-  fontSize: 24,
-  fontWeight: 'bold'
-};
-
 class NotificationsScreen extends Component {
   static navigationOptions = () => ({
     title: 'Notifications',
-    headerTitleStyle
+    headerTitleStyle: styles.headerTitleStyle
   });
 
   render() {
@@ -102,6 +94,13 @@ const styles = {
     alignSelf: 'center',
     width: 200,
     height: 50
+  },
+  headerTitleStyle: {
+    // flex: 1,
+    textAlign: 'center',
+    color: '#000000',
+    fontSize: 24,
+    fontWeight: 'bold'
   },
   textStyle: {
     alignSelf: 'center',

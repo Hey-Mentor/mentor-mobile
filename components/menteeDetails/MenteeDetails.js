@@ -20,18 +20,6 @@ class MenteeDetails extends Component {
       { name: 'Career advice', highlight: true },
       { name: 'Exam preparation', highlight: false }
     ];
-
-    const styles = StyleSheet.create({
-      scrollView: {
-        backgroundColor: '#ffffff'
-      },
-      detailSectionList: {
-        marginLeft: 21,
-        marginRight: 20,
-        paddingBottom: 20
-      }
-    });
-
     return (
       <ScrollView style={styles.scrollView}>
         <DetailsHeader image={{ uri: `${CONFIG.FACEBOOK_PROFILE_LINK.PREFIX}${mentee.facebook_id}${CONFIG.FACEBOOK_PROFILE_LINK.SUFFIX}` }} delay={this.props.messageDelta} mentee={mentee} />
@@ -59,6 +47,17 @@ class MenteeDetails extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  scrollView: {
+    backgroundColor: '#ffffff'
+  },
+  detailSectionList: {
+    marginLeft: 21,
+    marginRight: 20,
+    paddingBottom: 20
+  }
+});
 
 /*
 [{

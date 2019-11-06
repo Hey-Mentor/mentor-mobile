@@ -18,7 +18,7 @@ const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 class MenteeListView extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: `${navigation.state.params.headerTitle}`,
-    headerTitleStyle,
+    headerTitleStyle: styles.headerTitleStyle,
     headerLeft: null
     /* headerLeft: (
       <TouchableOpacity
@@ -204,17 +204,16 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  headerTitleStyle: {
+    flex: 1,
+    textAlign: 'center',
+    color: '#000000',
+    fontSize: 24,
+    fontWeight: 'bold',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
 });
-
-const headerTitleStyle = {
-  flex: 1,
-  textAlign: 'center',
-  color: '#000000',
-  fontSize: 24,
-  fontWeight: 'bold',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-};
 
 export default MenteeListView;

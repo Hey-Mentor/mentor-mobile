@@ -8,21 +8,13 @@ import {
 
 import MenteeDetails from '../components/menteeDetails/MenteeDetails';
 
-const headerTitleStyle = {
-  flex: 1,
-  textAlign: 'center',
-  color: '#000000',
-  fontSize: 24,
-  fontWeight: 'bold'
-};
-
 const MILLISEC_PER_DAY = 86400000;
 const LOADING_DATA_TIMEOUT_SECS = 100;
 
 class MenteeDetailsView extends Component {
   static navigationOptions = () => ({
     // title: {state.params.mentee.fname},
-    headerTitleStyle
+    headerTitleStyle: styles.headerTitleStyle
   });
 
   state = {
@@ -82,7 +74,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     margin: 10,
-  }
+  },
+  headerTitleStyle: {
+    flex: 1,
+    textAlign: 'center',
+    color: '#000000',
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
 });
 
 export default MenteeDetailsView;
