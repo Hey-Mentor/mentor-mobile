@@ -5,7 +5,7 @@ class DetailRow extends Component {
   render() {
     return (
       <View style={styles.detailRow}>
-        <Text style={[styles.detailKey, styles.detailText]}>{this.props.name}</Text>
+        <Text style={[styles.detailKey, styles.detailText, { width: this.props.wide ? 110 : 84 }]}>{this.props.name}</Text>
         <Text style={[styles.detailText]}>{this.props.value}</Text>
       </View>
     );
@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
   detailKey: {
     paddingRight: 7,
     fontWeight: 'bold',
-    width: this.props.wide ? 110 : 84
   },
   detailText: {
     color: '#4f4f4f',
