@@ -5,7 +5,7 @@ import MenteeListItem from './MenteeListItem';
 class MenteeList extends Component {
   renderSections() {
     return this.props.menteeItem.map(item => (
-      <MenteeListItem navigation={this.props.navigation} key={item.name} item={item} />
+      <MenteeListItem navigation={this.props.navigation} key={item.id} item={item} />
     ));
   }
 
