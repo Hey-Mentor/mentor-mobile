@@ -108,8 +108,7 @@ class MenteeListView extends Component {
           if (response.ok) {
             return response;
           }
-          // @TODO: double check if https://eslint.org/docs/rules/prefer-promise-reject-errors is an agreed upon rule
-          return Promise.reject(new Error(`Failed with status code: ${response.status}`));
+          throw new Error(`Failed with status code: ${response.status}`);
         }
       );
 
