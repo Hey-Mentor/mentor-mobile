@@ -48,4 +48,15 @@ class MenteeDetails extends Component {
   }
 }
 
+const styles = StyleSheet.create({
+  scrollView: {
+    backgroundColor: '#ffffff'
+  },
+  detailSectionList: {
+    marginLeft: 21,
+    marginRight: 20,
+    paddingBottom: 20
+  }
+});
+
 export default MenteeDetails;
