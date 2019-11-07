@@ -4,48 +4,14 @@ import {
 } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import TwilioService from '../services/twilioService';
-import { MessageBox } from '../components/common/MessageBox';
+import MessageBox from '../components/common/MessageBox';
 
 YellowBox.ignoreWarnings(['Setting a timer for a long period', 'Deprecation warning: value provided is not in a recognized RFC2822']);
-
-const headerTitleStyle = {
-  flex: 1,
-  textAlign: 'center',
-  color: '#000000',
-  fontSize: 24,
-  fontWeight: 'bold'
-};
-
-const styles = StyleSheet.create({
-  headerImage: {
-    borderRadius: 20,
-    width: 40,
-    height: 40,
-    margin: 10,
-    marginRight: 20
-  },
-  gcView: {
-    flex: 1,
-    paddingTop: 0,
-  },
-  floatingCenter: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  floatingView: {
-    textAlign: 'center',
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    margin: 10,
-  },
-});
 
 class ChatScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: `${navigation.state.params.mentee.person.fname}`,
-    headerTitleStyle,
+    headerTitleStyle: styles.headerTitleStyle,
     headerRight: (
       <TouchableOpacity
         onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
@@ -154,5 +120,38 @@ class ChatScreen extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  headerImage: {
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    margin: 10,
+    marginRight: 20
+  },
+  gcView: {
+    flex: 1,
+    paddingTop: 0,
+  },
+  floatingCenter: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  floatingView: {
+    textAlign: 'center',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    margin: 10,
+  },
+  headerTitleStyle: {
+    flex: 1,
+    textAlign: 'center',
+    color: '#000000',
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
+});
 
 export default ChatScreen;

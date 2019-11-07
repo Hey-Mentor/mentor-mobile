@@ -4,20 +4,10 @@ import BubbleRect from './BubbleRect.js';
 
 class BubbleList extends Component {
   render() {
-    const styles = StyleSheet.create({
-      bubbleContainer: {
-        width: 150
-      },
-      bubbleList: {
-        flexDirection: 'row',
-        flexWrap: 'wrap'
-      }
-    });
-
     const items = [];
-    this.props.items.forEach((item, idx) => {
+    this.props.items.forEach((item) => {
       items.push(
-        <View key={idx} style={styles.bubbleContainer}>
+        <View key={item.uniqueId} style={styles.bubbleContainer}>
           <BubbleRect name={item.name} highlight={item.highlight} />
         </View>
       );
@@ -30,5 +20,15 @@ class BubbleList extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  bubbleContainer: {
+    width: 150
+  },
+  bubbleList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  }
+});
 
 export default BubbleList;

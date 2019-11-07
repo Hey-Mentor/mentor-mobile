@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
 import { View, Text, Button } from 'react-native';
 
-const headerTitleStyle = {
-  // flex: 1,
-  textAlign: 'center',
-  color: '#000000',
-  fontSize: 24,
-  fontWeight: 'bold'
-};
-
 class NotificationsScreen extends Component {
   static navigationOptions = () => ({
     title: 'Notifications',
-    headerTitleStyle
+    headerTitleStyle: styles.headerTitleStyle
   });
 
   render() {
@@ -47,8 +39,8 @@ class Notification extends Component {
   }
 
   render() {
-    const isDeleted = this.state.isDeleted;
-    const isRead = this.state.isRead;
+    const { isDeleted } = this.state;
+    const { isRead } = this.state;
 
     return !isDeleted ? (
       <View style={styles.card}>
@@ -102,6 +94,13 @@ const styles = {
     alignSelf: 'center',
     width: 200,
     height: 50
+  },
+  headerTitleStyle: {
+    // flex: 1,
+    textAlign: 'center',
+    color: '#000000',
+    fontSize: 24,
+    fontWeight: 'bold'
   },
   textStyle: {
     alignSelf: 'center',

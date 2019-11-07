@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   ScrollView, View, Text, StyleSheet, Image
 } from 'react-native';
-import { Button } from '../common/Button';
+import Button from '../common/Button';
+import AvatarSource from '../../assets/img_avatar.png';
 
 class MenteeListSection extends Component {
   render() {
@@ -11,7 +12,7 @@ class MenteeListSection extends Component {
     return (
       <ScrollView style={styles.containerStyle}>
         <View style={styles.header}>
-          <Image style={styles.headerImage} source={require('../../assets/img_avatar.png')} />
+          <Image style={styles.headerImage} source={AvatarSource} />
           <View style={styles.textHeader}>
             <Text style={styles.textTitle}>
               {mentee.name}

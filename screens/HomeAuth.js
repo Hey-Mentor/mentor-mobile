@@ -8,13 +8,15 @@ import {
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import * as Facebook from 'expo-facebook';
-import { CONFIG } from '../config.js';
+import CONFIG from '../config.js';
 
 const splashScreenImage = require('../assets/heymentorsplash.png');
 
 const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
 class HomeAuth extends Component {
+  // @TODO: look into https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/sort-comp.md to clear the issue
+  // eslint-disable-next-line react/sort-comp
   static navigationOptions = {
     header: null
   };
@@ -87,7 +89,7 @@ class HomeAuth extends Component {
 
       if (response.type === 'success') {
         AsyncStorage.setItem('fb_token', response.token);
-        this.getFacebookData(response.token).then((responseJson) => {
+        this.getFacebookData(response.token).then(() => {
           this.setState({
             // fbId: responseJson.Id,
             loading: false
@@ -123,7 +125,7 @@ class HomeAuth extends Component {
               headerTitle = 'Mentees';
             }
             this.props.navigation.navigate('menteeListView', { headerTitle });
-          }).catch((error) => {
+          // }).catch((error) => {
             // TODO: Add sentry logs
           });
         } else {
