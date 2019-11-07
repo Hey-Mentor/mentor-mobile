@@ -7,7 +7,7 @@ class BubbleList extends Component {
     const items = [];
     this.props.items.forEach((item) => {
       items.push(
-        <View key={item.name} style={styles.bubbleContainer}>
+        <View key={item.uniqueId} style={styles.bubbleContainer}>
           <BubbleRect name={item.name} highlight={item.highlight} />
         </View>
       );

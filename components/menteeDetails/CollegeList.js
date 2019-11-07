@@ -7,7 +7,7 @@ class CollegeList extends Component {
     const colleges = [];
     this.props.colleges.forEach((college) => {
       colleges.push(
-        <View key={college.name}>
+        <View key={college.uniqueId}>
           <Text style={styles.collegeDetails}>{ college.name }</Text>
           <Text style={styles.collegeDetails}>{ college.location }</Text>
         </View>
