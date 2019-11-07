@@ -16,6 +16,7 @@ const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
 class HomeAuth extends Component {
   // @TODO: look into https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/sort-comp.md to clear the issue
+  // eslint-disable-next-line react/sort-comp
   static navigationOptions = {
     header: null
   };
