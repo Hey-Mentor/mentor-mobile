@@ -1,16 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-class DetailRow extends Component {
-  render() {
-    return (
-      <View style={styles.detailRow}>
-        <Text style={[styles.detailKey, styles.detailText, { width: this.props.wide ? 110 : 84 }]}>{this.props.name}</Text>
-        <Text style={[styles.detailText]}>{this.props.value}</Text>
-      </View>
-    );
-  }
-}
+const DetailRow = ({
+  name, wide, value
+}) => (
+  <View style={styles.detailRow}>
+    <Text style={[styles.detailKey, styles.detailText, { width: wide ? 110 : 84 }]}>{name}</Text>
+    <Text style={[styles.detailText]}>{value}</Text>
+  </View>
+);
 
 const styles = StyleSheet.create({
   detailRow: {

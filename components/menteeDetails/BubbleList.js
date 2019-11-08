@@ -1,25 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import BubbleRect from './BubbleRect.js';
 
-class BubbleList extends Component {
-  render() {
-    const items = [];
-    this.props.items.forEach((item) => {
-      items.push(
-        <View key={item.uniqueId} style={styles.bubbleContainer}>
-          <BubbleRect name={item.name} highlight={item.highlight} />
-        </View>
-      );
-    });
-
-    return (
-      <View style={styles.bubbleList}>
-        { items }
+const BubbleList = ({
+  items
+}) => (
+  <View style={styles.bubbleList}>
+    { items.map(item => (
+      <View key={item.uniqueId} style={styles.bubbleContainer}>
+        <BubbleRect name={item.name} highlight={item.highlight} />
       </View>
-    );
-  }
-}
+    )) }
+  </View>
+);
 
 const styles = StyleSheet.create({
   bubbleContainer: {

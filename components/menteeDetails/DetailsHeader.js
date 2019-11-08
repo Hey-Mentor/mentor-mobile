@@ -1,28 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View, Text, Image, StyleSheet
 } from 'react-native';
 
-class DetailsHeader extends Component {
-  render() {
-    const { mentee } = this.props;
-    return (
-      <View id="detailsHeader" style={styles.detailsHeader}>
-        <View id="headerPicture" style={[styles.headerSection]}>
-          <Image style={styles.headerImage} source={this.props.image} />
-        </View>
-        <View id="headerInfo" style={[styles.headerSection]}>
-          <Text style={[styles.headerText]}>{mentee.person.fname}</Text>
-          <Text style={[styles.messageText, styles.messageColumn]}>
-            <Text style={styles.messageDelay}>{this.props.delay}</Text>
-            {' '}
-since last message
-          </Text>
-        </View>
-      </View>
-    );
-  }
-}
+const DetailsHeader = ({
+  mentee, image, delay
+}) => (
+  <View id="detailsHeader" style={styles.detailsHeader}>
+    <View id="headerPicture" style={[styles.headerSection]}>
+      <Image style={styles.headerImage} source={image} />
+    </View>
+    <View id="headerInfo" style={[styles.headerSection]}>
+      <Text style={[styles.headerText]}>{mentee.person.fname}</Text>
+      <Text style={[styles.messageText, styles.messageColumn]}>
+        <Text style={styles.messageDelay}>{delay}</Text>
+        {' '}
+        since last message
+      </Text>
+    </View>
+  </View>
+);
 
 const styles = StyleSheet.create({
   detailsHeader: {

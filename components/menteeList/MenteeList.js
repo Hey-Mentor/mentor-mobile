@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 import MenteeListItem from './MenteeListItem';
 
-class MenteeList extends Component {
-  renderSections() {
-    return this.props.menteeItem.map(item => (
-      <MenteeListItem navigation={this.props.navigation} key={item.id} item={item} />
-    ));
-  }
 
-  render() {
-    return <View>{this.renderSections()}</View>;
-  }
-}
+const MenteeList = ({
+  menteeItem,
+  navigation
+}) => (
+  <View>
+    {menteeItem.map(item => (
+      <MenteeListItem navigation={navigation} key={item.id} item={item} />
+    ))}
+  </View>
+);
 
 export default MenteeList;

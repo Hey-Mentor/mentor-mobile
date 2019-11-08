@@ -20,38 +20,6 @@ class MenteeListView extends Component {
     title: `${navigation.state.params.headerTitle}`,
     headerTitleStyle: styles.headerTitleStyle,
     headerLeft: null
-    /* headerLeft: (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('notifications');
-        }}
-      >
-        <BadgeIcon count={3}>
-          <Icon
-            name="ios-notifications"
-            type="ionicon"
-            size={35}
-            iconStyle={styles.leftImage}
-          />
-        </BadgeIcon>
-      </TouchableOpacity>
-    ),
-
-    headerRight: (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('settings');
-        }}
-      >
-        <Icon
-          name="gear"
-          type="font-awesome"
-          size={40}
-          iconStyle={styles.rightImage}
-        />
-      </TouchableOpacity>
-
-    ) */
   });
 
   state = {

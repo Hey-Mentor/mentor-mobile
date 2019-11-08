@@ -1,16 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-class DetailSectionHeader extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.sectionHeader}>{this.props.title}</Text>
-        <View style={styles.hr} />
-      </View>
-    );
-  }
-}
+const DetailSectionHeader = ({
+  title
+}) => (
+  <View style={styles.container}>
+    <Text style={styles.sectionHeader}>{title}</Text>
+    <View style={styles.hr} />
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {

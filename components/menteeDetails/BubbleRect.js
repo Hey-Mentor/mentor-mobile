@@ -1,15 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 
-class BubbleRect extends Component {
-  render() {
-    return (
-      <Text style={[styles.bubbleRect, this.props.highlight && styles.highlight, this.props.style]}>
-        {this.props.name}
-      </Text>
-    );
-  }
-}
+const BubbleRect = ({
+  name, highlight, style
+}) => (
+  <Text style={[styles.bubbleRect, highlight && styles.highlight, style]}>
+    {name}
+  </Text>
+);
 
 const styles = StyleSheet.create({
   bubbleRect: {
