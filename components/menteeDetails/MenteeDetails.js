@@ -12,12 +12,12 @@ const MenteeDetails = ({
   mentee, messageDelta
 }) => {
   const supportAreas = [
-    { name: 'College applications', highlight: false },
-    { name: 'Scholarships', highlight: false },
-    { name: 'Financial aid', highlight: false },
-    { name: 'College search', highlight: false },
-    { name: 'Career advice', highlight: true },
-    { name: 'Exam preparation', highlight: false }
+    { name: 'College applications', highlight: false, uniqueId: 0 },
+    { name: 'Scholarships', highlight: false, uniqueId: 1 },
+    { name: 'Financial aid', highlight: false, uniqueId: 2 },
+    { name: 'College search', highlight: false, uniqueId: 3 },
+    { name: 'Career advice', highlight: true, uniqueId: 4 },
+    { name: 'Exam preparation', highlight: false, uniqueId: 5 }
   ];
   return (
     <ScrollView style={styles.scrollView}>
