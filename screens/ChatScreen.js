@@ -14,11 +14,12 @@ class ChatScreen extends Component {
     title: `${navigation.state.params.mentee.person.fname}`,
     headerTitleStyle: styles.headerTitleStyle,
     headerRight: (
-        <Avatar 
-          onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
-          containerStyle={{marginRight: 10}}
-          rounded 
-          source={{ uri: `https://graph.facebook.com/${navigation.state.params.mentee.facebook_id}/picture?type=large` }} />
+      <Avatar
+        onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
+        containerStyle={{ marginRight: 10 }}
+        rounded
+        source={{ uri: `https://graph.facebook.com/${navigation.state.params.mentee.facebook_id}/picture?type=large` }}
+      />
     )
   });
 
