@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Image, AsyncStorage, YellowBox, ActivityIndicator
+  View, StyleSheet, KeyboardAvoidingView, AsyncStorage, YellowBox, ActivityIndicator
 } from 'react-native';
+import { Avatar } from 'react-native-elements';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import TwilioService from '../services/twilioService';
 import MessageBox from '../components/common/MessageBox';
@@ -13,12 +14,12 @@ class ChatScreen extends Component {
     title: `${navigation.state.params.mentee.person.fname}`,
     headerTitleStyle: styles.headerTitleStyle,
     headerRight: (
-      <TouchableOpacity
+      <Avatar
         onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
-      >
-        <Image style={styles.headerImage} source={{ uri: `https://graph.facebook.com/${navigation.state.params.mentee.facebook_id}/picture?type=large`, }} />
-      </TouchableOpacity>
-
+        containerStyle={{ marginRight: 10 }}
+        rounded
+        source={{ uri: `https://graph.facebook.com/${navigation.state.params.mentee.facebook_id}/picture?type=large` }}
+      />
     )
   });
 
@@ -72,10 +73,10 @@ class ChatScreen extends Component {
       {...props}
       textStyle={{
         left: {
-          color: '#262626',
+          color: '#222222',
         },
         right: {
-          color: '#262626',
+          color: '#222222',
         },
       }}
       wrapperStyle={{
@@ -83,7 +84,7 @@ class ChatScreen extends Component {
           backgroundColor: '#FFFFFF',
         },
         right: {
-          backgroundColor: '#DCF8C6',
+          backgroundColor: '#D9F0F9',
         },
       }}
     />
@@ -122,13 +123,6 @@ class ChatScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    borderRadius: 20,
-    width: 40,
-    height: 40,
-    margin: 10,
-    marginRight: 20
-  },
   gcView: {
     flex: 1,
     paddingTop: 0,

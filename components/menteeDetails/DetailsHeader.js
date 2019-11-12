@@ -1,14 +1,15 @@
 import React from 'react';
 import {
-  View, Text, Image, StyleSheet
+  View, Text, StyleSheet
 } from 'react-native';
+import { Avatar } from 'react-native-elements';
 
 const DetailsHeader = ({
   mentee, image, delay
 }) => (
   <View id="detailsHeader" style={styles.detailsHeader}>
     <View id="headerPicture" style={[styles.headerSection]}>
-      <Image style={styles.headerImage} source={image} />
+      <Avatar rounded size="xlarge" source={image} />
     </View>
     <View id="headerInfo" style={[styles.headerSection]}>
       <Text style={[styles.headerText]}>{mentee.person.fname}</Text>
@@ -42,11 +43,6 @@ const styles = StyleSheet.create({
   },
   messageDelay: {
     fontWeight: 'bold'
-  },
-  headerImage: {
-    borderRadius: 75,
-    width: 150,
-    height: 150
   },
   messageBtn: {
     fontSize: 18,

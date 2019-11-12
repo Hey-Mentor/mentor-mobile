@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import MenteeListItem from './MenteeListItem';
-
+import { ListItem } from 'react-native-elements';
+import CONFIG from '../../config.js';
 
 const MenteeList = ({
   menteeItem,
@@ -9,7 +9,14 @@ const MenteeList = ({
 }) => (
   <View>
     {menteeItem.map(item => (
-      <MenteeListItem navigation={navigation} key={item.id} item={item} />
+      <ListItem
+        title={item.name}
+        subtitle={item.school}
+        leftAvatar={{ source: { uri: `${CONFIG.FACEBOOK_PROFILE_LINK.PREFIX}${item.facebook_id}${CONFIG.FACEBOOK_PROFILE_LINK.SUFFIX}` } }}
+        bottomDivider
+        onPress={() => navigation.navigate('chat', { mentee: item.fullContact })}
+        key={item.id}
+      />
     ))}
   </View>
 );
