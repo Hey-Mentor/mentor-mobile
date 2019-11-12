@@ -189,9 +189,9 @@ class TwilioService {
       this.chatClient.on('tokenAboutToExpire', () => {
         this.getTwilioToken()
           .then(newData => this.chatClient.updateToken(newData))
-          .catch(
+          .catch(() => {
             // TODO: add sentry logging
-          );
+          });
       });
 
       // Listen for new invitations to your Client

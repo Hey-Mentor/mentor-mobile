@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
+import { Toast } from 'native-base';
 import { Button } from 'react-native-elements';
 import * as Facebook from 'expo-facebook';
 import CONFIG from '../config.js';
@@ -82,27 +83,30 @@ class HomeAuth extends Component {
       {
         permissions: ['public_profile', 'email', 'user_friends']
       }
-    ).then((response) => {
+    ).then(async (response) => {
       if (response.type === 'cancel') {
         this.setState({ loading: false });
       }
 
       if (response.type === 'success') {
         AsyncStorage.setItem('fb_token', response.token);
-        this.getFacebookData(response.token).then(() => {
-          this.setState({
-            // fbId: responseJson.Id,
-            loading: false
-          });
-        }).catch();
+        await this.getFacebookData(response.token);
+        this.setState({
+          // fbId: responseJson.Id,
+          loading: false
+        });
 
         return response.token;
       }
 
       return null;
-    }).catch(
+    }).catch((err) => {
       // TODO: Add Sentry logs
-    );
+      Toast.show({
+        text: `${err}`,
+        buttonText: 'Okay'
+      });
+    });
   }
 
   async attemptLogin() {
@@ -119,15 +123,12 @@ class HomeAuth extends Component {
       if (token) {
         const success = await this.getHeyMentorToken(token, 'facebook');
         if (success) {
-          await AsyncStorage.getItem('hm_token').then((hmToken) => {
-            const userType = JSON.parse(hmToken).user_type;
-            if (userType === 'mentor') {
-              headerTitle = 'Mentees';
-            }
-            this.props.navigation.navigate('menteeListView', { headerTitle });
-          // }).catch((error) => {
-            // TODO: Add sentry logs
-          });
+          const hmToken = await AsyncStorage.getItem('hm_token');
+          const userType = JSON.parse(hmToken).user_type;
+          if (userType === 'mentor') {
+            headerTitle = 'Mentees';
+          }
+          this.props.navigation.navigate('menteeListView', { headerTitle });
         } else {
           // TODO: Add sentry logs
         }
