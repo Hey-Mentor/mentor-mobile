@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+import { Toast } from 'native-base';
 
 import MenteeList from '../components/menteeList/MenteeList';
 import CONFIG from '../config.js';
@@ -109,7 +110,12 @@ class MenteeListView extends Component {
       // });
 
     // Stop the loading indicator
-    contactData.then(() => this.setState({ contactItem: contactItems }));
+    contactData.then(() => this.setState({ contactItem: contactItems })).catch((err) => {
+      Toast.show({
+        text: `${err}`,
+        buttonText: 'Okay'
+      });
+    });
   };
 
   render() {
