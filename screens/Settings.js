@@ -5,7 +5,7 @@ import { Button } from 'react-native-elements';
 class Settings extends PureComponent {
   handleLogout = () => {
     AsyncStorage.removeItem('fb_token');
-    AsyncStorage.removeItem('fb_id');
+    AsyncStorage.removeItem('g_token');
     this.props.navigation.navigate('home');
   };
 
