@@ -26,6 +26,7 @@ class HomeAuth extends Component {
 
   state = {
     loading: false,
+    loadingPlatform: null,
   };
 
   async componentDidMount() {
@@ -34,7 +35,7 @@ class HomeAuth extends Component {
   }
 
   onLoginPress = async (platform) => {
-    this.setState({ loading: true });
+    this.setState({ loading: true, loadingPlatform: platform });
     let token;
     if (platform === 'facebook') {
       token = await this.initFacebookLogin();
@@ -155,34 +156,31 @@ class HomeAuth extends Component {
   }
 
   render() {
+    const { loading, loadingPlatform } = this.state;
     return (
       <View style={styles.container}>
         <Image
           style={styles.splashStyle}
           source={splashScreenImage}
         />
-
-        {this.state.loading && (
-          <ActivityIndicator
-            size="large"
-            color="#007aff"
+        <TouchableOpacity>
+          <Button
+            onPress={() => this.onLoginPress('facebook')}
+            title="Login with Facebook"
+            loading={loading && loadingPlatform === 'facebook'}
+            disabled={loading}
+            backgroundColor="#007aff"
           />
-        )}
-        {!this.state.loading && [
-          <TouchableOpacity key={0}>
-            <Button
-              onPress={() => this.onLoginPress('facebook')}
-              title="Login with Facebook"
-              backgroundColor="#007aff"
-            />
-          </TouchableOpacity>,
-          <TouchableOpacity key={1}>
-            <Button
-              onPress={() => this.onLoginPress('google')}
-              title="Login with Google"
-              backgroundColor="#007aff"
-            />
-          </TouchableOpacity>]}
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Button
+            onPress={() => this.onLoginPress('google')}
+            title="Login with Google"
+            loading={loading && loadingPlatform === 'google'}
+            disabled={loading}
+            backgroundColor="#007aff"
+          />
+        </TouchableOpacity>
       </View>
     );
   }
