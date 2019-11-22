@@ -4,7 +4,8 @@ import {
   AsyncStorage,
   StyleSheet,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import * as Google from 'expo-google-app-auth';
 import { Toast } from 'native-base';
@@ -24,8 +25,7 @@ class HomeAuth extends Component {
   };
 
   state = {
-    fbLoading: false,
-    gLoading: false
+    loading: false,
   };
 
   async componentDidMount() {
@@ -34,7 +34,7 @@ class HomeAuth extends Component {
   }
 
   onLoginPress = async (platform) => {
-    this.setState({ fbLoading: platform === 'facebook', gLoading: platform === 'google' });
+    this.setState({ loading: true });
     let token;
     if (platform === 'facebook') {
       token = await this.initFacebookLogin();
@@ -76,13 +76,13 @@ class HomeAuth extends Component {
       }
     ).then(async (response) => {
       if (response.type === 'cancel') {
-        this.setState({ gLoading: false, fbLoading: false });
+        this.setState({ loading: false });
       }
 
       if (response.type === 'success') {
         AsyncStorage.setItem('fb_token', response.token);
         await this.getFacebookData(response.token);
-        this.setState({ gLoading: false, fbLoading: false });
+        this.setState({ loading: false });
 
 
         return response.token;
@@ -101,16 +101,16 @@ class HomeAuth extends Component {
   async initGoogleLogin() {
     return Google.logInAsync({
       androidClientId: CONFIG.ANDROID_CLIENT_ID,
-      // iosClientId: YOUR_CLIENT_ID_HERE,  <-- if you use iOS
+      iosClientId: CONFIG.IOS_CLIENT_ID,
       scopes: ['profile', 'email']
     }).then(async (response) => {
       if (response.type === 'cancel') {
-        this.setState({ gLoading: false, fbLoading: false });
+        this.setState({ loading: false });
       }
 
       if (response.type === 'success') {
         AsyncStorage.setItem('g_token', response.accessToken);
-        this.setState({ gLoading: false, fbLoading: false });
+        this.setState({ loading: false });
         return response.accessToken;
       }
 
@@ -136,8 +136,8 @@ class HomeAuth extends Component {
     } else {
       const fbToken = await AsyncStorage.getItem('fb_token');
       const gToken = await AsyncStorage.getItem('g_token');
-      if (fbToken || gToken) {
-        const token = fbToken || gToken;
+      const token = fbToken || gToken;
+      if (token) {
         const authType = fbToken ? 'facebook' : 'google';
         const success = await this.getHeyMentorToken(token, authType);
         if (success) {
@@ -162,24 +162,27 @@ class HomeAuth extends Component {
           source={splashScreenImage}
         />
 
-        <TouchableOpacity>
-          <Button
-            onPress={() => this.onLoginPress('facebook')}
-            title="Login with Facebook"
-            backgroundColor="#007aff"
-            disabled={this.state.fbLoading || this.state.gLoading}
-            loading={this.state.fbLoading}
+        {this.state.loading && (
+          <ActivityIndicator
+            size="large"
+            color="#007aff"
           />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Button
-            onPress={() => this.onLoginPress('google')}
-            title="Login with Google"
-            backgroundColor="#007aff"
-            disabled={this.state.fbLoading || this.state.gLoading}
-            loading={this.state.gLoading}
-          />
-        </TouchableOpacity>
+        )}
+        {!this.state.loading && [
+          <TouchableOpacity key={0}>
+            <Button
+              onPress={() => this.onLoginPress('facebook')}
+              title="Login with Facebook"
+              backgroundColor="#007aff"
+            />
+          </TouchableOpacity>,
+          <TouchableOpacity key={1}>
+            <Button
+              onPress={() => this.onLoginPress('google')}
+              title="Login with Google"
+              backgroundColor="#007aff"
+            />
+          </TouchableOpacity>]}
       </View>
     );
   }
