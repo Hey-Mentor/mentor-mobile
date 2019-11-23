@@ -4,8 +4,7 @@ import {
   AsyncStorage,
   StyleSheet,
   Image,
-  TouchableOpacity,
-  ActivityIndicator
+  TouchableOpacity
 } from 'react-native';
 import * as Google from 'expo-google-app-auth';
 import { Toast } from 'native-base';
@@ -82,10 +81,7 @@ class HomeAuth extends Component {
 
       if (response.type === 'success') {
         AsyncStorage.setItem('fb_token', response.token);
-        await this.getFacebookData(response.token);
         this.setState({ loading: false });
-
-
         return response.token;
       }
 
@@ -169,7 +165,7 @@ class HomeAuth extends Component {
             title="Login with Facebook"
             loading={loading && loadingPlatform === 'facebook'}
             disabled={loading}
-            backgroundColor="#007aff"
+            buttonStyle={styles.buttonStyle}
           />
         </TouchableOpacity>
         <TouchableOpacity>
@@ -178,7 +174,7 @@ class HomeAuth extends Component {
             title="Login with Google"
             loading={loading && loadingPlatform === 'google'}
             disabled={loading}
-            backgroundColor="#007aff"
+            buttonStyle={[styles.buttonStyle, styles.googleButton]}
           />
         </TouchableOpacity>
       </View>
@@ -199,7 +195,6 @@ const styles = StyleSheet.create({
     marginBottom: 80
   },
   buttonStyle: {
-    backgroundColor: '#007aff',
     borderRadius: 5,
     borderWidth: 1,
     marginLeft: 5,
@@ -208,6 +203,10 @@ const styles = StyleSheet.create({
     width: 280,
     height: 50,
     marginTop: 5
+  },
+  googleButton: {
+    backgroundColor: '#DD4B39',
+    borderColor: '#DD4B39'
   },
   textStyle: {
     alignSelf: 'center',
