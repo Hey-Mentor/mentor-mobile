@@ -39,25 +39,13 @@ class MenteeListView extends Component {
     this.setState({ hmToken: token });
 
     if (this.state.hmToken) {
-      const profile = await this.getMyProfile(JSON.parse(this.state.hmToken)).catch(() => {
-        // TODO: Add sentry logs for error
-        this.newErrorMessage('Uh-Oh', 'Failed to retrieve user information.');
-      });
-      this.constructContactItemsFromResponse(profile.contacts, JSON.parse(this.state.hmToken));
+      this.constructContactItemsWithToken(JSON.parse(this.state.hmToken));
     } else {
       // TODO: Add sentry logs
     }
 
     this.setState({ loading: false });
   }
-
-  getMyProfile = async (token) => {
-    const response = await fetch(
-      `${API_URL}/profile/${token._id}?token=${token.api_key}`
-    );
-    const responseJson = await response.json();
-    return responseJson;
-  };
 
   newErrorMessage = async (title, message) => {
     this.setState({
@@ -67,55 +55,30 @@ class MenteeListView extends Component {
     });
   };
 
-  constructContactItemsFromResponse = async (contactIds, token) => {
-    const contactItems = [];
-    const requestString = `${API_URL}/contacts/${token._id}?token=${token.api_key}`;
-
-    const responseObj = fetch(requestString)
-      .then(
-        (response) => {
-          if (response.ok) {
-            return response;
-          }
-          throw new Error(`Failed with status code: ${response.status}`);
-        }
-      );
-
-    const responseBlob = responseObj
-      .then(response => response.json());
-
-    const contactData = responseBlob
-      // TODO: Show "No mentees" error message on screen
-      .then(responseJson => responseJson.contacts.map((contact) => {
-        const fullName = `${contact.person.fname} ${contact.person.lname}`;
-        return contactItems.push({
-          name: fullName,
-          school: contact.school.name,
-          grade: contact.school.grade,
-          id: contact._id,
-          facebook_id: contact.facebook_id,
-          fullContact: contact
-        });
-      }))
-      .then(() => {
-        // Fetch was successfull, but there were no contacts
-        if (contactItems.length === 0) {
-          // Display message to user
-          this.newErrorMessage("Hmm, nobody's here", 'Get in touch with Hey Mentor to get paired with someone.');
-        }
-        return contactItems;
-      });
-      // .catch((error) => {
-      //   // TODO: add sentry logs
-      // });
-
-    // Stop the loading indicator
-    contactData.then(() => this.setState({ contactItem: contactItems })).catch((err) => {
+  constructContactItemsWithToken = async (token) => {
+    try {
+      const response = await fetch(`${API_URL}/contacts/${token._id}?token=${token.api_key}`);
+      if (!response.ok) {
+        throw new Error(`Failed with status code: ${response.status}`);
+      }
+      const contactData = (await response.json()).contacts.map(contact => ({
+        name: `${contact.person.fname} ${contact.person.lname}`,
+        school: contact.school.name,
+        grade: contact.school.grade,
+        id: contact._id,
+        facebook_id: contact.facebook_id,
+        fullContact: contact
+      }));
+      if (contactData.length === 0) {
+        this.newErrorMessage("Hmm, nobody's here", 'Get in touch with Hey Mentor to get paired with someone.');
+      }
+      this.setState({ contactItem: contactData });
+    } catch (err) {
       Toast.show({
         text: `${err}`,
         buttonText: 'Okay'
       });
-    });
+    }
   };
 
   render() {
