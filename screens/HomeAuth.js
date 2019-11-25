@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
+import * as Google from 'expo-google-app-auth';
 import { Toast } from 'native-base';
 import { Button } from 'react-native-elements';
 import * as Facebook from 'expo-facebook';
@@ -23,7 +24,8 @@ class HomeAuth extends Component {
   };
 
   state = {
-    loading: false
+    loading: false,
+    loadingPlatform: null,
   };
 
   async componentDidMount() {
@@ -31,9 +33,17 @@ class HomeAuth extends Component {
     this.attemptLogin();
   }
 
-  onButtonPress = () => {
-    this.setState({ loading: true });
-    this.facebookLogin();
+  onLoginPress = async (platform) => {
+    this.setState({ loading: true, loadingPlatform: platform });
+    let token;
+    if (platform === 'facebook') {
+      token = await this.initFacebookLogin();
+    } else {
+      token = await this.initGoogleLogin();
+    }
+    if (token) {
+      this.attemptLogin();
+    }
   };
 
   getHeyMentorToken = async (token, authType) => {
@@ -58,25 +68,6 @@ class HomeAuth extends Component {
     return false;
   };
 
-  async getFacebookData(token) {
-    // API call to FB Graph API. Will add more code to fetch social media data
-    const response = await fetch(
-      `https://graph.facebook.com/me?access_token=${token}`
-    );
-    const responseJson = await response.json();
-    this.fbId = `${responseJson.id}`;
-
-    return responseJson;
-  }
-
-  facebookLogin = async () => {
-    const token = await this.initFacebookLogin();
-
-    if (token) {
-      this.attemptLogin();
-    }
-  };
-
   async initFacebookLogin() {
     return Facebook.logInWithReadPermissionsAsync(
       CONFIG.FACEBOOK_APP_ID,
@@ -90,13 +81,34 @@ class HomeAuth extends Component {
 
       if (response.type === 'success') {
         AsyncStorage.setItem('fb_token', response.token);
-        await this.getFacebookData(response.token);
-        this.setState({
-          // fbId: responseJson.Id,
-          loading: false
-        });
-
+        this.setState({ loading: false });
         return response.token;
+      }
+
+      return null;
+    }).catch((err) => {
+      // TODO: Add Sentry logs
+      Toast.show({
+        text: `${err}`,
+        buttonText: 'Okay'
+      });
+    });
+  }
+
+  async initGoogleLogin() {
+    return Google.logInAsync({
+      androidClientId: CONFIG.ANDROID_CLIENT_ID,
+      iosClientId: CONFIG.IOS_CLIENT_ID,
+      scopes: ['profile', 'email']
+    }).then(async (response) => {
+      if (response.type === 'cancel') {
+        this.setState({ loading: false });
+      }
+
+      if (response.type === 'success') {
+        AsyncStorage.setItem('g_token', response.accessToken);
+        this.setState({ loading: false });
+        return response.accessToken;
       }
 
       return null;
@@ -119,9 +131,12 @@ class HomeAuth extends Component {
       }
       this.props.navigation.navigate('menteeListView', { headerTitle });
     } else {
-      const token = await AsyncStorage.getItem('fb_token');
+      const fbToken = await AsyncStorage.getItem('fb_token');
+      const gToken = await AsyncStorage.getItem('g_token');
+      const token = fbToken || gToken;
       if (token) {
-        const success = await this.getHeyMentorToken(token, 'facebook');
+        const authType = fbToken ? 'facebook' : 'google';
+        const success = await this.getHeyMentorToken(token, authType);
         if (success) {
           const hmToken = await AsyncStorage.getItem('hm_token');
           const userType = JSON.parse(hmToken).user_type;
@@ -137,19 +152,29 @@ class HomeAuth extends Component {
   }
 
   render() {
+    const { loading, loadingPlatform } = this.state;
     return (
       <View style={styles.container}>
         <Image
           style={styles.splashStyle}
           source={splashScreenImage}
         />
-
         <TouchableOpacity>
           <Button
-            onPress={this.onButtonPress}
+            onPress={() => this.onLoginPress('facebook')}
             title="Login with Facebook"
-            backgroundColor="#007aff"
-            loading={this.state.loading}
+            loading={loading && loadingPlatform === 'facebook'}
+            disabled={loading}
+            buttonStyle={styles.buttonStyle}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Button
+            onPress={() => this.onLoginPress('google')}
+            title="Login with Google"
+            loading={loading && loadingPlatform === 'google'}
+            disabled={loading}
+            buttonStyle={[styles.buttonStyle, styles.googleButton]}
           />
         </TouchableOpacity>
       </View>
@@ -170,14 +195,18 @@ const styles = StyleSheet.create({
     marginBottom: 80
   },
   buttonStyle: {
-    backgroundColor: '#007aff',
     borderRadius: 5,
     borderWidth: 1,
     marginLeft: 5,
     marginRight: 5,
     alignSelf: 'center',
     width: 280,
-    height: 50
+    height: 50,
+    marginTop: 5
+  },
+  googleButton: {
+    backgroundColor: '#DD4B39',
+    borderColor: '#DD4B39'
   },
   textStyle: {
     alignSelf: 'center',
