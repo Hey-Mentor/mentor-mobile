@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Toast } from 'native-base';
 import {
   ScrollView,
   AsyncStorage,
@@ -38,6 +39,22 @@ class MenteeListView extends Component {
     }
 
     this.setState({ loading: false });
+  }
+
+  componentDidUpdate() {
+    if (this.props.errors) {
+      this.props.errors.forEach((error) => {
+        this.props.dispatch({
+          type: 'CLEAR_ERROR',
+          data: error
+        });
+        Toast.show({
+          text: error.text,
+          buttonText: 'Okay',
+          duration: 10000
+        });
+      });
+    }
   }
 
   render() {
@@ -96,6 +113,7 @@ const styles = StyleSheet.create({
 });
 
 export default connect(state => ({
-  contactItem: state.user.contactItem,
-  refreshingContacts: state.user.refreshingContacts
+  errors: state.errors,
+  contactItem: state.contactsList.items,
+  refreshingContacts: state.contactsList.refreshing
 }))(MenteeListView);
