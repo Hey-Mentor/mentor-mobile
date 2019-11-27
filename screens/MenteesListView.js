@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
+import { Toast } from 'native-base';
 import {
   ScrollView,
   AsyncStorage,
@@ -8,13 +9,9 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import { Toast } from 'native-base';
 
 import MenteeList from '../components/menteeList/MenteeList';
-import CONFIG from '../config.js';
-import MessageBox from '../components/common/MessageBox';
-
-const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
+import { constructContactItemsWithToken } from '../actions';
 
 class MenteeListView extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -24,11 +21,8 @@ class MenteeListView extends Component {
   });
 
   state = {
-    contactItem: [],
     hmToken: '',
     loading: true,
-    messageBoxVisibile: false,
-    refreshing: false,
   };
 
   async componentDidMount() {
@@ -39,11 +33,7 @@ class MenteeListView extends Component {
     this.setState({ hmToken: token });
 
     if (this.state.hmToken) {
-      const profile = await this.getMyProfile(JSON.parse(this.state.hmToken)).catch(() => {
-        // TODO: Add sentry logs for error
-        this.newErrorMessage('Uh-Oh', 'Failed to retrieve user information.');
-      });
-      this.constructContactItemsFromResponse(profile.contacts, JSON.parse(this.state.hmToken));
+      this.props.dispatch(constructContactItemsWithToken(JSON.parse(this.state.hmToken)));
     } else {
       // TODO: Add sentry logs
     }
@@ -51,72 +41,21 @@ class MenteeListView extends Component {
     this.setState({ loading: false });
   }
 
-  getMyProfile = async (token) => {
-    const response = await fetch(
-      `${API_URL}/profile/${token._id}?token=${token.api_key}`
-    );
-    const responseJson = await response.json();
-    return responseJson;
-  };
-
-  newErrorMessage = async (title, message) => {
-    this.setState({
-      messageBoxVisibile: true,
-      messageBoxTitle: title,
-      messageBoxText: message
-    });
-  };
-
-  constructContactItemsFromResponse = async (contactIds, token) => {
-    const contactItems = [];
-    const requestString = `${API_URL}/contacts/${token._id}?token=${token.api_key}`;
-
-    const responseObj = fetch(requestString)
-      .then(
-        (response) => {
-          if (response.ok) {
-            return response;
-          }
-          throw new Error(`Failed with status code: ${response.status}`);
-        }
-      );
-
-    const responseBlob = responseObj
-      .then(response => response.json());
-
-    const contactData = responseBlob
-      // TODO: Show "No mentees" error message on screen
-      .then(responseJson => responseJson.contacts.map((contact) => {
-        const fullName = `${contact.person.fname} ${contact.person.lname}`;
-        return contactItems.push({
-          name: fullName,
-          school: contact.school.name,
-          grade: contact.school.grade,
-          id: contact._id,
-          facebook_id: contact.facebook_id,
-          fullContact: contact
+  componentDidUpdate() {
+    if (this.props.errors) {
+      this.props.errors.forEach((error) => {
+        this.props.dispatch({
+          type: 'CLEAR_ERROR',
+          data: error
         });
-      }))
-      .then(() => {
-        // Fetch was successfull, but there were no contacts
-        if (contactItems.length === 0) {
-          // Display message to user
-          this.newErrorMessage("Hmm, nobody's here", 'Get in touch with Hey Mentor to get paired with someone.');
-        }
-        return contactItems;
+        Toast.show({
+          text: error.text,
+          buttonText: 'Okay',
+          duration: 10000
+        });
       });
-      // .catch((error) => {
-      //   // TODO: add sentry logs
-      // });
-
-    // Stop the loading indicator
-    contactData.then(() => this.setState({ contactItem: contactItems })).catch((err) => {
-      Toast.show({
-        text: `${err}`,
-        buttonText: 'Okay'
-      });
-    });
-  };
+    }
+  }
 
   render() {
     return (
@@ -131,31 +70,15 @@ class MenteeListView extends Component {
         <ScrollView
           refreshControl={(
             <RefreshControl
-              refreshing={this.state.refreshing}
+              refreshing={this.props.refreshingContacts}
               onRefresh={() => {
-                // Removing old data
-                this.setState({
-                  refreshing: true,
-                  contactItem: []
-                });
-
-                this.state.messageBoxVisibile = false;
-
-                // Reload page
-                this.componentDidMount();
-                this.setState({ refreshing: false });
+                this.props.dispatch(constructContactItemsWithToken(JSON.parse(this.state.hmToken)));
               }}
             />
           )}
         >
-          {/* No content messages */}
-          <MessageBox
-            title={this.state.messageBoxTitle}
-            text={this.state.messageBoxText}
-            visible={this.state.messageBoxVisibile}
-          />
           <MenteeList
-            menteeItem={this.state.contactItem}
+            menteeItem={this.props.contactItem}
             navigation={this.props.navigation}
           />
         </ScrollView>
@@ -189,4 +112,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MenteeListView;
+export default connect(state => ({
+  errors: state.errors,
+  contactItem: state.contactsList.items,
+  refreshingContacts: state.contactsList.refreshing
+}))(MenteeListView);
