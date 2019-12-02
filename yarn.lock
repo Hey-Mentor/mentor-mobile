@@ -7092,6 +7092,16 @@ redux-logger@^2.7.4:
   dependencies:
     deep-diff "0.3.4"
 
+redux-persist-expo-filesystem@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/redux-persist-expo-filesystem/-/redux-persist-expo-filesystem-2.0.0.tgz#9cab84ea431a96a4521035932898a9b4936d7246"
+  integrity sha512-ua1rOpj6E6YY7P/7jVs1GNu9sDLpzhI8C1B9oN+DITP9fmsygq4b6zpnJ0qklOVsRjxi7l3kwxr6XGmvoEgLgQ==
+
+redux-persist@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-6.0.0.tgz#b4d2972f9859597c130d40d4b146fecdab51b3a8"
+  integrity sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==
+
 redux-thunk@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"

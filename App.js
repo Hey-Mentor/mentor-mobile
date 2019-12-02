@@ -7,7 +7,9 @@ import Roboto from 'native-base/Fonts/Roboto.ttf';
 import RobotoMedium from 'native-base/Fonts/Roboto_medium.ttf';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import store from './store';
+import { PersistGate } from 'redux-persist/integration/react';
+
+import store, { persistor } from './store';
 import HomeAuth from './screens/HomeAuth';
 import NotificationsScreen from './screens/NotificationsScreen';
 import MenteeDetailsView from './screens/MenteeDetailsView';
@@ -49,7 +51,9 @@ export default class App extends React.Component {
     return (
       <Root>
         <Provider store={store}>
-          <MainNavigator />
+          <PersistGate loading={null} persistor={persistor}>
+            <MainNavigator />
+          </PersistGate>
         </Provider>
       </Root>
     );

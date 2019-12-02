@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, KeyboardAvoidingView, AsyncStorage, YellowBox, ActivityIndicator
+  View, StyleSheet, KeyboardAvoidingView, YellowBox, ActivityIndicator
 } from 'react-native';
+import { connect } from 'react-redux';
 import { Avatar } from 'react-native-elements';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import TwilioService from '../services/twilioService';
@@ -32,12 +33,12 @@ class ChatScreen extends Component {
   };
 
   async componentDidMount() {
-    const token = await AsyncStorage.getItem('hm_token');
-    this.state.id = `${JSON.parse(token)._id}`;
+    const { hmToken } = this.props.user;
+    this.state.id = `${hmToken._id}`;
 
     // Init Twilio service and message service
     this.newMessagesCallback = this.newMessagesCallback.bind(this);
-    this.twilioService = new TwilioService(token, [this.state.contact], this.newMessagesCallback);
+    this.twilioService = new TwilioService(hmToken, [this.state.contact], this.newMessagesCallback);
 
     // TODO: No messages and failed loading catches
     // See function afterLoading()
@@ -148,4 +149,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChatScreen;
+export default connect(state => ({
+  user: state.persist.user,
+  errors: state.general.errors,
+}))(ChatScreen);
