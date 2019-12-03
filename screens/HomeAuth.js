@@ -41,7 +41,7 @@ class HomeAuth extends Component {
       `${API_URL}/register/${authType}?access_token=${token}`,
       { method: 'post' }
     );
-    console.log(`${API_URL}/register/${authType}?access_token=${token}`);
+    // console.log(`${API_URL}/register/${authType}?access_token=${token}`);
 
     try {
       if (response.status === 401) {
