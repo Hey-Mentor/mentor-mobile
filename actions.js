@@ -74,10 +74,16 @@ export function getHeyMentorToken(token, authType) {
     try {
       const responseJson = await response.json();
       if (responseJson && !responseJson.error) {
+        // eslint-disable-next-line camelcase
+        const { _id, user_type, api_key } = responseJson;
         dispatch({
           type: 'SET_USER',
           data: {
-            hmToken: responseJson,
+            hmToken: {
+              _id,
+              user_type,
+              api_key
+            },
           }
         });
       }

@@ -26,7 +26,7 @@ class HomeAuth extends Component {
     this.attemptLogin();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { errors, dispatch } = this.props;
     if (errors) {
       errors.forEach((error) => {
@@ -41,7 +41,9 @@ class HomeAuth extends Component {
         });
       });
     }
-    this.checkHmToken();
+    if (this.props.user && this.props.user.hmToken && this.props.user.hmToken !== prevProps.user.hmToken) {
+      this.checkHmToken();
+    }
   }
 
   onLoginPress = async (platform) => {

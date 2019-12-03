@@ -38,7 +38,7 @@ class ChatScreen extends Component {
 
     // Init Twilio service and message service
     this.newMessagesCallback = this.newMessagesCallback.bind(this);
-    this.twilioService = new TwilioService(hmToken, [this.state.contact], this.newMessagesCallback);
+    this.twilioService = new TwilioService(JSON.stringify(hmToken), [this.state.contact], this.newMessagesCallback);
 
     // TODO: No messages and failed loading catches
     // See function afterLoading()
