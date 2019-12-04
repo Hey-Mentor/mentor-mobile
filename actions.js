@@ -125,7 +125,6 @@ export function initFacebookLogin() {
           type: 'SET_USER',
           data: {
             fbToken: response.token,
-            gToken: null
           }
         });
         dispatch(getHeyMentorToken(response.token, 'facebook'));
@@ -166,7 +165,6 @@ export function initGoogleLogin() {
         dispatch({
           type: 'SET_USER',
           data: {
-            fbToken: null,
             gToken: response.accessToken
           }
         });
