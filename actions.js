@@ -1,5 +1,7 @@
 
 /* eslint-disable import/prefer-default-export */
+import * as Facebook from 'expo-facebook';
+import * as Google from 'expo-google-app-auth';
 import CONFIG from './config.js';
 
 const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
@@ -51,6 +53,135 @@ export function constructContactItemsWithToken(token) {
       type: 'SET_CONTACTS_LIST',
       data: {
         refreshingContacts: false
+      }
+    });
+  };
+}
+
+export function getHeyMentorToken(token, authType) {
+  return async (dispatch) => {
+    dispatch({
+      type: 'SET_USER',
+      data: {
+        loading: true,
+      }
+    });
+    const response = await fetch(
+      `${API_URL}/register/${authType}?access_token=${token}`,
+      { method: 'post' }
+    );
+
+    try {
+      const responseJson = await response.json();
+      if (responseJson && !responseJson.error) {
+        // eslint-disable-next-line camelcase
+        const { _id, user_type, api_key } = responseJson;
+        dispatch({
+          type: 'SET_USER',
+          data: {
+            hmToken: {
+              _id,
+              user_type,
+              api_key
+            },
+          }
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: 'SET_ERROR',
+        data: {
+          text: `${err}`,
+        }
+      });
+    }
+    dispatch({
+      type: 'SET_USER',
+      data: {
+        loading: false,
+      }
+    });
+  };
+}
+
+export function initFacebookLogin() {
+  return async (dispatch) => {
+    dispatch({
+      type: 'SET_USER',
+      data: {
+        loading: true,
+        loadingPlatform: 'facebook'
+      }
+    });
+    try {
+      const response = await Facebook.logInWithReadPermissionsAsync(
+        CONFIG.FACEBOOK_APP_ID,
+        {
+          permissions: ['public_profile', 'email', 'user_friends']
+        }
+      );
+      if (response.type === 'success') {
+        dispatch({
+          type: 'SET_USER',
+          data: {
+            fbToken: response.token,
+          }
+        });
+        dispatch(getHeyMentorToken(response.token, 'facebook'));
+      }
+    } catch (err) {
+      dispatch({
+        type: 'SET_ERROR',
+        data: {
+          text: `${err}`,
+        }
+      });
+    }
+    dispatch({
+      type: 'SET_USER',
+      data: {
+        loading: false,
+      }
+    });
+  };
+}
+
+export function initGoogleLogin() {
+  return async (dispatch) => {
+    dispatch({
+      type: 'SET_USER',
+      data: {
+        loading: true,
+        loadingPlatform: 'google'
+      }
+    });
+    const response = await Google.logInAsync({
+      androidClientId: CONFIG.ANDROID_CLIENT_ID,
+      iosClientId: CONFIG.IOS_CLIENT_ID,
+      scopes: ['profile', 'email']
+    });
+    try {
+      if (response.type === 'success') {
+        dispatch({
+          type: 'SET_USER',
+          data: {
+            gToken: response.accessToken
+          }
+        });
+        dispatch(getHeyMentorToken(response.accessToken, 'google'));
+      }
+    } catch (err) {
+      dispatch({
+        type: 'SET_ERROR',
+        data: {
+          text: `${err}`,
+        }
+      });
+    }
+    dispatch({
+      type: 'SET_USER',
+      data: {
+        loading: false,
       }
     });
   };

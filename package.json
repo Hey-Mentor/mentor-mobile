@@ -31,6 +31,8 @@
     "react-navigation": "^1.6.1",
     "react-redux": "5.1.1",
     "redux": "^4.0.4",
+    "redux-persist": "^6.0.0",
+    "redux-persist-expo-filesystem": "^2.0.0",
     "redux-thunk": "^2.3.0",
     "set-value": "^3.0.1",
     "twilio-chat": "^3.2.1",

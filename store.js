@@ -1,39 +1,19 @@
 import { applyMiddleware, createStore } from 'redux';
 import thunkMiddleware from 'redux-thunk';
+import ExpoFileSystemStorage from 'redux-persist-expo-filesystem';
+import { persistStore, persistReducer } from 'redux-persist';
+import reducer, { persistWhitelist, persistBlacklist } from './reducers/index';
 
-const initialState = {
-  contactsList: {
-    refreshing: false,
-    items: []
-  },
-  errors: []
+const persistConfig = {
+  key: 'root',
+  storage: ExpoFileSystemStorage,
+  whitelist: Object.keys(persistWhitelist),
+  blacklist: Object.keys(persistBlacklist),
 };
 
-function reducer(state = initialState, action) {
-  switch (action.type) {
-    case 'SET_CONTACTS_LIST':
-      return Object.assign({}, {
-        ...state,
-        contactsList: {
-          ...state.contactsList,
-          ...action.data
-        }
-      });
-    case 'SET_ERROR':
-      return Object.assign({}, {
-        ...state,
-        errors: [...state.errors, action.data]
-      });
-    case 'CLEAR_ERROR':
-      return Object.assign({}, {
-        ...state,
-        errors: state.errors.filter(error => error !== action.data)
-      });
-    default:
-      return state;
-  }
-}
+const persistedReducer = persistReducer(persistConfig, reducer);
 
-const store = createStore(reducer, applyMiddleware(thunkMiddleware));
+const store = createStore(persistedReducer, applyMiddleware(thunkMiddleware));
 
+export const persistor = persistStore(store);
 export default store;

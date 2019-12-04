@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   View,
-  AsyncStorage,
   StyleSheet,
   Image,
   TouchableOpacity
 } from 'react-native';
-import * as Google from 'expo-google-app-auth';
 import { Toast } from 'native-base';
 import { Button } from 'react-native-elements';
-import * as Facebook from 'expo-facebook';
-import CONFIG from '../config.js';
+import { initFacebookLogin, initGoogleLogin, getHeyMentorToken } from '../actions';
 
 const splashScreenImage = require('../assets/heymentorsplash.png');
-
-const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
 class HomeAuth extends Component {
   // @TODO: look into https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/sort-comp.md to clear the issue
@@ -23,136 +19,65 @@ class HomeAuth extends Component {
     header: null
   };
 
-  state = {
-    loading: false,
-    loadingPlatform: null,
-  };
+  state = {};
 
   async componentDidMount() {
     // await AsyncStorage.clear();
     this.attemptLogin();
   }
 
-  onLoginPress = async (platform) => {
-    this.setState({ loading: true, loadingPlatform: platform });
-    let token;
-    if (platform === 'facebook') {
-      token = await this.initFacebookLogin();
-    } else {
-      token = await this.initGoogleLogin();
-    }
-    if (token) {
-      this.attemptLogin();
-    }
-  };
-
-  getHeyMentorToken = async (token, authType) => {
-    const response = await fetch(
-      `${API_URL}/register/${authType}?access_token=${token}`,
-      { method: 'post' }
-    );
-
-    try {
-      if (response.status === 401) {
-        return false;
-      }
-
-      const responseJson = await response.json();
-      if (responseJson && !responseJson.error) {
-        await AsyncStorage.setItem('hm_token', JSON.stringify(responseJson));
-      }
-      return true;
-    } catch (e) {
-      // TODO: Add Sentry logs
-    }
-    return false;
-  };
-
-  async initFacebookLogin() {
-    return Facebook.logInWithReadPermissionsAsync(
-      CONFIG.FACEBOOK_APP_ID,
-      {
-        permissions: ['public_profile', 'email', 'user_friends']
-      }
-    ).then(async (response) => {
-      if (response.type === 'cancel') {
-        this.setState({ loading: false });
-      }
-
-      if (response.type === 'success') {
-        AsyncStorage.setItem('fb_token', response.token);
-        this.setState({ loading: false });
-        return response.token;
-      }
-
-      return null;
-    }).catch((err) => {
-      // TODO: Add Sentry logs
-      Toast.show({
-        text: `${err}`,
-        buttonText: 'Okay'
+  componentDidUpdate(prevProps) {
+    const { errors, dispatch } = this.props;
+    if (errors) {
+      errors.forEach((error) => {
+        dispatch({
+          type: 'CLEAR_ERROR',
+          data: error
+        });
+        Toast.show({
+          text: error.text,
+          buttonText: 'Okay',
+          duration: 10000
+        });
       });
-    });
+    }
+    if (this.props.user && this.props.user.hmToken && this.props.user.hmToken !== prevProps.user.hmToken) {
+      this.checkHmToken();
+    }
   }
 
-  async initGoogleLogin() {
-    return Google.logInAsync({
-      androidClientId: CONFIG.ANDROID_CLIENT_ID,
-      iosClientId: CONFIG.IOS_CLIENT_ID,
-      scopes: ['profile', 'email']
-    }).then(async (response) => {
-      if (response.type === 'cancel') {
-        this.setState({ loading: false });
-      }
+  onLoginPress = async (platform) => {
+    if (platform === 'facebook') {
+      this.props.dispatch(initFacebookLogin());
+    } else {
+      this.props.dispatch(initGoogleLogin());
+    }
+  };
 
-      if (response.type === 'success') {
-        AsyncStorage.setItem('g_token', response.accessToken);
-        this.setState({ loading: false });
-        return response.accessToken;
-      }
-
-      return null;
-    }).catch((err) => {
-      // TODO: Add Sentry logs
-      Toast.show({
-        text: `${err}`,
-        buttonText: 'Okay'
-      });
-    });
+  checkHmToken() {
+    const { user } = this.props;
+    if (user.hmToken) {
+      const userType = user.hmToken.user_type;
+      const headerTitle = userType === 'mentor' ? 'Mentees' : 'Mentors';
+      this.props.navigation.navigate('menteeListView', { headerTitle });
+    }
   }
 
   async attemptLogin() {
-    let headerTitle = 'Mentors';
-    const localHmToken = await AsyncStorage.getItem('hm_token');
-    if (localHmToken !== null) {
-      const userType = JSON.parse(localHmToken).user_type;
-      if (userType === 'mentor') {
-        headerTitle = 'Mentees';
-      }
-      this.props.navigation.navigate('menteeListView', { headerTitle });
-    } else {
-      const fbToken = await AsyncStorage.getItem('fb_token');
-      const gToken = await AsyncStorage.getItem('g_token');
-      const token = fbToken || gToken;
+    const { user } = this.props;
+    if (user.hmToken == null) {
+      const token = user.fbToken || user.gToken;
       if (token) {
-        const authType = fbToken ? 'facebook' : 'google';
-        const success = await this.getHeyMentorToken(token, authType);
-        if (success) {
-          const hmToken = await AsyncStorage.getItem('hm_token');
-          const userType = JSON.parse(hmToken).user_type;
-          if (userType === 'mentor') {
-            headerTitle = 'Mentees';
-          }
-          this.props.navigation.navigate('menteeListView', { headerTitle });
-        } else {
-          // TODO: Add sentry logs
-        }
+        const authType = user.fbToken ? 'facebook' : 'google';
+        this.props.dispatch(getHeyMentorToken(token, authType));
       }
+    } else {
+      this.checkHmToken();
     }
   }
 
   render() {
-    const { loading, loadingPlatform } = this.state;
+    const { loading, loadingPlatform } = this.props.user;
     return (
       <View style={styles.container}>
         <Image
@@ -218,4 +143,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeAuth;
+export default connect(state => ({
+  user: state.persist.user,
+  errors: state.general.errors,
+}))(HomeAuth);

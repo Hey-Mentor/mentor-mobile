@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
-import { ScrollView, AsyncStorage } from 'react-native';
+import { ScrollView } from 'react-native';
 import { Button } from 'react-native-elements';
+import { connect } from 'react-redux';
 
 class Settings extends PureComponent {
   handleLogout = () => {
-    AsyncStorage.removeItem('fb_token');
-    AsyncStorage.removeItem('g_token');
+    this.props.dispatch({ type: 'RESET_USER' });
     this.props.navigation.navigate('home');
   };
 
@@ -24,4 +24,4 @@ class Settings extends PureComponent {
   }
 }
 
-export default Settings;
+export default connect()(Settings);

@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { Toast } from 'native-base';
 import {
   ScrollView,
-  AsyncStorage,
   StyleSheet,
   View,
-  ActivityIndicator,
   RefreshControl,
 } from 'react-native';
 
@@ -20,25 +18,10 @@ class MenteeListView extends Component {
     headerLeft: null
   });
 
-  state = {
-    hmToken: '',
-    loading: true,
-  };
+  state = {};
 
   async componentDidMount() {
-    this.setState({ loading: true });
-
-    // Get token from storage
-    const token = await AsyncStorage.getItem('hm_token');
-    this.setState({ hmToken: token });
-
-    if (this.state.hmToken) {
-      this.props.dispatch(constructContactItemsWithToken(JSON.parse(this.state.hmToken)));
-    } else {
-      // TODO: Add sentry logs
-    }
-
-    this.setState({ loading: false });
+    this.props.dispatch(constructContactItemsWithToken(this.props.user.hmToken));
   }
 
   componentDidUpdate() {
@@ -60,19 +43,12 @@ class MenteeListView extends Component {
   render() {
     return (
       <View style={styles.contentWrap}>
-        <View style={styles.floatingView}>
-          <ActivityIndicator
-            animating={this.state.loading}
-            size="large"
-            color="#0000ff"
-          />
-        </View>
         <ScrollView
           refreshControl={(
             <RefreshControl
               refreshing={this.props.refreshingContacts}
               onRefresh={() => {
-                this.props.dispatch(constructContactItemsWithToken(JSON.parse(this.state.hmToken)));
+                this.props.dispatch(constructContactItemsWithToken(this.props.user.hmToken));
               }}
             />
           )}
@@ -113,7 +89,8 @@ const styles = StyleSheet.create({
 });
 
 export default connect(state => ({
-  errors: state.errors,
-  contactItem: state.contactsList.items,
-  refreshingContacts: state.contactsList.refreshing
+  user: state.persist.user,
+  errors: state.general.errors,
+  contactItem: state.persist.contactsList.items,
+  refreshingContacts: state.persist.contactsList.refreshing
 }))(MenteeListView);
