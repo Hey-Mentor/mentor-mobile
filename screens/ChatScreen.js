@@ -24,18 +24,7 @@ class ChatScreen extends Component {
   });
 
   state = {
-    messages: [
-      {
-        _id: 1,
-        text: 'This is the default message.',
-        createdAt: new Date(),
-        user: {
-          _id: 1,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any'
-        }
-      }
-    ],
+    messages: [],
     contact: this.props.navigation.state.params.mentee._id,
     loading: true,
     id: null,
