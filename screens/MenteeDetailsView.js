@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
-  AsyncStorage,
   StyleSheet,
   View,
   ActivityIndicator,
@@ -24,9 +24,8 @@ class MenteeDetailsView extends Component {
 
   async componentDidMount() {
     try {
-      const messageContextJson = await AsyncStorage.getItem('messages');
-      if (messageContextJson) {
-        const messageContext = JSON.parse(messageContextJson);
+      const messageContext = this.props.messages;
+      if (messageContext) {
         const menteeId = this.props.navigation.state.params.mentee._id;
         if (messageContext && menteeId in messageContext) {
           const messageArray = messageContext[this.props.navigation.state.params.mentee._id];
@@ -84,4 +83,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MenteeDetailsView;
+export default connect(state => ({
+  user: state.persist.user,
+  messages: state.persist.messages,
+  errors: state.general.errors,
+}))(MenteeDetailsView);
