@@ -1,5 +1,5 @@
 import { Client as TwilioChatClient } from 'twilio-chat';
-import { AsyncStorage } from 'react-native';
+import store from '../store';
 import CONFIG from '../config.js';
 import MessageService from './messageService.js';
 
@@ -103,8 +103,7 @@ class TwilioService {
   }
 
   async loadTwilioClient() {
-    let localToken = await AsyncStorage.getItem('twilio_token');
-
+    let localToken = store.getState().persist.user.twilioToken;
     if (localToken) {
       const clientReady = await this.initChatClient(localToken);
       if (clientReady) {
@@ -115,7 +114,12 @@ class TwilioService {
     localToken = await this.getTwilioToken();
     if (localToken) {
       try {
-        await AsyncStorage.setItem('twilio_token', localToken);
+        store.dispatch({
+          type: 'SET_USER',
+          data: {
+            twilioToken: localToken
+          }
+        });
       } catch (e) {
         // TODO: add sentry
         // If we fail to set the local storage for the token, just continue processing

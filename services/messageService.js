@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import store from '../store';
 
 class MessageService {
   constructor(newMessagesCallback) {
@@ -8,7 +8,7 @@ class MessageService {
 
   static async cacheMessages(contact, messages) {
     try {
-      const localMessages = await AsyncStorage.getItem('messages');
+      const localMessages = store.getState().persist.messages;
 
       let localMessageDict = {};
       if (localMessages) {
@@ -16,7 +16,10 @@ class MessageService {
       }
 
       localMessageDict[contact] = messages;
-      await AsyncStorage.setItem('messages', JSON.stringify(localMessageDict));
+      store.dispatch({
+        type: 'SET_MESSAGES',
+        data: localMessageDict
+      });
     } catch (e) {
       // TODO: Add sentry logging
     }

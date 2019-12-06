@@ -22,7 +22,6 @@ class HomeAuth extends Component {
   state = {};
 
   async componentDidMount() {
-    // await AsyncStorage.clear();
     this.attemptLogin();
   }
 

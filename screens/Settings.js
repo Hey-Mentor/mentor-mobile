@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 class Settings extends PureComponent {
   handleLogout = () => {
     this.props.dispatch({ type: 'RESET_USER' });
+    this.props.dispatch({ type: 'RESET_MESSAGES' });
     this.props.navigation.navigate('home');
   };
 
