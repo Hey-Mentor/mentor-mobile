@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import { Client as TwilioChatClient } from 'twilio-chat';
-import { Paginator } from 'twilio-sync/lib/paginator';
 import { AsyncStorage, Alert } from 'react-native';
 import CONFIG from '../config.js';
 import MessageService from './messageService.js';
@@ -28,10 +27,10 @@ class TwilioService {
     if (success) {
       // Initialize all channels
       try {
-        console.log('Intitiating channels');
+        // Intitiating channels
         const doneInitChannels = await this.initAllChannels(contacts);
         if (doneInitChannels) {
-          console.log('Successfully intitialized all channels.');
+          // Successfully intitialized all channels.
           await this.getAllMessages();
         } else {
           // TODO: something bad happened
@@ -64,19 +63,17 @@ class TwilioService {
         contact => this.initSingleChannel(contact)
       );
       success = await Promise.all(map);
-    } catch {
+    } catch (er) {
       // TODO: Add sentry logging
-      console.log('Failed to initiate channel');
+      console.log(`Failed to initiate channel ${er}`);
       return false;
     }
     return success.every(val => val);
   }
 
   async initSingleChannel(contact) {
-    console.log('Finding channel');
     const channel = await this.getChannelForChat(contact);
     if (channel) {
-      console.log('Channel initiated');
       channel.on('messageAdded', message => this.messageService.updateLocalMessageStateSingle(contact, message));
       this.channels[contact] = channel;
       return true;
@@ -94,26 +91,23 @@ class TwilioService {
         // between current user and the user being messaged
         const channelItem = paginator.items.find((currentChannel) => {
           if (currentChannel.uniqueName === channelName) {
-            console.log(`Channel already exist: ${currentChannel.uniqueName}`);
+            // Channel already exist: ${currentChannel.uniqueName}
             return true;
           }
           return false;
         });
 
         if (channelItem) {
-          console.log(`Channel item: ${channelItem.getChannel()}`);
           return channelItem.getChannel();
         }
-        console.log('No channel found. Creating channel with user: ');
-        // return this.createChannelWithUser(contact);
 
-        // Creating channel through the api
+        // Automatically create new channel. user_type must be admin.
+        console.log('No channel found. Creating channel with user: ');
         const newChannel = await this.createChannelWithUserRequest(contact);
         if (newChannel) {
-          console.log(`Opening new channel: ${newChannel.getChannel()}`);
+          // channel ${newChannel.uniqueName} was created
           return newChannel.getChannel();
         }
-        console.log(`Could not open new channel: ${newChannel.getChannel()}`);
         return false;
       });
   }
@@ -125,21 +119,16 @@ class TwilioService {
 
     // Adding the channelName to the body
     const channelName = this.getChannelName(contact);
-    console.log(`Invitation list: ${contact} AND ${localToken._id}`);
-
-    const bodyData = { 
+    const bodyData = {
       // eslint-disable-next-line object-shorthand
       channelName: channelName,
       inviteList: [contact, localToken._id]
     };
     try {
       const response = await fetch(requestUri, { method: 'post', body: JSON.stringify(bodyData), headers: { 'Content-Type': 'application/json' } });
-
-      // TODO Return the newly created channel object
-      // const responseJson = await response.json();
-      // const twilioChannel = responseJson.channel.getChannel();
-
-      return true;
+      const responseJson = await response.json();
+      const twilioChannel = responseJson.channel;
+      return twilioChannel;
     } catch (e) {
       // TODO: Add sentry logging
       return false;
@@ -149,11 +138,9 @@ class TwilioService {
   async loadTwilioClient() {
     let localToken = await AsyncStorage.getItem('twilio_token');
     if (localToken) {
-      console.log('inititating chat client');
-
       const clientReady = await this.initChatClient(localToken);
       if (clientReady) {
-        console.log('Successfully initiated chat client');
+        // Successfully initiated chat client
         return true;
       }
     }
@@ -190,7 +177,6 @@ class TwilioService {
 
   getChannelName(contact) {
     const localToken = JSON.parse(this.hmToken);
-    console.log(localToken._id > contact ? `${localToken._id}.${contact}` : `${contact}.${localToken._id}`);
     return localToken._id > contact ? `${localToken._id}.${contact}` : `${contact}.${localToken._id}`;
   }
 
@@ -220,19 +206,11 @@ class TwilioService {
     }
   }
 
-  async createChannelWithUser(contact) {
-    const channelName = this.getChannelName(contact);
-    return this.chatClient.createChannel({
-      uniqueName: channelName,
-      friendlyName: channelName,
-    });
-  }
 
   async initChatClient(token) {
     try {
       const chatClient = await TwilioChatClient.create(token, { logLevel: 'info' });
       this.chatClient = chatClient;
-
 
       this.chatClient.on('tokenAboutToExpire', () => {
         this.getTwilioToken()
@@ -241,7 +219,6 @@ class TwilioService {
             // TODO: add sentry logging
           });
       });
-
 
       // TODO: Decide which of these callbacks we need
       this.subscribeToAllChatClientEvents();
@@ -255,7 +232,7 @@ class TwilioService {
 
   async subscribeToAllChatClientEvents() {
     // Listen for new invitations to your Client
-    this.chatClient.on('channelInvited', (channel) => {
+    await this.chatClient.on('channelInvited', (channel) => {
       console.log('You have been invited to join the channel: ', channel.friendlyName);
 
       // Works on both iOS and Android
@@ -281,7 +258,6 @@ class TwilioService {
         ],
         { cancelable: false },
       );
-      // TODO: add a call to the backend to check if we should be joining this channel
     });
 
 
