@@ -2,6 +2,14 @@
   "name": "HeyMentor",
   "displayName": "HeyMentor",
   "expo": {
-    "sdkVersion": "35.0.0"
+    "sdkVersion": "36.0.0",
+    "name": "HeyMentor",
+    "description": "Hey Mentor mobile application",
+    "slug": "heymentor",
+    "version": "1.0.0",
+    "platforms": [
+      "android",
+      "ios"
+    ]
   }
 }
