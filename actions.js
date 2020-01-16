@@ -114,8 +114,8 @@ export function initFacebookLogin() {
       }
     });
     try {
+      await Facebook.initializeAsync(CONFIG.FACEBOOK_APP_ID);
       const response = await Facebook.logInWithReadPermissionsAsync(
-        CONFIG.FACEBOOK_APP_ID,
         {
           permissions: ['public_profile', 'email', 'user_friends']
         }
