@@ -19,7 +19,7 @@ export function constructContactItemsWithToken(token) {
       if (!response.ok) {
         throw new Error(`Failed with status code: ${response.status}`);
       }
-      const contactData = (await response.json()).contacts.map(contact => ({
+      let contactData = (await response.json()).contacts.map(contact => ({
         name: `${contact.person.fname} ${contact.person.lname}`,
         school: contact.school.name,
         grade: contact.school.grade,
@@ -27,6 +27,26 @@ export function constructContactItemsWithToken(token) {
         facebook_id: contact.facebook_id,
         fullContact: contact
       }));
+      const usersWithChannels = [{
+        id: '5c15446bbf35ae4057222222',
+        name: 'Johnny',
+        // @TODO: add channel
+        // channel: ''
+      }, {
+        id: '5c15446bbf35ae4057111111',
+        name: 'Nancy',
+        channel: '5c15446bbf35ae4057222222.5c15446bbf35ae4057111111'
+      }];
+      if (CONFIG.ENV !== 'PROD') {
+        contactData = contactData
+          .filter(contact => usersWithChannels.map(({ id }) => id).includes(contact.id))
+          .map((contact) => {
+            // eslint-disable-next-line no-param-reassign
+            contact.channel = usersWithChannels.find(({ id }) => id === contact.id).channel;
+            return contact;
+          });
+      }
+      console.log(JSON.stringify(contactData))
       if (contactData.length === 0) {
         dispatch({
           type: 'SET_ERROR',

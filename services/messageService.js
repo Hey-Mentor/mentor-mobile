@@ -15,7 +15,7 @@ class MessageService {
         localMessageDict = JSON.parse(localMessages);
       }
 
-      localMessageDict[contact] = messages;
+      localMessageDict[contact.id] = messages;
       store.dispatch({
         type: 'SET_MESSAGES',
         data: localMessageDict
