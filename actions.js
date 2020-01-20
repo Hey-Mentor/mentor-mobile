@@ -30,23 +30,21 @@ export function constructContactItemsWithToken(token) {
       const usersWithChannels = [{
         id: '5c15446bbf35ae4057222222',
         name: 'Johnny',
-        // @TODO: add channel
-        // channel: ''
+        channelSid: 'CH51a77d1a54a34ef296446df376d1110f'
       }, {
         id: '5c15446bbf35ae4057111111',
         name: 'Nancy',
-        channel: '5c15446bbf35ae4057222222.5c15446bbf35ae4057111111'
+        channelSid: 'CH51a77d1a54a34ef296446df376d1110f'
       }];
       if (CONFIG.ENV !== 'PROD') {
         contactData = contactData
           .filter(contact => usersWithChannels.map(({ id }) => id).includes(contact.id))
           .map((contact) => {
             // eslint-disable-next-line no-param-reassign
-            contact.channel = usersWithChannels.find(({ id }) => id === contact.id).channel;
+            contact.channelSid = usersWithChannels.find(({ id }) => id === contact.id).channelSid;
             return contact;
           });
       }
-      console.log(JSON.stringify(contactData))
       if (contactData.length === 0) {
         dispatch({
           type: 'SET_ERROR',
