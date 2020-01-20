@@ -27,6 +27,7 @@ export function constructContactItemsWithToken(token) {
         facebook_id: contact.facebook_id,
         fullContact: contact
       }));
+      // TODO: once backend is updated, remove this and the PROD if condition
       const usersWithChannels = [{
         id: '5c15446bbf35ae4057222222',
         name: 'Johnny',
