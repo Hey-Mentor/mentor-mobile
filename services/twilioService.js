@@ -127,7 +127,7 @@ class TwilioService {
 
   async updateMessages(contact) {
     const channel = await this.chatClient.getChannelBySid(contact.channelSid);
-    const messages = await channel.getMessages(50);
+    const messages = await channel.getMessages();
     await this.messageService.updateLocalMessageState(contact, messages);
   }
 
