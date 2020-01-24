@@ -15,7 +15,7 @@ class MenteeListView extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: `${navigation.state.params.headerTitle}`,
     headerTitleStyle: styles.headerTitleStyle,
-    headerLeft: null
+    headerLeft: () => null
   });
 
   state = {};
@@ -82,9 +82,6 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontSize: 24,
     fontWeight: 'bold',
-    position: 'absolute',
-    top: 0,
-    left: 0,
   },
 });
 
