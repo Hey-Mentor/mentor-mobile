@@ -15,9 +15,9 @@ class TwilioService {
 
     // Map user_id to chat channel object
     this.channels = {};
-    this.contacts = [contacts];
+    this.contacts = store.getState().persist.contactsList.items.filter(({ id }) => contacts.includes(id));
 
-    this.startup(contacts);
+    this.startup(this.contacts);
   }
 
   async startup(contacts) {
@@ -67,39 +67,13 @@ class TwilioService {
   }
 
   async initSingleChannel(contact) {
-    const channel = await this.getChannelForChat(contact);
+    const channel = await this.chatClient.getChannelBySid(contact.channelSid);
     if (channel) {
       channel.on('messageAdded', message => this.messageService.updateLocalMessageStateSingle(contact, message));
-      this.channels[contact] = channel;
-
-      // If we are the user who created the channel, always attempt to invite the other user
-      //  We only want to do this if we created the channel, because any other user on the channel
-      //   will not have permission to invite new users
-      if (channel.createdBy === this.id) {
-        this.tryInviteContact(contact);
-      }
+      this.channels[contact.id] = channel;
       return true;
     }
     return false;
-  }
-
-  async getChannelForChat(contact) {
-    const channelName = this.getChannelName(contact);
-    return this.chatClient.getUserChannelDescriptors()
-      .then((paginator) => {
-        // If this user has channels already, check if there is a channel
-        // between current user and the user being messaged
-        const channel = paginator.items.find(currentChannel => currentChannel.uniqueName === channelName);
-
-        // TODO: logging will prevent the "creation error" issue, but
-        //  we need a cleaner solution
-        // console.log(channel.channel);
-
-        if (channel && channel.channel) {
-          return channel.getChannel();
-        }
-        return this.createChannelWithUser();
-      });
   }
 
   async loadTwilioClient() {
@@ -148,22 +122,13 @@ class TwilioService {
 
   getChannelName(contact) {
     const localToken = JSON.parse(this.hmToken);
-    return localToken._id > contact ? `${localToken._id}.${contact}` : `${contact}.${localToken._id}`;
+    return localToken._id > contact.id ? `${localToken._id}.${contact.id}` : `${contact.id}.${localToken._id}`;
   }
 
   async updateMessages(contact) {
-    const messages = await this.getRawMessages(contact);
+    const channel = await this.chatClient.getChannelBySid(contact.channelSid);
+    const messages = await channel.getMessages();
     await this.messageService.updateLocalMessageState(contact, messages);
-  }
-
-  async getRawMessages(contact) {
-    try {
-      const c = await this.channels[contact];
-      return c.getMessages();
-    } catch (e) {
-      // TODO: add sentry logging
-    }
-    return null;
   }
 
   async tryInviteContact(contact) {

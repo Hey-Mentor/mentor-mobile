@@ -14,7 +14,7 @@ class ChatScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: `${navigation.state.params.mentee.person.fname}`,
     headerTitleStyle: styles.headerTitleStyle,
-    headerRight: (
+    headerRight: () => (
       <Avatar
         onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
         containerStyle={{ marginRight: 10 }}

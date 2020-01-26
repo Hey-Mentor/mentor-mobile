@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { StackNavigator } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import { AppLoading } from 'expo';
 import { Root } from 'native-base';
 import Roboto from 'native-base/Fonts/Roboto.ttf';
@@ -39,23 +40,25 @@ export default class App extends React.Component {
       return <AppLoading />;
     }
 
-    const MainNavigator = StackNavigator({
-      home: { screen: HomeAuth },
-      notifications: { screen: NotificationsScreen },
-      menteeListView: { screen: MenteesListView },
-      menteeDetails: { screen: MenteeDetailsView },
-      settings: { screen: Settings },
-      chat: { screen: ChatScreen },
-    });
-
     return (
       <Root>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <MainNavigator />
+            <AppContainer />
           </PersistGate>
         </Provider>
       </Root>
     );
   }
 }
+
+const MainNavigator = createStackNavigator({
+  home: { screen: HomeAuth },
+  notifications: { screen: NotificationsScreen },
+  menteeListView: { screen: MenteesListView },
+  menteeDetails: { screen: MenteeDetailsView },
+  settings: { screen: Settings },
+  chat: { screen: ChatScreen },
+});
+
+const AppContainer = createAppContainer(MainNavigator);
