@@ -95,6 +95,7 @@ class ChatScreen extends Component {
     const animating = this.state.loading;
     return (
       <View style={[styles.gcView]}>
+        {animating && (
         <View style={styles.floatingCenter}>
           <ActivityIndicator
             animating={animating}
@@ -102,6 +103,8 @@ class ChatScreen extends Component {
             color="#0000ff"
           />
         </View>
+        )}
+        {this.state.messageBoxVisibile && (
         <View style={styles.floatingView}>
           <MessageBox
             title="It's Quiet in Here"
@@ -109,6 +112,7 @@ class ChatScreen extends Component {
             visible={this.state.messageBoxVisibile}
           />
         </View>
+        )}
         <GiftedChat
           scrollToBottom
           keyboardShouldPersistTaps="never"
