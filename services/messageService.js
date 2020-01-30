@@ -10,7 +10,7 @@ class MessageService {
     try {
       const localMessages = store.getState().persist.messages;
       if (!localMessages[contact.id]) {
-        localMessages[contact.id] = []
+        localMessages[contact.id] = [];
       }
       localMessages[contact.id] = [...messages, ...localMessages[contact.id]];
       store.dispatch({
@@ -44,7 +44,7 @@ class MessageService {
         },
       })),
       ...otherProps
-    }
+    };
   }
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, KeyboardAvoidingView, YellowBox, ActivityIndicator, Text
+  View, StyleSheet, KeyboardAvoidingView, YellowBox, ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Avatar } from 'react-native-elements';
