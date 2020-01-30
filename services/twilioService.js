@@ -127,7 +127,13 @@ class TwilioService {
 
   async updateMessages(contact) {
     const channel = await this.chatClient.getChannelBySid(contact.channelSid);
-    const messages = await channel.getMessages();
+    const messages = await channel.getMessages(10);
+    const loadPrevPageFor = async (newMessages) => {
+      const previousMessages = await newMessages.prevPage();
+      previousMessages.loadPrevPage = () => loadPrevPageFor(previousMessages);
+      this.messageService.updateLocalMessageState(contact, previousMessages);
+    };
+    messages.loadPrevPage = () => loadPrevPageFor(messages);
     await this.messageService.updateLocalMessageState(contact, messages);
   }
 
