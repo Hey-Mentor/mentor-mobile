@@ -32,7 +32,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         messages: [
           ...state.messages,
-          ...action.data
+          ...action.data,
         ]
       });
     case 'SET_CONTACTS_LIST':

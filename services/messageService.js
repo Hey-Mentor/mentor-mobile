@@ -9,16 +9,13 @@ class MessageService {
   static async cacheMessages(contact, messages) {
     try {
       const localMessages = store.getState().persist.messages;
-
-      let localMessageDict = {};
-      if (localMessages) {
-        localMessageDict = JSON.parse(localMessages);
+      if (!localMessages[contact.id]) {
+        localMessages[contact.id] = [];
       }
-
-      localMessageDict[contact.id] = messages;
+      localMessages[contact.id] = [...messages, ...localMessages[contact.id]];
       store.dispatch({
         type: 'SET_MESSAGES',
-        data: localMessageDict
+        data: localMessages
       });
     } catch (e) {
       // TODO: Add sentry logging
@@ -36,14 +33,18 @@ class MessageService {
   }
 
   static formatRawMessages(rawMessages) {
-    return rawMessages.items.reverse().map(message => ({
-      _id: `${message.index}`,
-      text: `${message.body}`,
-      createdAt: `${message.timestamp}`,
-      user: {
-        _id: `${message.author}`,
-      },
-    }));
+    const { items, ...otherProps } = rawMessages;
+    return {
+      items: items.reverse().map(message => ({
+        _id: `${message.index}`,
+        text: `${message.body}`,
+        createdAt: `${message.timestamp}`,
+        user: {
+          _id: `${message.author}`,
+        },
+      })),
+      ...otherProps
+    };
   }
 }
 

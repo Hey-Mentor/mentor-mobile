@@ -4,6 +4,7 @@ import CONFIG from '../config.js';
 import MessageService from './messageService.js';
 
 const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
+const MAX_MESSAGES_TO_LOAD = 30;
 
 class TwilioService {
   constructor(hmToken, contacts, messagesCallback) {
@@ -77,6 +78,9 @@ class TwilioService {
   }
 
   async loadTwilioClient() {
+    // TODO: need to handle the case where the twilioToken in redux is expired
+    // (currently it looks like the call to TwilioChatClient.create() fails with
+    // an error window to the user)
     let localToken = store.getState().persist.user.twilioToken;
     if (localToken) {
       const clientReady = await this.initChatClient(localToken);
@@ -127,7 +131,13 @@ class TwilioService {
 
   async updateMessages(contact) {
     const channel = await this.chatClient.getChannelBySid(contact.channelSid);
-    const messages = await channel.getMessages();
+    const messages = await channel.getMessages(MAX_MESSAGES_TO_LOAD);
+    const loadPrevPageFor = async (newMessages) => {
+      const previousMessages = await newMessages.prevPage();
+      previousMessages.loadPrevPage = () => loadPrevPageFor(previousMessages);
+      this.messageService.updateLocalMessageState(contact, previousMessages);
+    };
+    messages.loadPrevPage = () => loadPrevPageFor(messages);
     await this.messageService.updateLocalMessageState(contact, messages);
   }
 

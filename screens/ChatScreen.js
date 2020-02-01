@@ -30,6 +30,9 @@ class ChatScreen extends Component {
     loading: true,
     id: null,
     messageBoxVisibile: false,
+    hasPrevPage: false,
+    isLoadingPrev: false,
+    loadPrevPage: () => {},
   };
 
   async componentDidMount() {
@@ -53,8 +56,15 @@ class ChatScreen extends Component {
   }
 
   newMessagesCallback(newMessages) {
+    const { items, hasPrevPage, loadPrevPage } = newMessages;
     this.setState(previousState => ({
-      messages: newMessages.concat(previousState.messages),
+      messages: previousState.messages.concat(items),
+      hasPrevPage,
+      loadPrevPage: () => {
+        this.setState({ isLoadingPrev: true });
+        loadPrevPage();
+      },
+      isLoadingPrev: false
     }));
 
     this.setState({ loading: false });
@@ -92,13 +102,15 @@ class ChatScreen extends Component {
   );
 
   render() {
-    const animating = this.state.loading;
+    const {
+      loading, hasPrevPage, isLoadingPrev, loadPrevPage
+    } = this.state;
     return (
       <View style={[styles.gcView]}>
-        {animating && (
+        {loading && (
         <View style={styles.floatingCenter}>
           <ActivityIndicator
-            animating={animating}
+            animating={loading}
             size="large"
             color="#0000ff"
           />
@@ -114,6 +126,9 @@ class ChatScreen extends Component {
         </View>
         )}
         <GiftedChat
+          loadEarlier={hasPrevPage}
+          onLoadEarlier={loadPrevPage}
+          isLoadingEarlier={isLoadingPrev}
           scrollToBottom
           keyboardShouldPersistTaps="never"
           messages={this.state && this.state.messages}
