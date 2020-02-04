@@ -45,6 +45,6 @@ In the directory you want to clone the repo to, run:
 By default, only developers can access the signed-in portion of the application (behind the Facebook login). To get registered as a developer, or to get credentials for a test user, please contact the project owner. 
 
 ## FAQ
-* Why is the API returning a 401 - Unauthorized?
+* Why is the API returning a 401 - Unauthorized?  
 	* This response may occur when the API request contains an invalid token/api_key. 
 	* Sometimes the app will not build correctly and therefore use an outdated token value. If logging in and out of the account does not work, try clearing the cache and data of the expo app.

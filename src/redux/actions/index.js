@@ -2,7 +2,7 @@
 /* eslint-disable import/prefer-default-export */
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
-import CONFIG from './config.js';
+import CONFIG from '../../../config.js';
 
 const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 
@@ -78,6 +78,7 @@ export function constructContactItemsWithToken(token) {
 }
 
 export function getHeyMentorToken(token, authType) {
+
   return async (dispatch) => {
     dispatch({
       type: 'SET_USER',
@@ -89,6 +90,7 @@ export function getHeyMentorToken(token, authType) {
       `${API_URL}/register/${authType}?access_token=${token}`,
       { method: 'post' }
     );
+
 
     try {
       const responseJson = await response.json();

@@ -6,7 +6,7 @@ import DetailsHeader from './DetailsHeader.js';
 import DetailRow from './DetailRow.js';
 import DetailSectionHeader from './DetailSectionHeader.js';
 import BubbleList from './BubbleList.js';
-import CONFIG from '../../config.js';
+import CONFIG from '../../../config.js';
 
 const MenteeDetails = ({
   mentee, messageDelta
