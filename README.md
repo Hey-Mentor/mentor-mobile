@@ -1,5 +1,7 @@
 # Hey Mentor Mobile Application 
 
+[Work Items](https://trello.com/b/6ygtAMTp/mobile-app)
+
 ## Overview 
 
 This project contains the Hey Mentor mobile application built with React Native.
