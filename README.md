@@ -1,7 +1,7 @@
 # Hey Mentor Mobile Application 
 
 ## Useful Links
-[Trello Board - Mobile App](https://trello.com/b/6ygtAMTp/mobile-app)
+[Trello Board - Mobile App](https://trello.com/b/6ygtAMTp/mobile-app)\
 [Encryption Design Doc](https://docs.google.com/document/d/12fLR2L9h6mdFVJjiD0fcWwch2_yA1uKMoZDNhgiDPas/edit)
 
 ## Overview 
