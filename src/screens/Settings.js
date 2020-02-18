@@ -2,12 +2,13 @@ import React, { PureComponent } from 'react';
 import { ScrollView } from 'react-native';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { Routes } from '../constants';
 
 class Settings extends PureComponent {
   handleLogout = () => {
     this.props.dispatch({ type: 'RESET_USER' });
     this.props.dispatch({ type: 'RESET_MESSAGES' });
-    this.props.navigation.navigate('home');
+    this.props.navigation.navigate(Routes.HOME);
   };
 
   render() {

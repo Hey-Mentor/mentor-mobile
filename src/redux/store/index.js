@@ -2,7 +2,7 @@ import { applyMiddleware, createStore } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import ExpoFileSystemStorage from 'redux-persist-expo-filesystem';
 import { persistStore, persistReducer } from 'redux-persist';
-import reducer, { persistWhitelist, persistBlacklist } from './reducers/index';
+import reducer, { persistWhitelist, persistBlacklist } from '../reducers/index';
 
 const persistConfig = {
   key: 'root',

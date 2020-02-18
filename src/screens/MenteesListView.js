@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import MenteeList from '../components/menteeList/MenteeList';
-import { constructContactItemsWithToken } from '../actions';
+import { constructContactItemsWithToken } from '../redux/actions';
 
 class MenteeListView extends Component {
   static navigationOptions = ({ navigation }) => ({

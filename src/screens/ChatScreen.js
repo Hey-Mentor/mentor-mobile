@@ -7,6 +7,7 @@ import { Avatar } from 'react-native-elements';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import TwilioService from '../services/twilioService';
 import MessageBox from '../components/common/MessageBox';
+import { Routes } from '../constants';
 
 YellowBox.ignoreWarnings(['Setting a timer for a long period', 'Deprecation warning: value provided is not in a recognized RFC2822']);
 
@@ -16,7 +17,7 @@ class ChatScreen extends Component {
     headerTitleStyle: styles.headerTitleStyle,
     headerRight: () => (
       <Avatar
-        onPress={() => navigation.navigate('menteeDetails', { mentee: navigation.state.params.mentee })}
+        onPress={() => navigation.navigate(Routes.MENTEE_DETAILS, { mentee: navigation.state.params.mentee })}
         containerStyle={{ marginRight: 10 }}
         rounded
         source={{ uri: `https://graph.facebook.com/${navigation.state.params.mentee.facebook_id}/picture?type=large` }}

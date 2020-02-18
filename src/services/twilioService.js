@@ -1,6 +1,6 @@
 import { Client as TwilioChatClient } from 'twilio-chat';
-import store from '../store';
-import CONFIG from '../config.js';
+import store from '../redux/store';
+import CONFIG from '../../config.js';
 import MessageService from './messageService.js';
 
 const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;

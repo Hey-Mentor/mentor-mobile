@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import { Toast } from 'native-base';
 import { Button } from 'react-native-elements';
-import { initFacebookLogin, initGoogleLogin, getHeyMentorToken } from '../actions';
-
-const splashScreenImage = require('../assets/heymentorsplash.png');
+import { initFacebookLogin, initGoogleLogin, getHeyMentorToken } from '../redux/actions';
+import { images } from '../theme';
+import { Routes } from '../constants';
 
 class HomeAuth extends Component {
   // @TODO: look into https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/sort-comp.md to clear the issue
@@ -58,7 +58,7 @@ class HomeAuth extends Component {
     if (user.hmToken) {
       const userType = user.hmToken.user_type;
       const headerTitle = userType === 'mentor' ? 'Mentees' : 'Mentors';
-      this.props.navigation.navigate('menteeListView', { headerTitle });
+      this.props.navigation.navigate(Routes.MENTEE_LIST_VIEW, { headerTitle });
     }
   }
 
@@ -81,7 +81,7 @@ class HomeAuth extends Component {
       <View style={styles.container}>
         <Image
           style={styles.splashStyle}
-          source={splashScreenImage}
+          source={images.splashScreenImage}
         />
         <TouchableOpacity>
           <Button
