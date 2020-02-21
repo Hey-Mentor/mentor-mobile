@@ -68,6 +68,7 @@ export function constructContactItemsWithToken(token) {
 }
 
 export function getHeyMentorToken(token, authType) {
+
   return async (dispatch) => {
     dispatch({
       type: 'SET_USER',
@@ -80,6 +81,7 @@ export function getHeyMentorToken(token, authType) {
       `${API_URL}/register/${authType}?access_token=${token}`,
       { method: 'post' }
     );
+
 
     try {
       const responseJson = await response.json();
