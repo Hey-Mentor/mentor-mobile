@@ -2,14 +2,16 @@ import React from 'react';
 import {
   ScrollView, View, StyleSheet
 } from 'react-native';
+import { ListItem } from 'react-native-elements';
 import DetailsHeader from './DetailsHeader.js';
 import DetailRow from './DetailRow.js';
 import DetailSectionHeader from './DetailSectionHeader.js';
 import BubbleList from './BubbleList.js';
 import CONFIG from '../../config.js';
 
+
 const MenteeDetails = ({
-  mentee, messageDelta
+  mentee, messageDelta, navigation
 }) => {
   const supportAreas = [
     { name: 'College applications', highlight: false, uniqueId: 0 },
@@ -23,6 +25,16 @@ const MenteeDetails = ({
     <ScrollView style={styles.scrollView}>
       <DetailsHeader image={{ uri: `${CONFIG.FACEBOOK_PROFILE_LINK.PREFIX}${mentee.facebook_id}${CONFIG.FACEBOOK_PROFILE_LINK.SUFFIX}` }} delay={messageDelta} mentee={mentee} />
       <View id="detailSectionList" style={styles.detailSectionList}>
+
+        <DetailSectionHeader title="Shared Media" />
+        <ListItem
+          title="Shared Media"
+          subtitle={mentee.school.name}
+          leftAvatar={{ source: { uri: 'https://storage.needpix.com/rsynced_images/link-4088190_1280.png' } }}
+          bottomDivider
+          onPress={() => navigation.navigate('sharedMedia', { mentee })}
+        />
+
         <DetailSectionHeader title="Demographics" />
         <DetailRow name="Gender" value={mentee.demo.gender} />
         <DetailRow name="Race" value={mentee.demo.race} />
