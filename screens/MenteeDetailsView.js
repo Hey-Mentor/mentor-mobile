@@ -54,6 +54,7 @@ class MenteeDetailsView extends Component {
         <MenteeDetails
           mentee={state.params.mentee}
           messageDelta={this.state.messageDeltaString}
+          navigation={this.props.navigation}
         />
         <View style={styles.floatingView}>
           <ActivityIndicator
