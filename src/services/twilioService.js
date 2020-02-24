@@ -68,7 +68,7 @@ class TwilioService {
   }
 
   async initSingleChannel(contact) {
-    const channel = await this.chatClient.getChannelBySid(contact.channelSid);
+    const channel = await this.chatClient.getChannelBySid(contact.channel_id);
     if (channel) {
       channel.on('messageAdded', message => this.messageService.updateLocalMessageStateSingle(contact, message));
       this.channels[contact.id] = channel;
@@ -101,7 +101,7 @@ class TwilioService {
       } catch (e) {
         // TODO: add sentry
         // If we fail to set the local storage for the token, just continue processing
-        //  and we will attempt to cache the token again next time we refresh it
+        // and we will attempt to cache the token again next time we refresh it
       }
       return this.initChatClient(localToken);
     }
@@ -130,7 +130,7 @@ class TwilioService {
   }
 
   async updateMessages(contact) {
-    const channel = await this.chatClient.getChannelBySid(contact.channelSid);
+    const channel = await this.chatClient.getChannelBySid(contact.channel_id);
     const messages = await channel.getMessages(MAX_MESSAGES_TO_LOAD);
     const loadPrevPageFor = async (newMessages) => {
       const previousMessages = await newMessages.prevPage();

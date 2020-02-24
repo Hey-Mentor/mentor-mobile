@@ -1,4 +1,3 @@
-
 /* eslint-disable import/prefer-default-export */
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
@@ -15,7 +14,10 @@ export function constructContactItemsWithToken(token) {
           refreshingContacts: true
         }
       });
-      const response = await fetch(`${API_URL}/contacts/${token._id}?token=${token.api_key}`);
+
+      const response = await fetch(
+        `${API_URL}/contacts/${token._id}?token=${token.api_key}`
+      );
       if (!response.ok) {
         throw new Error(`Failed with status code: ${response.status}`);
       }
@@ -25,32 +27,20 @@ export function constructContactItemsWithToken(token) {
         grade: contact.school.grade,
         id: contact._id,
         facebook_id: contact.facebook_id,
+        channel_id: contact.channel_id,
         fullContact: contact
       }));
       // TODO: once backend is updated, remove this and the PROD if condition
-      const usersWithChannels = [{
-        id: '5c15446bbf35ae4057222222',
-        name: 'Johnny',
-        channelSid: 'CH51a77d1a54a34ef296446df376d1110f'
-      }, {
-        id: '5c15446bbf35ae4057111111',
-        name: 'Nancy',
-        channelSid: 'CH51a77d1a54a34ef296446df376d1110f'
-      }];
+
       if (CONFIG.ENV !== 'PROD') {
-        contactData = contactData
-          .filter(contact => usersWithChannels.map(({ id }) => id).includes(contact.id))
-          .map((contact) => {
-            // eslint-disable-next-line no-param-reassign
-            contact.channelSid = usersWithChannels.find(({ id }) => id === contact.id).channelSid;
-            return contact;
-          });
+        contactData = contactData.filter(contact => contact.channel_id !== 'test');
       }
       if (contactData.length === 0) {
         dispatch({
           type: 'SET_ERROR',
           data: {
-            text: 'Hmm, nobody\'s here, get in touch with Hey Mentor to get paired with someone.',
+            text:
+              "Hmm, nobody's here, get in touch with Hey Mentor to get paired with someone."
           }
         });
       }
@@ -64,7 +54,7 @@ export function constructContactItemsWithToken(token) {
       dispatch({
         type: 'SET_ERROR',
         data: {
-          text: `${err}`,
+          text: `${err}`
         }
       });
     }
@@ -83,9 +73,10 @@ export function getHeyMentorToken(token, authType) {
     dispatch({
       type: 'SET_USER',
       data: {
-        loading: true,
+        loading: true
       }
     });
+
     const response = await fetch(
       `${API_URL}/register/${authType}?access_token=${token}`,
       { method: 'post' }
@@ -94,6 +85,7 @@ export function getHeyMentorToken(token, authType) {
 
     try {
       const responseJson = await response.json();
+
       if (responseJson && !responseJson.error) {
         // eslint-disable-next-line camelcase
         const { _id, user_type, api_key } = responseJson;
@@ -104,7 +96,7 @@ export function getHeyMentorToken(token, authType) {
               _id,
               user_type,
               api_key
-            },
+            }
           }
         });
       }
@@ -112,14 +104,14 @@ export function getHeyMentorToken(token, authType) {
       dispatch({
         type: 'SET_ERROR',
         data: {
-          text: `${err}`,
+          text: `${err}`
         }
       });
     }
     dispatch({
       type: 'SET_USER',
       data: {
-        loading: false,
+        loading: false
       }
     });
   };
@@ -136,16 +128,14 @@ export function initFacebookLogin() {
     });
     try {
       await Facebook.initializeAsync(CONFIG.FACEBOOK_APP_ID);
-      const response = await Facebook.logInWithReadPermissionsAsync(
-        {
-          permissions: ['public_profile', 'email', 'user_friends']
-        }
-      );
+      const response = await Facebook.logInWithReadPermissionsAsync({
+        permissions: ['public_profile', 'email', 'user_friends']
+      });
       if (response.type === 'success') {
         dispatch({
           type: 'SET_USER',
           data: {
-            fbToken: response.token,
+            fbToken: response.token
           }
         });
         dispatch(getHeyMentorToken(response.token, 'facebook'));
@@ -154,14 +144,14 @@ export function initFacebookLogin() {
       dispatch({
         type: 'SET_ERROR',
         data: {
-          text: `${err}`,
+          text: `${err}`
         }
       });
     }
     dispatch({
       type: 'SET_USER',
       data: {
-        loading: false,
+        loading: false
       }
     });
   };
@@ -195,14 +185,14 @@ export function initGoogleLogin() {
       dispatch({
         type: 'SET_ERROR',
         data: {
-          text: `${err}`,
+          text: `${err}`
         }
       });
     }
     dispatch({
       type: 'SET_USER',
       data: {
-        loading: false,
+        loading: false
       }
     });
   };
