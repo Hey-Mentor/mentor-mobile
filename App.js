@@ -5,6 +5,7 @@ import { AppLoading } from 'expo';
 import { Root } from 'native-base';
 import Roboto from 'native-base/Fonts/Roboto.ttf';
 import RobotoMedium from 'native-base/Fonts/Roboto_medium.ttf';
+import MaterialIcons from '@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import store from './store';
@@ -14,6 +15,7 @@ import MenteeDetailsView from './screens/MenteeDetailsView';
 import MenteesListView from './screens/MenteesListView';
 import Settings from './screens/Settings';
 import ChatScreen from './screens/ChatScreen';
+import SharedMediaScreen from './screens/SharedMediaScreen';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -25,9 +27,11 @@ export default class App extends React.Component {
 
   async componentDidMount() {
     await Font.loadAsync({
+      MaterialIcons,
       Roboto,
       Roboto_medium: RobotoMedium,
       ...Ionicons.font,
+
     });
     this.setState({ isReady: true });
   }
@@ -44,6 +48,7 @@ export default class App extends React.Component {
       menteeDetails: { screen: MenteeDetailsView },
       settings: { screen: Settings },
       chat: { screen: ChatScreen },
+      sharedMedia: { screen: SharedMediaScreen },
     });
 
     return (
