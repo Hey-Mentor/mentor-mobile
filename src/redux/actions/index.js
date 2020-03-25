@@ -21,20 +21,19 @@ export function constructContactItemsWithToken(token) {
       if (!response.ok) {
         throw new Error(`Failed with status code: ${response.status}`);
       }
-      let contactData = (await response.json()).contacts.map(contact => ({
+
+      const myUserObject = (await response.json());
+
+      const contactData = myUserObject.contacts.map(contact => ({
         name: `${contact.person.fname} ${contact.person.lname}`,
         school: contact.school.name,
         grade: contact.school.grade,
         id: contact._id,
         facebook_id: contact.facebook_id,
-        channel_id: contact.channel_id,
+        channel_id: myUserObject.chat.channels.find(x => x.contact === contact._id).channel,
         fullContact: contact
       }));
-      // TODO: once backend is updated, remove this and the PROD if condition
 
-      if (CONFIG.ENV !== 'PROD') {
-        contactData = contactData.filter(contact => contact.channel_id !== 'test');
-      }
       if (contactData.length === 0) {
         dispatch({
           type: 'SET_ERROR',

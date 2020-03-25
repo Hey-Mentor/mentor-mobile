@@ -53,6 +53,7 @@
     "lint": "eslint \"**/*.js\""
   },
   "devDependencies": {
+    "acorn": "^6.4.1",
     "babel-eslint": "^10.0.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-react-jsx-source": "^6.22.0",
@@ -63,6 +64,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.12.4",
+    "minimist": "^1.2.2",
     "react-native-scripts": "^1.14.1",
     "schedule": "^0.4.0"
   },
