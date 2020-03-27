@@ -29,23 +29,29 @@ class ChatScreen extends Component {
     messages: [],
     contact: this.props.navigation.state.params.mentee._id,
     loading: true,
-    id: null,
+    id: this.props.user.hmToken._id,
     messageBoxVisibile: false,
     hasPrevPage: false,
     isLoadingPrev: false,
-    loadPrevPage: () => {},
+    loadPrevPage: () => { },
   };
 
   async componentDidMount() {
     const { hmToken } = this.props.user;
-    this.state.id = `${hmToken._id}`;
 
     // Init Twilio service and message service
-    this.newMessagesCallback = this.newMessagesCallback.bind(this);
-    this.twilioService = new TwilioService(JSON.stringify(hmToken), [this.state.contact], this.newMessagesCallback);
+    this.twilioService = new TwilioService(hmToken, [this.state.contact], this.props.dispatch);
 
     // TODO: No messages and failed loading catches
     // See function afterLoading()
+    // this.afterLoading();
+    this.setState(prevState => ({
+      loading: false, messages: this.props.messages[prevState.contact]
+    }));
+  }
+
+  async componentWillUnmount() {
+    this.twilioService = null;
   }
 
   async onSend(message) {
@@ -56,24 +62,8 @@ class ChatScreen extends Component {
     }
   }
 
-  newMessagesCallback(newMessages) {
-    const { items, hasPrevPage, loadPrevPage } = newMessages;
-    this.setState(previousState => ({
-      messages: previousState.messages.concat(items),
-      hasPrevPage,
-      loadPrevPage: () => {
-        this.setState({ isLoadingPrev: true });
-        loadPrevPage();
-      },
-      isLoadingPrev: false
-    }));
-
-    this.setState({ loading: false });
-    this.afterLoading();
-  }
-
   afterLoading() {
-    if (this.state.messages.length === 0) {
+    if (this.props.messages.length === 0) {
       this.setState({
         messageBoxVisibile: true
       });
@@ -109,22 +99,22 @@ class ChatScreen extends Component {
     return (
       <View style={[styles.gcView]}>
         {loading && (
-        <View style={styles.floatingCenter}>
-          <ActivityIndicator
-            animating={loading}
-            size="large"
-            color="#0000ff"
-          />
-        </View>
+          <View style={styles.floatingCenter}>
+            <ActivityIndicator
+              animating={loading}
+              size="large"
+              color="#0000ff"
+            />
+          </View>
         )}
         {this.state.messageBoxVisibile && (
-        <View style={styles.floatingView}>
-          <MessageBox
-            title="It's Quiet in Here"
-            text="Send a message to get the party started"
-            visible={this.state.messageBoxVisibile}
-          />
-        </View>
+          <View style={styles.floatingView}>
+            <MessageBox
+              title="It's Quiet in Here"
+              text="Send a message to get the party started"
+              visible={this.state.messageBoxVisibile}
+            />
+          </View>
         )}
         <GiftedChat
           loadEarlier={hasPrevPage}
@@ -172,4 +162,5 @@ const styles = StyleSheet.create({
 export default connect(state => ({
   user: state.persist.user,
   errors: state.general.errors,
+  messages: state.persist.messages,
 }))(ChatScreen);

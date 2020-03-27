@@ -7,30 +7,35 @@ const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 const MAX_MESSAGES_TO_LOAD = 30;
 
 class TwilioService {
-  constructor(hmToken, contacts, messagesCallback) {
+  // TODO: Currently we recreate the twilio service every time we navigate to the chat
+  // screen. We could probably be more efficient than that.
+  constructor(hmToken, contacts, dispatch) {
     this.hmToken = hmToken;
-    this.id = `${JSON.parse(hmToken)._id}`;
-
     this.chatClient = null;
-    this.messageService = new MessageService(messagesCallback);
 
-    // Map user_id to chat channel object
+    // A map of user_id to twilio channel object.
+    // We use this to know which channel to send a message to.
     this.channels = {};
-    this.contacts = store.getState().persist.contactsList.items.filter(({ id }) => contacts.includes(id));
 
-    this.startup(this.contacts);
+    // Get the contacts from storage for the list of contacts we are initializing the twilio service for
+    // TODO: We currently only pass 1 contact, the one for the user we are chatting with.
+    // Instead, we should either remove this initialization, or initialize everyone at app start.
+    this.contacts = store.getState().persist.contactsList.items.filter(({ id }) => contacts.includes(id));
+    this.startup(this.contacts, dispatch);
   }
 
-  async startup(contacts) {
+  async getMessagesPromise() {
+    return this.messagesPromise;
+  }
+
+  async startup(contacts, dispatch) {
     const success = await this.loadTwilioClient();
     if (success) {
       // Initialize all channels
       try {
-        const doneInitChannels = await this.initAllChannels(contacts);
-        if (doneInitChannels) {
-          await this.getAllMessages();
-        } else {
-          // TODO: something bad happened
+        const channel = await this.initSingleChannel(contacts[0]);
+        if (channel) {
+          await TwilioService.updateMessages(contacts[0], channel, dispatch);
         }
       } catch (e) {
         // TODO: Add sentry logging
@@ -38,41 +43,26 @@ class TwilioService {
     } else {
       // TODO: Add failure logging
     }
+    return [];
   }
 
-  async getAllMessages() {
-    await this.contacts.map(contact => this.updateMessages(contact));
-  }
+  async sendMessage(contactId, message) {
+    const channelId = store.getState().persist.contactsList.items.filter(({ id }) => contactId === id)[0].channel_id;
 
-  async sendMessage(contact, message) {
     try {
-      const c = this.channels[contact];
-      c.sendMessage(message);
+      const channel = await this.chatClient.getChannelBySid(channelId);
+      channel.sendMessage(message);
     } catch (e) {
       // TODO: add sentry logging
     }
   }
 
-  async initAllChannels(contacts) {
-    let success;
-    try {
-      const map = contacts.map(
-        contact => this.initSingleChannel(contact)
-      );
-      success = await Promise.all(map);
-    } catch {
-      // TODO: Add sentry logging
-      return false;
-    }
-    return success.every(val => val);
-  }
-
   async initSingleChannel(contact) {
     const channel = await this.chatClient.getChannelBySid(contact.channel_id);
     if (channel) {
-      channel.on('messageAdded', message => this.messageService.updateLocalMessageStateSingle(contact, message));
-      this.channels[contact.id] = channel;
-      return true;
+      // channel.on('messageAdded', message => this.messageService.updateLocalMessageStateSingle(contact, message));
+      // this.channels[contact.id] = channel;
+      return channel;
     }
     return false;
   }
@@ -81,21 +71,21 @@ class TwilioService {
     // TODO: need to handle the case where the twilioToken in redux is expired
     // (currently it looks like the call to TwilioChatClient.create() fails with
     // an error window to the user)
-    let localToken = store.getState().persist.user.twilioToken;
-    if (localToken) {
-      const clientReady = await this.initChatClient(localToken);
+    let cachedTwilioToken = store.getState().persist.user.twilioToken;
+    if (cachedTwilioToken) {
+      const clientReady = await this.initChatClient(cachedTwilioToken);
       if (clientReady) {
         return true;
       }
     }
 
-    localToken = await this.getTwilioToken();
-    if (localToken) {
+    cachedTwilioToken = await this.getTwilioToken();
+    if (cachedTwilioToken) {
       try {
         store.dispatch({
           type: 'SET_USER',
           data: {
-            twilioToken: localToken
+            twilioToken: cachedTwilioToken
           }
         });
       } catch (e) {
@@ -103,18 +93,24 @@ class TwilioService {
         // If we fail to set the local storage for the token, just continue processing
         // and we will attempt to cache the token again next time we refresh it
       }
-      return this.initChatClient(localToken);
+      return this.initChatClient(cachedTwilioToken);
     }
     return false;
   }
 
   async getTwilioToken() {
-    const localToken = JSON.parse(this.hmToken);
-    const requestUri = `${API_URL}/chat/token/${localToken._id}?token=${localToken.api_key}`;
+    const requestUri = `${API_URL}/chat/token/${this.hmToken._id}?token=${this.hmToken.api_key}`;
     // TODO: add device ID
     const bodyData = { device: 'test' };
     try {
-      const response = await fetch(requestUri, { method: 'post', body: JSON.stringify(bodyData), headers: { 'Content-Type': 'application/json' } });
+      const response = await fetch(
+        requestUri,
+        {
+          method: 'post',
+          body: JSON.stringify(bodyData),
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
       const responseJson = await response.json();
       const twilioToken = responseJson.chat_token;
       return twilioToken;
@@ -124,40 +120,24 @@ class TwilioService {
     return false;
   }
 
-  getChannelName(contact) {
-    const localToken = JSON.parse(this.hmToken);
-    return localToken._id > contact.id ? `${localToken._id}.${contact.id}` : `${contact.id}.${localToken._id}`;
-  }
+  static async updateMessages(contact, channel, dispatch) {
+    try {
+      const messages = await channel.getMessages(MAX_MESSAGES_TO_LOAD);
+      await MessageService.updateLocalMessageState(contact.id, messages, dispatch);
+    } catch (e) {
+      console.log('exception');
+      console.log(e);
+    }
 
-  async updateMessages(contact) {
-    const channel = await this.chatClient.getChannelBySid(contact.channel_id);
-    const messages = await channel.getMessages(MAX_MESSAGES_TO_LOAD);
-    const loadPrevPageFor = async (newMessages) => {
+    return [];
+
+    /* const loadPrevPageFor = async (newMessages) => {
       const previousMessages = await newMessages.prevPage();
       previousMessages.loadPrevPage = () => loadPrevPageFor(previousMessages);
       this.messageService.updateLocalMessageState(contact, previousMessages);
     };
-    messages.loadPrevPage = () => loadPrevPageFor(messages);
-    await this.messageService.updateLocalMessageState(contact, messages);
-  }
-
-  async tryInviteContact(contact) {
-    try {
-      // TODO: if the user isn't found, or if the user trying to invite doesn't have permission, we still
-      //  end up showing the error screen, and not catching the failure...
-      const c = await this.channels[contact];
-      c.invite(contact);
-    } catch (e) {
-      // TODO: add sentry logging
-    }
-  }
-
-  async createChannelWithUser(contact) {
-    const channelName = this.getChannelName(contact);
-    return this.chatClient.createChannel({
-      uniqueName: channelName,
-      friendlyName: channelName,
-    });
+    messages.loadPrevPage = () => loadPrevPageFor(messages); */
+    // await this.messageService.updateLocalMessageState(contact, messages);
   }
 
   async initChatClient(token) {
@@ -165,20 +145,13 @@ class TwilioService {
       const chatClient = await TwilioChatClient.create(token, { logLevel: 'info' });
       this.chatClient = chatClient;
 
-      this.chatClient.on('tokenAboutToExpire', () => {
+      /* this.chatClient.on('tokenAboutToExpire', () => {
         this.getTwilioToken()
           .then(newData => this.chatClient.updateToken(newData))
           .catch(() => {
             // TODO: add sentry logging
           });
-      });
-
-      // Listen for new invitations to your Client
-      this.chatClient.on('channelInvited', (channel) => {
-        // Join the channel that you were invited to
-        // TODO: add a call to the backend to check if we should be joining this channel
-        channel.join();
-      });
+      }); */
 
       // TODO: Decide which of these callbacks we need
       // this.subscribeToAllChatClientEvents();

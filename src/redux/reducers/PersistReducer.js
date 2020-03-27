@@ -30,10 +30,10 @@ export default function reducer(state = initialState, action) {
     case 'SET_MESSAGES':
       return Object.assign({}, {
         ...state,
-        messages: [
+        messages: {
           ...state.messages,
           ...action.data,
-        ]
+        }
       });
     case 'SET_CONTACTS_LIST':
       return Object.assign({}, {

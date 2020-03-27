@@ -1,23 +1,23 @@
-import store from '../redux/store';
 
 class MessageService {
-  constructor(newMessagesCallback) {
+  constructor() {
     this.messages = {};
-    this.newMessagesCallback = newMessagesCallback;
   }
 
-  static async cacheMessages(contact, messages) {
+  static async cacheMessages(contactId, messages, dispatch) {
     try {
-      const localMessages = store.getState().persist.messages;
-      if (!localMessages[contact.id]) {
-        localMessages[contact.id] = [];
+      const localMessages = {}; // this.props.messages;
+      if (!localMessages[contactId]) {
+        localMessages[contactId] = [];
       }
-      localMessages[contact.id] = [...messages, ...localMessages[contact.id]];
-      store.dispatch({
+      // localMessages[contactId] = [...messages, ...localMessages[contactId]];
+      localMessages[contactId] = messages;
+      dispatch({
         type: 'SET_MESSAGES',
         data: localMessages
       });
     } catch (e) {
+      console.log(e);
       // TODO: Add sentry logging
     }
   }
@@ -26,16 +26,15 @@ class MessageService {
     this.updateLocalMessageState(contact, { items: [message] });
   }
 
-  async updateLocalMessageState(contact, rawMessages) {
+  static async updateLocalMessageState(contactId, rawMessages, dispatch) {
     const messages = MessageService.formatRawMessages(rawMessages);
-    this.newMessagesCallback(messages);
-    MessageService.cacheMessages(contact, messages);
+    MessageService.cacheMessages(contactId, messages, dispatch);
   }
 
   static formatRawMessages(rawMessages) {
     const { items, ...otherProps } = rawMessages;
     return {
-      items: items.reverse().map(message => ({
+      items: items.map(message => ({
         _id: `${message.index}`,
         text: `${message.body}`,
         createdAt: `${message.timestamp}`,

@@ -67,7 +67,6 @@ export function constructContactItemsWithToken(token) {
 }
 
 export function getHeyMentorToken(token, authType) {
-
   return async (dispatch) => {
     dispatch({
       type: 'SET_USER',
