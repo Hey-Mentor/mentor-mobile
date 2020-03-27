@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, KeyboardAvoidingView, YellowBox, ActivityIndicator
+  View, StyleSheet, KeyboardAvoidingView, YellowBox, ActivityIndicator, Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Avatar } from 'react-native-elements';
@@ -34,6 +34,7 @@ class ChatScreen extends Component {
     hasPrevPage: false,
     isLoadingPrev: false,
     loadPrevPage: () => {},
+    typing: false
   };
 
   async componentDidMount() {
@@ -41,8 +42,9 @@ class ChatScreen extends Component {
     this.state.id = `${hmToken._id}`;
 
     // Init Twilio service and message service
+    this.typingCallback = this.typingCallback.bind(this);
     this.newMessagesCallback = this.newMessagesCallback.bind(this);
-    this.twilioService = new TwilioService(JSON.stringify(hmToken), [this.state.contact], this.newMessagesCallback);
+    this.twilioService = new TwilioService(JSON.stringify(hmToken), [this.state.contact], this.newMessagesCallback, this.typingCallback);
 
     // TODO: No messages and failed loading catches
     // See function afterLoading()
@@ -53,6 +55,14 @@ class ChatScreen extends Component {
       this.twilioService.sendMessage(this.state.contact, message[0].text);
     } catch (e) {
       // TODO: add sentry logging
+    }
+  }
+
+  async onTyping() {
+    try {
+      this.twilioService.userTyping(this.state.contact);
+    } catch (e) {
+      // console.error(e);
     }
   }
 
@@ -70,6 +80,11 @@ class ChatScreen extends Component {
 
     this.setState({ loading: false });
     this.afterLoading();
+  }
+
+  typingCallback(member) {
+    console.log(`${member.identity} is typing???`);
+    this.setState({ typing: true });
   }
 
   afterLoading() {
@@ -136,8 +151,12 @@ class ChatScreen extends Component {
           onSend={messages => this.onSend(messages)}
           user={{ _id: this.state.id }}
           renderBubble={this.renderBubble}
+          onInputTextChanged={() => this.onTyping()}
+          isTyping={this.state.typing}
         />
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
+        {
+          Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
+        }
       </View>
     );
   }

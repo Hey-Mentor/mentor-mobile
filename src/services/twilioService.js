@@ -7,12 +7,13 @@ const API_URL = CONFIG.ENV === 'PROD' ? CONFIG.API_URL : CONFIG.TEST_API_URL;
 const MAX_MESSAGES_TO_LOAD = 30;
 
 class TwilioService {
-  constructor(hmToken, contacts, messagesCallback) {
+  constructor(hmToken, contacts, messagesCallback, typingCallback) {
     this.hmToken = hmToken;
     this.id = `${JSON.parse(hmToken)._id}`;
 
     this.chatClient = null;
     this.messageService = new MessageService(messagesCallback);
+    this.typingCallback = typingCallback;
 
     // Map user_id to chat channel object
     this.channels = {};
@@ -50,6 +51,17 @@ class TwilioService {
       c.sendMessage(message);
     } catch (e) {
       // TODO: add sentry logging
+    }
+  }
+
+  async userTyping(contact) {
+    try {
+      console.log('HELLLLLLOOOOOOOO');
+      const c = this.channels[contact];
+      c.typing();
+    } catch (e) {
+      console.log('c is undefined');
+      // console.error(e);
     }
   }
 
@@ -182,6 +194,16 @@ class TwilioService {
 
       // TODO: Decide which of these callbacks we need
       // this.subscribeToAllChatClientEvents();
+
+      this.chatClient.on('typingStarted', member => {
+        try {
+          this.typingCallback(member)
+        } catch (error) {
+          console.log('no member')
+        }
+      });
+      this.chatClient.on('typingEnded', member => console.log('typing ended, here is what is returned: ', member));
+
       return true;
     } catch (e) {
       // TODO: add sentry logging
