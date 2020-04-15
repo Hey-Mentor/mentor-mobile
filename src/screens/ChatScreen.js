@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, KeyboardAvoidingView, YellowBox, ActivityIndicator
+  View, StyleSheet, KeyboardAvoidingView, YellowBox, ActivityIndicator, Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Avatar } from 'react-native-elements';
@@ -59,7 +59,7 @@ class ChatScreen extends Component {
   newMessagesCallback(newMessages) {
     const { items, hasPrevPage, loadPrevPage } = newMessages;
     this.setState(previousState => ({
-      messages: previousState.messages.concat(items),
+      messages: items.concat(previousState.messages),
       hasPrevPage,
       loadPrevPage: () => {
         this.setState({ isLoadingPrev: true });
@@ -137,7 +137,9 @@ class ChatScreen extends Component {
           user={{ _id: this.state.id }}
           renderBubble={this.renderBubble}
         />
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
+        {
+          Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
+        }
       </View>
     );
   }
