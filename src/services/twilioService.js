@@ -56,11 +56,10 @@ class TwilioService {
 
   async userTyping(contact) {
     try {
-      console.log('usertyping');
       const c = this.channels[contact];
       c.typing();
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -87,13 +86,12 @@ class TwilioService {
         });
         channel.on('typingStarted', member => {
           try {
-            console.log('typing started')
             this.typingCallback(member)
           } catch (error) {
-            console.log('no member')
+            console.log(error);
           }
         });
-        channel.on('typingEnded', member => console.log('typing ended, here is what is returned: ', member));
+        channel.on('typingEnded', member => console.log('typing ended', member));
   
         this.channels[contact.id] = channel;
         return true;
@@ -213,15 +211,6 @@ class TwilioService {
 
       // TODO: Decide which of these callbacks we need
       // this.subscribeToAllChatClientEvents();
-
-      // this.chatClient.on('typingStarted', member => {
-      //   try {
-      //     this.typingCallback(member)
-      //   } catch (error) {
-      //     console.log('no member')
-      //   }
-      // });
-      // this.chatClient.on('typingEnded', member => console.log('typing ended, here is what is returned: ', member));
 
       return true;
     } catch (e) {

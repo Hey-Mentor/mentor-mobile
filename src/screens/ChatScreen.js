@@ -161,6 +161,7 @@ class ChatScreen extends Component {
           renderBubble={this.renderBubble}
           onInputTextChanged={(evt) => this.onTyping(evt)}
           isTyping={this.state.typing}
+          // renderFooter={}
         />
         {
           Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={80} />
