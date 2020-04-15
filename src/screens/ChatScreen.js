@@ -50,6 +50,10 @@ class ChatScreen extends Component {
     // See function afterLoading()
   }
 
+  componentWillUnmount() {
+    this.twilioService.chatClient.shutdown();
+  }
+
   async onSend(message) {
     try {
       this.twilioService.sendMessage(this.state.contact, message[0].text);
@@ -58,9 +62,11 @@ class ChatScreen extends Component {
     }
   }
 
-  async onTyping() {
+  async onTyping(evt) {
     try {
-      this.twilioService.userTyping(this.state.contact);
+      if (evt && this.state.contact) {
+        this.twilioService.userTyping(this.state.contact);
+      }
     } catch (e) {
       // console.error(e);
     }
@@ -69,22 +75,24 @@ class ChatScreen extends Component {
   newMessagesCallback(newMessages) {
     const { items, hasPrevPage, loadPrevPage } = newMessages;
     this.setState(previousState => ({
-      messages: previousState.messages.concat(items),
+      messages: items.concat(previousState.messages),
       hasPrevPage,
       loadPrevPage: () => {
         this.setState({ isLoadingPrev: true });
         loadPrevPage();
       },
       isLoadingPrev: false
-    }));
+    }), () => console.log(this.state.messages));
 
     this.setState({ loading: false });
     this.afterLoading();
   }
 
   typingCallback(member) {
-    console.log(`${member.identity} is typing???`);
-    this.setState({ typing: true });
+    console.log(`${member} is typing???`);
+    // if (!this.state.typing) {
+    //   this.setState({ typing: true });
+    // }
   }
 
   afterLoading() {
@@ -151,7 +159,7 @@ class ChatScreen extends Component {
           onSend={messages => this.onSend(messages)}
           user={{ _id: this.state.id }}
           renderBubble={this.renderBubble}
-          onInputTextChanged={() => this.onTyping()}
+          onInputTextChanged={(evt) => this.onTyping(evt)}
           isTyping={this.state.typing}
         />
         {

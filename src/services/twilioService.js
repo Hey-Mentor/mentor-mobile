@@ -56,12 +56,11 @@ class TwilioService {
 
   async userTyping(contact) {
     try {
-      console.log('HELLLLLLOOOOOOOO');
+      console.log('usertyping');
       const c = this.channels[contact];
       c.typing();
     } catch (e) {
-      console.log('c is undefined');
-      // console.error(e);
+      console.log(e);
     }
   }
 
@@ -80,13 +79,29 @@ class TwilioService {
   }
 
   async initSingleChannel(contact) {
-    const channel = await this.chatClient.getChannelBySid(contact.channel_id);
-    if (channel) {
-      channel.on('messageAdded', message => this.messageService.updateLocalMessageStateSingle(contact, message));
-      this.channels[contact.id] = channel;
-      return true;
+    try {
+      const channel = await this.chatClient.getChannelBySid(contact.channel_id);
+      if (channel) {
+        channel.on('messageAdded', message => {
+          this.messageService.updateLocalMessageStateSingle(contact, message)
+        });
+        channel.on('typingStarted', member => {
+          try {
+            console.log('typing started')
+            this.typingCallback(member)
+          } catch (error) {
+            console.log('no member')
+          }
+        });
+        channel.on('typingEnded', member => console.log('typing ended, here is what is returned: ', member));
+  
+        this.channels[contact.id] = channel;
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
     }
-    return false;
   }
 
   async loadTwilioClient() {
@@ -142,15 +157,19 @@ class TwilioService {
   }
 
   async updateMessages(contact) {
-    const channel = await this.chatClient.getChannelBySid(contact.channel_id);
-    const messages = await channel.getMessages(MAX_MESSAGES_TO_LOAD);
-    const loadPrevPageFor = async (newMessages) => {
-      const previousMessages = await newMessages.prevPage();
-      previousMessages.loadPrevPage = () => loadPrevPageFor(previousMessages);
-      this.messageService.updateLocalMessageState(contact, previousMessages);
-    };
-    messages.loadPrevPage = () => loadPrevPageFor(messages);
-    await this.messageService.updateLocalMessageState(contact, messages);
+    try {
+      // const channel = await this.chatClient.getChannelBySid(contact.channel_id);
+      const messages = await this.channels[contact.id].getMessages(MAX_MESSAGES_TO_LOAD);
+      const loadPrevPageFor = async (newMessages) => {
+        const previousMessages = await newMessages.prevPage();
+        previousMessages.loadPrevPage = () => loadPrevPageFor(previousMessages);
+        this.messageService.updateLocalMessageState(contact, previousMessages);
+      };
+      messages.loadPrevPage = () => loadPrevPageFor(messages);
+      await this.messageService.updateLocalMessageState(contact, messages);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async tryInviteContact(contact) {
@@ -195,14 +214,14 @@ class TwilioService {
       // TODO: Decide which of these callbacks we need
       // this.subscribeToAllChatClientEvents();
 
-      this.chatClient.on('typingStarted', member => {
-        try {
-          this.typingCallback(member)
-        } catch (error) {
-          console.log('no member')
-        }
-      });
-      this.chatClient.on('typingEnded', member => console.log('typing ended, here is what is returned: ', member));
+      // this.chatClient.on('typingStarted', member => {
+      //   try {
+      //     this.typingCallback(member)
+      //   } catch (error) {
+      //     console.log('no member')
+      //   }
+      // });
+      // this.chatClient.on('typingEnded', member => console.log('typing ended, here is what is returned: ', member));
 
       return true;
     } catch (e) {
