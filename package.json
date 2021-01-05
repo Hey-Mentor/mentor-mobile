@@ -7,7 +7,7 @@
     "@expo/vector-icons": "^10.0.0",
     "@react-native-community/masked-view": "^0.1.6",
     "assign-deep": "^1.0.1",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "eslint-config-rallycoding": "^3.2.0",
     "eslint-utils": "^1.4.2",
     "events": "^3.0.0",
