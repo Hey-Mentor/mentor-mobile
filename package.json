@@ -64,7 +64,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.12.4",
-    "minimist": "^1.2.2",
+    "minimist": "^1.2.6",
     "react-native-scripts": "^1.14.1",
     "schedule": "^0.4.0"
   },
